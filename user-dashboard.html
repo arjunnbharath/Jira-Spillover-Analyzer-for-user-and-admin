@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Palette: Dark #141413 · Light #faf9f5 · Mid gray #b0aea5 · Light gray #e8e6dc */
+            --dark: #141413;
+            --light: #faf9f5;
+            --mid-gray: #b0aea5;
+            --light-gray: #e8e6dc;
+
+            --bg: color-mix(in srgb, var(--dark) 11%, var(--light));
+            --surface: color-mix(in srgb, var(--dark) 5%, var(--light));
+            --sidebar-bg: var(--dark);
+            --sidebar-border: rgba(250, 249, 245, 0.12);
+            --sidebar-hover: rgba(250, 249, 245, 0.08);
+            --sidebar-active: rgba(250, 249, 245, 0.15);
+            --sidebar-width: 260px;
+            --border: var(--light-gray);
+            --text: var(--dark);
+            --text-muted: var(--mid-gray);
+            --text-dim: var(--mid-gray);
+            --accent: var(--dark);
+            --accent-hover: #2f2f2d;
+            --accent-soft: var(--light-gray);
+            --on-accent: var(--light);
+            --row-hover: color-mix(in srgb, var(--light-gray) 48%, var(--dark) 4%);
+            --row-done: color-mix(in srgb, var(--light-gray) 58%, var(--dark) 6%);
+            --thead-bg: color-mix(in srgb, var(--light-gray) 85%, var(--dark) 8%);
+            --radius: 10px;
+            --radius-sm: 8px;
+            --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --shadow-sm: 0 1px 2px rgba(20, 20, 19, 0.06);
+            --shadow: 0 1px 3px rgba(20, 20, 19, 0.09);
+            --focus-ring: rgba(20, 20, 19, 0.16);
+            --page-bg-image: url('images/newimg.png');
+            /* Data table rows = same solid as navbar */
+            --contrib-table-row: var(--sidebar-bg);
+            --contrib-table-row-alt: var(--sidebar-bg);
+            --contrib-table-row-hover: color-mix(in srgb, var(--sidebar-bg) 88%, var(--light) 12%);
+            --contrib-table-thead: var(--sidebar-bg);
+            --contrib-table-complete: var(--sidebar-bg);
+            --contrib-table-complete-alt: var(--sidebar-bg);
+            --contrib-table-complete-hover: color-mix(in srgb, var(--sidebar-bg) 82%, #166534 18%);
+        }
+        @supports not (background: color-mix(in srgb, white, black)) {
+            :root {
+                --bg: #e8e6e0;
+                --surface: #efeee9;
+                --row-hover: #e2e0d8;
+                --row-done: #dbd9d0;
+                --thead-bg: #dddad2;
+                --contrib-table-row: #141413;
+                --contrib-table-row-alt: #141413;
+                --contrib-table-row-hover: #222220;
+                --contrib-table-thead: #141413;
+                --contrib-table-complete: #141413;
+                --contrib-table-complete-alt: #141413;
+                --contrib-table-complete-hover: #1a261f;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 1.25rem 1rem 2.5rem;
+            line-height: 1.5;
+            background-color: var(--dark);
+            background-image:
+                linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.78)),
+                var(--page-bg-image);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        body.contrib-session {
+            padding-top: 0;
+            padding-left: 0;
+            padding-right: 0;
+            padding-bottom: 0;
+            overflow-x: hidden;
+        }
+        body.contrib-session #landingFoot {
+            display: none;
+        }
+        .wrap { max-width: 1140px; margin: 0 auto; }
+
+        /* Landing: light text on dark scrim (cards keep their own surfaces) */
+        #landingBlock .hero {
+            border-bottom-color: rgba(250, 249, 245, 0.14);
+        }
+        #landingBlock .hero h1 {
+            color: var(--light);
+        }
+        #landingBlock .hero__sub {
+            color: rgba(250, 249, 245, 0.78);
+        }
+        #landingBlock .hero__sub strong {
+            color: var(--light);
+        }
+        #landingBlock .hero__badge {
+            color: rgba(250, 249, 245, 0.88);
+            background: rgba(250, 249, 245, 0.1);
+            border-color: rgba(250, 249, 245, 0.18);
+        }
+        #landingFoot .foot {
+            color: rgba(250, 249, 245, 0.62);
+        }
+        #landingFoot .foot a {
+            color: #93c5fd;
+        }
+
+        /* Session main column: white text and rules on dark scrim */
+        body.contrib-session .contrib-session-summary__title {
+            color: #ffffff;
+            text-align: right;
+        }
+        body.contrib-session .contrib-session-summary__file-line {
+            color: #ffffff;
+            text-align: right;
+        }
+        body.contrib-session .contrib-session-bar {
+            border-bottom: 1px solid #ffffff;
+            justify-content: flex-end;
+        }
+        body.contrib-session .contrib-session-summary {
+            align-items: flex-end;
+        }
+        body.contrib-session .contrib-page-head__sub {
+            color: #ffffff;
+        }
+        body.contrib-session .contrib-panel-dash__title {
+            color: #ffffff;
+        }
+        body.contrib-session .contrib-panel-dash__hint {
+            color: #ffffff;
+        }
+        body.contrib-session .contrib-panel-dash__hint strong {
+            color: #ffffff;
+        }
+        body.contrib-session .contrib-section-head__title {
+            color: #ffffff;
+        }
+        body.contrib-session .contrib-section-head:has(.contrib-section-head__badge--warn) .contrib-section-head__title {
+            color: #ffffff;
+        }
+        body.contrib-session .contrib-section-head__badge--warn {
+            color: #ffffff;
+        }
+        body.contrib-session .contrib-section-head__badge--ok {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+        body.contrib-session .muted {
+            color: #ffffff;
+        }
+
+        /* —— Dashboard shell (sidebar + stage) —— */
+        .contrib-app {
+            display: flex;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: transparent;
+            position: relative;
+        }
+
+        @keyframes contrib-sidebar-in {
+            from {
+                opacity: 0;
+                transform: translateX(-14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes contrib-stage-in {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #workspaceShell.contrib-shell--enter .contrib-sidebar {
+            animation: contrib-sidebar-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        #workspaceShell.contrib-shell--enter .contrib-stage {
+            animation: contrib-stage-in 0.52s cubic-bezier(0.22, 1, 0.36, 1) 0.07s both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #workspaceShell.contrib-shell--enter .contrib-sidebar,
+            #workspaceShell.contrib-shell--enter .contrib-stage {
+                animation: none !important;
+            }
+        }
+        .contrib-sidebar {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            padding: 1.25rem 0 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow: hidden;
+        }
+        .contrib-sidebar__brand {
+            padding: 0 1.25rem 1.25rem;
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+        .contrib-welcome {
+            min-width: 0;
+        }
+        .contrib-welcome__label {
+            display: block;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            margin-bottom: 0.375rem;
+        }
+        .contrib-welcome__name {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+            color: var(--light);
+            word-break: break-word;
+        }
+        .contrib-sidebar__scroll {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+            padding: 0.75rem 0.75rem 0.5rem;
+        }
+        .contrib-nav-section__label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            margin: 1rem 0 0.5rem 0.5rem;
+        }
+        .contrib-nav-section__label:first-child {
+            margin-top: 0;
+        }
+        .contrib-sidebar__nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .contrib-sidenav__btn {
+            appearance: none;
+            border: none;
+            background: transparent;
+            color: var(--mid-gray);
+            font-family: inherit;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.15s, color 0.15s;
+        }
+        .contrib-sidenav__btn:hover {
+            color: var(--light);
+            background: var(--sidebar-hover);
+        }
+        .contrib-sidenav__btn--active {
+            color: var(--light);
+            background: var(--sidebar-active);
+            font-weight: 600;
+        }
+        .contrib-sidenav__link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--mid-gray);
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+        .contrib-sidenav__link:hover {
+            color: var(--light);
+            background: var(--sidebar-hover);
+        }
+        .contrib-sidenav__link--button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            font: inherit;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            font-family: inherit;
+            border: none;
+            background: transparent;
+            color: var(--mid-gray);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.15s, color 0.15s;
+        }
+        .contrib-sidenav__link--button:focus-visible {
+            outline: 2px solid var(--light);
+            outline-offset: 2px;
+        }
+        .contrib-sidenav__link--button:hover {
+            color: var(--light);
+            background: var(--sidebar-hover);
+        }
+        .contrib-sidenav__link svg,
+        .contrib-sidenav__link--button svg {
+            width: 18px;
+            height: 18px;
+            opacity: 0.75;
+            flex-shrink: 0;
+        }
+        .contrib-sidenav__btn:focus-visible {
+            outline: 2px solid var(--light);
+            outline-offset: 2px;
+        }
+        .contrib-sidenav__ico {
+            width: 18px;
+            height: 18px;
+            opacity: 0.75;
+            flex-shrink: 0;
+        }
+        .contrib-sidebar__footer {
+            padding: 0.75rem 1.25rem;
+            margin-top: auto;
+            border-top: 1px solid var(--sidebar-border);
+            font-size: 0.75rem;
+            color: var(--mid-gray);
+            line-height: 1.5;
+        }
+
+        .contrib-stage {
+            flex: 1;
+            min-width: 0;
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+        }
+        .contrib-session-bar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        .contrib-session-summary {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.375rem;
+            min-width: 0;
+            flex: 1;
+        }
+        .contrib-session-summary__title {
+            font-family: var(--font);
+            font-size: clamp(1.0625rem, 2vw, 1.25rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+            margin: 0;
+            max-width: 56ch;
+            width: 100%;
+            color: var(--dark);
+        }
+        .contrib-session-summary__file-line {
+            margin: 0;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            text-align: left;
+            align-self: flex-start;
+            max-width: 100%;
+        }
+
+        .contrib-btn-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .contrib-btn-outline:hover {
+            background: var(--row-hover);
+            border-color: var(--mid-gray);
+        }
+        .contrib-btn-outline--sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .contrib-main-dash {
+            flex: 1;
+            padding: 1.25rem 1.75rem 2.5rem;
+            max-width: min(1200px, 100%);
+            width: 100%;
+            margin: 0 auto;
+        }
+        .contrib-banner {
+            margin-bottom: 1rem;
+        }
+        .contrib-banner.banner--err,
+        .contrib-banner.banner--ok {
+            margin-bottom: 0;
+        }
+        .contrib-page-head {
+            margin-bottom: 1.25rem;
+        }
+        .contrib-page-head__sub {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            max-width: 52ch;
+            line-height: 1.55;
+        }
+        .contrib-panel-dash {
+            margin-bottom: 2rem;
+        }
+        .contrib-panel-dash__title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.375rem;
+            color: var(--dark);
+        }
+        .contrib-panel-dash__hint {
+            font-size: 0.8125rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            line-height: 1.55;
+            max-width: 56ch;
+        }
+        .contrib-section-head {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.25rem 0 0.75rem;
+        }
+        .contrib-section-head:first-child {
+            margin-top: 0;
+        }
+        .contrib-section-head__title {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .contrib-section-head:has(.contrib-section-head__badge--warn) .contrib-section-head__title {
+            color: var(--dark);
+        }
+        .contrib-section-head__badge {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            padding: 0.125rem 0.5rem;
+            border-radius: 999px;
+        }
+        .contrib-section-head__badge--warn {
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            background: transparent;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        .contrib-section-head__badge--ok {
+            background: var(--row-hover);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .contrib-table-section {
+            margin-bottom: 1.5rem;
+        }
+        .contrib-table-section:last-child {
+            margin-bottom: 0;
+        }
+        /* Card rows — spaced rectangles on workspace background (no black canvas) */
+        .contrib-table-wrap {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: min(65vh, 640px);
+            -webkit-overflow-scrolling: touch;
+            padding: 12px 4px 16px;
+            box-shadow: none;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* legacy Edge */
+        }
+        .contrib-table-wrap::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+        .contrib-data-table {
+            width: 100%;
+            min-width: 920px;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            font-size: 0.8125rem;
+            font-family: var(--font);
+            color: var(--light);
+        }
+        .contrib-data-table col.contrib-col--issue { width: 17%; }
+        .contrib-data-table col.contrib-col--assignee { width: 9%; }
+        .contrib-data-table col.contrib-col--summary { width: 16%; }
+        .contrib-data-table col.contrib-col--progress { width: 13%; }
+        .contrib-data-table col.contrib-col--field-a { width: 14%; }
+        .contrib-data-table col.contrib-col--field-b { width: 14%; }
+        .contrib-data-table col.contrib-col--action { width: 9rem; }
+        .contrib-data-table thead th {
+            text-align: left;
+            padding: 1rem 0.875rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            background: var(--contrib-table-thead);
+            border: none;
+            white-space: nowrap;
+            vertical-align: middle;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+        }
+        .contrib-data-table thead th:first-child {
+            padding-left: 1.125rem;
+            padding-right: 0.35rem;
+        }
+        .contrib-data-table thead th:nth-child(2) {
+            padding-left: 0.35rem;
+        }
+        .contrib-data-table thead th:last-child {
+            padding-right: 1.125rem;
+        }
+        .contrib-data-table thead th.contrib-th--action {
+            text-align: right;
+        }
+        .contrib-data-table tbody td {
+            padding: 1rem 0.875rem;
+            vertical-align: top;
+            border: none;
+            background: var(--contrib-table-row);
+            color: var(--light);
+        }
+        .contrib-data-table tbody tr:nth-child(even) td {
+            background: var(--contrib-table-row-alt);
+        }
+        .contrib-data-table tbody td:first-child {
+            padding-left: 1.125rem;
+            padding-right: 0.35rem;
+            min-width: 11rem;
+            width: 17%;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        .contrib-data-table tbody td:nth-child(2) {
+            padding-left: 0.35rem;
+        }
+        .contrib-data-table tbody td:last-child {
+            padding-right: 1.125rem;
+        }
+        .contrib-data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete td {
+            background: var(--contrib-table-complete);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete td:first-child {
+            box-shadow: inset 3px 0 0 0 rgba(74, 222, 128, 0.45);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete:nth-child(even) td {
+            background: var(--contrib-table-complete-alt);
+        }
+        .contrib-data-table tbody tr:hover td {
+            background: var(--contrib-table-row-hover);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete:hover td {
+            background: var(--contrib-table-complete-hover);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete:hover td:first-child {
+            box-shadow: inset 3px 0 0 0 rgba(74, 222, 128, 0.55);
+        }
+        .contrib-data-table textarea::placeholder {
+            color: #525252;
+        }
+        .contrib-data-table textarea,
+        .contrib-data-table select {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            background: #d4d4d4;
+            border: 1px solid #a3a3a3;
+            border-radius: 8px;
+            color: var(--dark);
+            font-size: 0.75rem;
+            font-family: var(--font);
+            padding: 0.32rem 0.45rem;
+            line-height: 1.25;
+            min-height: 2.125rem;
+            height: 2.125rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .contrib-data-table textarea {
+            resize: none;
+            overflow-y: auto;
+        }
+        .contrib-data-table textarea:focus,
+        .contrib-data-table select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+            background: #e0e0e0;
+        }
+        .contrib-data-table select option {
+            color: var(--dark);
+            background: #d4d4d4;
+        }
+        .contrib-data-table .contrib-code {
+            font-family: ui-monospace, 'Consolas', monospace;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--light);
+            background: rgba(250, 249, 245, 0.08);
+            padding: 0.38rem 0.55rem;
+            border-radius: 8px;
+            word-break: break-all;
+            letter-spacing: -0.02em;
+            border: 1px solid rgba(250, 249, 245, 0.14);
+        }
+        .contrib-data-table tbody td:first-child .contrib-code {
+            display: inline-block;
+            max-width: 100%;
+            white-space: nowrap;
+            word-break: normal;
+            overflow-wrap: normal;
+        }
+        .contrib-data-table td.contrib-td-summary {
+            min-width: 0;
+            vertical-align: top;
+            color: rgba(250, 249, 245, 0.72);
+            font-size: 0.8125rem;
+            line-height: 1.45;
+        }
+        .contrib-td-summary__text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+            color: inherit;
+        }
+        .contrib-data-table td.contrib-td-progress {
+            min-width: 0;
+            vertical-align: middle;
+            font-size: 0.6875rem;
+            line-height: 1.45;
+            color: rgba(250, 249, 245, 0.88);
+        }
+        body.contrib-session .contrib-data-table td.contrib-td-progress {
+            color: rgba(250, 249, 245, 0.92);
+        }
+        .contrib-data-table .contrib-status {
+            font-weight: 600;
+            font-size: 0.6875rem;
+            line-height: 1.35;
+        }
+        .contrib-data-table .contrib-status--ok {
+            color: #86efac;
+        }
+        .contrib-data-table .contrib-status--pending {
+            color: #facc15;
+        }
+        .contrib-data-table .contrib-status--err {
+            color: #fca5a5;
+        }
+        .contrib-data-table .contrib-status-sep {
+            color: rgba(250, 249, 245, 0.42);
+            font-weight: 500;
+        }
+        .contrib-data-table .field-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            min-width: 0;
+            width: 100%;
+        }
+        .contrib-data-table .contrib-td-field--wide .field-stack {
+            min-width: 0;
+        }
+        .contrib-data-table td.contrib-td-field,
+        .contrib-data-table td.contrib-td-field--wide {
+            vertical-align: top;
+        }
+        .contrib-data-table .btn-save {
+            min-width: 6rem;
+            padding: 0.32rem 0.95rem;
+            border-radius: 8px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            background: #2563eb;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-family: var(--font);
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.45);
+            transition: background 0.15s, transform 0.12s, box-shadow 0.15s;
+        }
+        .contrib-data-table .btn-save:hover {
+            background: #1d4ed8;
+            color: #ffffff;
+        }
+        .contrib-data-table .btn-save--saved,
+        .contrib-data-table .btn-save--saved:hover {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+            box-shadow: 0 1px 3px rgba(22, 101, 52, 0.2);
+        }
+        .contrib-data-table .btn-save--saved:hover {
+            background: #bbf7d0;
+            color: #166534;
+        }
+        .contrib-data-table .btn-save:active {
+            transform: scale(0.98);
+        }
+        .contrib-data-table td.contrib-td--action {
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 960px) {
+            .contrib-app {
+                flex-direction: column;
+            }
+            .contrib-sidebar {
+                position: sticky;
+                top: 0;
+                left: auto;
+                bottom: auto;
+                width: 100%;
+                height: auto;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0.85rem 0 0;
+                border-right: none;
+                border-bottom: 1px solid var(--sidebar-border);
+                z-index: 50;
+                overflow: visible;
+            }
+            .contrib-sidebar__brand {
+                padding: 0 1rem 0.85rem;
+            }
+            .contrib-sidebar__scroll {
+                flex-direction: column;
+                overflow-x: auto;
+                overflow-y: visible;
+                padding: 0 0.65rem 0.65rem;
+            }
+            .contrib-sidebar__nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+            }
+            .contrib-sidenav__btn {
+                white-space: nowrap;
+            }
+            .contrib-sidenav__btn--active {
+                border-bottom-color: transparent;
+            }
+            .contrib-sidebar__footer {
+                display: block;
+            }
+            .contrib-stage {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+        .muted {
+            color: var(--text-muted);
+        }
+
+        .hero {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero__badge {
+            display: inline-block;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--accent-soft);
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.6rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 {
+            font-size: clamp(1.35rem, 2.5vw, 1.6rem);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        .hero__sub {
+            color: var(--text-muted);
+            font-size: 0.9375rem;
+            max-width: 38rem;
+            line-height: 1.6;
+        }
+
+        .card {
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        .card__head {
+            padding: 0.875rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--accent-soft);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .card__body { padding: 1.25rem; }
+
+        .banner {
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            margin-bottom: 1rem;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            box-shadow: var(--shadow-sm);
+        }
+        .banner--err {
+            position: fixed;
+            top: 0.75rem;
+            left: 0;
+            right: 0;
+            z-index: 20000;
+            margin: 0;
+            max-width: none;
+            text-align: center;
+            padding: 0.875rem 1.25rem;
+            border-radius: var(--radius-sm);
+            background: var(--dark);
+            color: #f87171;
+            border: 1px solid #dc2626;
+            box-shadow:
+                0 0 0 1px rgba(220, 38, 38, 0.35),
+                0 0 28px rgba(220, 38, 38, 0.5),
+                0 8px 32px rgba(0, 0, 0, 0.45);
+            transition: opacity 0.45s ease;
+            opacity: 1;
+        }
+        .banner--err.banner--err-hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .banner--ok {
+            position: fixed;
+            top: 0.75rem;
+            left: 50%;
+            right: auto;
+            z-index: 20000;
+            margin: 0;
+            width: max-content;
+            max-width: min(18rem, calc(100vw - 2rem));
+            text-align: center;
+            padding: 0.4rem 0.85rem;
+            border-radius: 999px;
+            transform: translateX(-50%);
+            background: rgba(20, 83, 45, 0.38);
+            color: #bbf7d0;
+            border: 1px solid rgba(134, 239, 172, 0.45);
+            box-shadow:
+                0 0 0 1px rgba(34, 197, 94, 0.15),
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: opacity 0.45s ease;
+            opacity: 1;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            line-height: 1.35;
+        }
+        .banner--ok.banner--ok-hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+        /* Session: error bar spans main column; success pill is centered in main area */
+        body.contrib-session .banner.banner--err {
+            left: var(--sidebar-width);
+            right: 0;
+            width: auto;
+            transform: none;
+            max-width: none;
+        }
+        body.contrib-session .banner.banner--ok {
+            left: calc(var(--sidebar-width) + (100vw - var(--sidebar-width)) / 2);
+            right: auto;
+            width: max-content;
+            max-width: min(17rem, calc(100vw - var(--sidebar-width) - 1.5rem));
+            transform: translateX(-50%);
+        }
+        @media (max-width: 960px) {
+            body.contrib-session .banner.banner--err {
+                left: 0;
+                right: 0;
+            }
+            body.contrib-session .banner.banner--ok {
+                left: 50%;
+                max-width: min(17rem, calc(100vw - 1.5rem));
+                transform: translateX(-50%);
+            }
+        }
+
+        .token-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+        .token-row input {
+            flex: 1;
+            min-width: min(100%, 220px);
+            padding: 0.6rem 0.875rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--dark);
+            font-family: ui-monospace, 'Consolas', monospace;
+            font-size: 0.8125rem;
+        }
+        .token-row input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
+        .btn-load {
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--accent);
+            color: var(--on-accent);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-load:hover {
+            background: var(--accent-hover);
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.45rem 0.6rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--dark);
+            font-family: inherit;
+            font-size: 0.8125rem;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
+        textarea { min-height: 2.75rem; resize: vertical; }
+
+        .btn-save {
+            appearance: none;
+            padding: 0.45rem 0.875rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--accent);
+            color: var(--on-accent);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .btn-save:hover {
+            background: var(--accent-hover);
+        }
+        .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .empty-state {
+            padding: 2rem 1.25rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8125rem;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--accent-soft);
+        }
+
+        .foot {
+            margin-top: 2rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+        .foot a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .foot a:hover { text-decoration: underline; }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @media (max-width: 640px) {
+            .contrib-main-dash { padding-left: 0.85rem; padding-right: 0.85rem; }
+        }
+
+        /* Invite URLs (?token=…): avoid flashing the marketing landing before workspace loads */
+        html.contrib-invite-pending #landingBlock {
+            display: none !important;
+        }
+
+        html.contrib-invite-pending #workspaceShell[hidden] {
+            display: block !important;
+        }
+
+        html.contrib-invite-pending #landingFoot {
+            display: none !important;
+        }
+    </style>
+    <script>
+        (function () {
+            try {
+                var q = window.location.search || '';
+                var m = q.match(/[?&]token=([^&]*)/);
+                var raw = m ? decodeURIComponent(String(m[1]).replace(/\+/g, ' ')) : '';
+                if (String(raw || '').trim()) {
+                    document.documentElement.classList.add('contrib-invite-pending');
+                }
+            } catch (e) {}
+        })();
+    </script>
+</head>
+<body>
+    <div id="landingBlock" class="wrap">
+        <header class="hero">
+            <span class="hero__badge">Contributor workspace</span>
+            <h1>Your workload</h1>
+            <p class="hero__sub">
+                Open your invite link or paste a token. When your invite includes both views, use the
+                <strong>Spillover</strong> and <strong>Bugs</strong> tabs for reason, category, PROD, and RCA fields.
+            </p>
+        </header>
+
+        <div id="bannerLanding" class="banner" hidden></div>
+
+        <div class="card" id="tokenCard">
+            <div class="card__head">Invite access</div>
+            <div class="card__body">
+                <div class="token-row" id="tokenRow">
+                    <label for="tokenInput" class="visually-hidden">Invite token</label>
+                    <input
+                        type="text"
+                        id="tokenInput"
+                        placeholder="Paste token from your link, or open the invite URL directly"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <button type="button" class="btn-load" id="tokenLoadBtn">Load workspace</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="workspaceShell" hidden>
+        <div class="contrib-app">
+            <aside class="contrib-sidebar" aria-label="Workspace navigation">
+                <div class="contrib-sidebar__brand">
+                    <div class="contrib-welcome">
+                        <span class="contrib-welcome__label">Welcome</span>
+                        <span id="welcomeDisplayName" class="contrib-welcome__name">—</span>
+                    </div>
+                </div>
+                <div class="contrib-sidebar__scroll">
+                    <p class="contrib-nav-section__label">Your tasks</p>
+                    <nav id="contribNavTabs" class="contrib-sidebar__nav" role="tablist" aria-label="Spillover and bugs"></nav>
+                    <p class="contrib-nav-section__label">Links</p>
+                    <button type="button" class="contrib-sidenav__link contrib-sidenav__link--button" id="fullAnalyzerGate">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Full analyzer
+                    </button>
+                </div>
+                <div class="contrib-sidebar__footer">
+                    Saves merge into the analyst export for this upload.
+                </div>
+            </aside>
+            <div class="contrib-stage">
+                <main class="contrib-main-dash">
+                    <div class="contrib-session-bar">
+                        <div class="contrib-session-summary">
+                            <h1 id="pageTitle" class="contrib-session-summary__title">Loading workspace…</h1>
+                            <p id="workspaceMeta" class="contrib-session-summary__file-line muted"></p>
+                        </div>
+                    </div>
+                    <div id="banner" class="banner contrib-banner" hidden></div>
+                    <header class="contrib-page-head">
+                        <p id="pageSub" class="contrib-page-head__sub"></p>
+                    </header>
+                    <section id="panelSpill" class="contrib-panel-dash" aria-labelledby="contribPanelSpillTitle" hidden></section>
+                    <section id="panelBug" class="contrib-panel-dash" aria-labelledby="contribPanelBugTitle" hidden></section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrap" id="landingFoot">
+        <p class="foot">Invite links fill your token automatically.</p>
+    </div>
+
+    <script>
+        var CATEGORY_OPTIONS = [
+            'Defect Blocker',
+            'Dependency',
+            'Scope Creep',
+            'Owner Specific',
+            'Estimation',
+            'Carryover Work'
+        ];
+
+        var PROD_OPTIONS = ['', 'Yes', 'No'];
+
+        function apiBase() {
+            try {
+                var q = new URLSearchParams(window.location.search).get('api');
+                if (q) return String(q).replace(/\/$/, '');
+                var s = localStorage.getItem('jiraSpilloverApiBase');
+                if (s) return String(s).replace(/\/$/, '');
+            } catch (e) {}
+            return '';
+        }
+
+        /** Resolves to the server that serves /api (same host as this page when possible). */
+        function apiFetchUrl(path) {
+            if (!path || path.charAt(0) !== '/') path = '/' + String(path || '');
+            var base = apiBase();
+            if (base) return base + path;
+            try {
+                if (
+                    typeof window.location !== 'undefined' &&
+                    (window.location.protocol === 'http:' ||
+                        window.location.protocol === 'https:')
+                ) {
+                    return window.location.origin.replace(/\/$/, '') + path;
+                }
+            } catch (e2) {}
+            return path;
+        }
+
+        function persistApiFromQuery() {
+            try {
+                var q = new URLSearchParams(window.location.search).get('api');
+                if (q) {
+                    localStorage.setItem('jiraSpilloverApiBase', String(q).replace(/\/$/, ''));
+                }
+            } catch (e) {}
+        }
+
+        function blockFileProtocolWithoutApi() {
+            try {
+                if (window.location.protocol !== 'file:') return false;
+                if (apiBase()) return false;
+                showBanner(
+                    'This page is open as a local file, so it cannot reach the API. Open it from the same URL as the app (for example after npm start: http://localhost:3000/user-dashboard.html?token=…), or add the server address: ?api=http://localhost:3000',
+                    'err',
+                    'landing'
+                );
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        var errToastTimers = {};
+
+        function clearErrToastTimers(bannerId) {
+            var T = errToastTimers[bannerId];
+            if (!T) return;
+            if (T.fadeTimeout) clearTimeout(T.fadeTimeout);
+            if (T.removeTimeout) clearTimeout(T.removeTimeout);
+            delete errToastTimers[bannerId];
+        }
+
+        function scheduleBannerAutoHide(bannerEl, bannerId, hidingClass) {
+            var st = {};
+            st.fadeTimeout = setTimeout(function () {
+                bannerEl.classList.add(hidingClass);
+                st.removeTimeout = setTimeout(function () {
+                    bannerEl.hidden = true;
+                    bannerEl.classList.remove(hidingClass);
+                    delete errToastTimers[bannerId];
+                }, 450);
+            }, 3000);
+            errToastTimers[bannerId] = st;
+        }
+
+        function showBanner(text, kind, which) {
+            which = which || 'session';
+            var id = which === 'landing' ? 'bannerLanding' : 'banner';
+            var b = document.getElementById(id);
+            if (!b) return;
+
+            clearErrToastTimers(id);
+
+            if (!text) {
+                b.hidden = true;
+                b.classList.remove('banner--err-hiding', 'banner--ok-hiding');
+                return;
+            }
+            b.textContent = text;
+            b.hidden = false;
+            b.classList.remove('banner--err-hiding', 'banner--ok-hiding');
+            b.className =
+                'banner contrib-banner ' +
+                (kind === 'err' ? 'banner--err' : kind === 'ok' ? 'banner--ok' : '');
+
+            if (kind === 'err') {
+                scheduleBannerAutoHide(b, id, 'banner--err-hiding');
+            } else if (kind === 'ok') {
+                scheduleBannerAutoHide(b, id, 'banner--ok-hiding');
+            }
+        }
+
+        function clearAllBanners() {
+            showBanner(null, '', 'landing');
+            showBanner(null, '', 'session');
+        }
+
+        function normalizeIssueKeyLookup(ik) {
+            return String(ik || '')
+                .trim()
+                .replace(/\s+/g, ' ')
+                .replace(/[\u2010-\u2015\u2212]/g, '-')
+                .toUpperCase();
+        }
+
+        function editMapFromRows(rows) {
+            var m = {};
+            if (!rows) return m;
+            for (var i = 0; i < rows.length; i++) {
+                var r = rows[i];
+                m[normalizeIssueKeyLookup(r.issue_key)] = r;
+            }
+            return m;
+        }
+
+        function issueNeedsSpilloverFields(iss) {
+            var legacy =
+                iss.needsSpilloverFields === undefined && iss.needsBugFields === undefined;
+            return legacy || iss.needsSpilloverFields === true;
+        }
+
+        function issueNeedsBugFields(iss) {
+            var legacy =
+                iss.needsSpilloverFields === undefined && iss.needsBugFields === undefined;
+            return legacy || iss.needsBugFields === true;
+        }
+
+        /** Set by renderContributorWorkspace for mixed invites — drives header when switching Spillover / Bugs tabs. */
+        var contribChromeCtx = null;
+
+        function refreshMixedInviteHeader() {
+            if (!contribChromeCtx || !contribChromeCtx.hints || !contribChromeCtx.hints.mixed) return;
+            var panel = getActiveContribPanel();
+            var pt = document.getElementById('pageTitle');
+            var ps = document.getElementById('pageSub');
+            if (!pt || !ps) return;
+            var ss = contribChromeCtx.spillStats || { todo: 0, done: 0 };
+            var bs = contribChromeCtx.bugStats || { todo: 0, done: 0 };
+            if (panel === 'bug') {
+                pt.textContent = 'Bugs — PROD & RCA';
+                ps.textContent =
+                    bs.todo +
+                    (bs.todo === 1 ? ' row needs input · ' : ' rows need input · ') +
+                    bs.done +
+                    ' complete';
+            } else {
+                pt.textContent = 'Spillover — reason & category';
+                ps.textContent =
+                    ss.todo +
+                    (ss.todo === 1 ? ' row needs input · ' : ' rows need input · ') +
+                    ss.done +
+                    ' complete';
+            }
+        }
+
+        function spillEditsComplete(ed) {
+            if (!ed) return false;
+            var sr = ed.spillover_reason != null && String(ed.spillover_reason).trim() !== '';
+            var sc = ed.spillover_category != null && String(ed.spillover_category).trim() !== '';
+            return sr && sc;
+        }
+
+        function bugEditsComplete(ed) {
+            if (!ed) return false;
+            var pr = ed.prod != null && String(ed.prod).trim() !== '';
+            var rc = ed.rca != null && String(ed.rca).trim() !== '';
+            return pr && rc;
+        }
+
+        /** spill / bug: ok = submitted (green), pending = partial (yellow), err = not submitted (red). */
+        function spillProgressTier(ed) {
+            ed = ed || {};
+            var sr = ed.spillover_reason != null && String(ed.spillover_reason).trim() !== '';
+            var sc = ed.spillover_category != null && String(ed.spillover_category).trim() !== '';
+            if (sr && sc) return 'ok';
+            if (sr || sc) return 'pending';
+            return 'err';
+        }
+
+        function bugProgressTier(ed) {
+            ed = ed || {};
+            var pr = ed.prod != null && String(ed.prod).trim() !== '';
+            var rc = ed.rca != null && String(ed.rca).trim() !== '';
+            if (pr && rc) return 'ok';
+            if (pr || rc) return 'pending';
+            return 'err';
+        }
+
+        function progressTierClass(tier) {
+            if (tier === 'ok') return 'contrib-status contrib-status--ok';
+            if (tier === 'pending') return 'contrib-status contrib-status--pending';
+            return 'contrib-status contrib-status--err';
+        }
+
+        /** HTML for Progress column (escaped labels inside spans). */
+        function contributorProgressHtml(iss, ed) {
+            ed = ed || {};
+            var needSpill = issueNeedsSpilloverFields(iss);
+            var needBug = issueNeedsBugFields(iss);
+            var chunks = [];
+            if (needSpill) {
+                var st = spillProgressTier(ed);
+                var spillLabel =
+                    st === 'ok'
+                        ? 'Spillover submitted'
+                        : st === 'pending'
+                          ? 'Spillover pending'
+                          : 'Spillover not submitted';
+                chunks.push(
+                    '<span class="' +
+                        progressTierClass(st) +
+                        '">' +
+                        escapeHtml(spillLabel) +
+                        '</span>'
+                );
+            }
+            if (needBug) {
+                var bt = bugProgressTier(ed);
+                var bugLabel =
+                    bt === 'ok'
+                        ? 'Bug submitted'
+                        : bt === 'pending'
+                          ? 'Bug pending'
+                          : 'Bug not submitted';
+                chunks.push(
+                    '<span class="' +
+                        progressTierClass(bt) +
+                        '">' +
+                        escapeHtml(bugLabel) +
+                        '</span>'
+                );
+            }
+            if (!chunks.length) return '—';
+            return chunks.join('<span class="contrib-status-sep"> · </span>');
+        }
+
+        function partitionIssuesByEdits(issues, editsByKey, kind) {
+            var todo = [];
+            var done = [];
+            for (var i = 0; i < issues.length; i++) {
+                var iss = issues[i];
+                var ed = editsByKey[normalizeIssueKeyLookup(iss.issueKey)] || {};
+                var complete = kind === 'bug' ? bugEditsComplete(ed) : spillEditsComplete(ed);
+                if (complete) done.push(iss);
+                else todo.push(iss);
+            }
+            return { todo: todo, done: done };
+        }
+
+        function spillTableHeader() {
+            return (
+                '<colgroup>' +
+                '<col class="contrib-col contrib-col--issue" />' +
+                '<col class="contrib-col contrib-col--assignee" />' +
+                '<col class="contrib-col contrib-col--summary" />' +
+                '<col class="contrib-col contrib-col--progress" />' +
+                '<col class="contrib-col contrib-col--field-a" />' +
+                '<col class="contrib-col contrib-col--field-b" />' +
+                '<col class="contrib-col contrib-col--action" />' +
+                '</colgroup>' +
+                '<thead><tr>' +
+                '<th scope="col">Issue</th>' +
+                '<th scope="col">Assignee</th>' +
+                '<th scope="col">Summary</th>' +
+                '<th scope="col">Progress</th>' +
+                '<th scope="col">Reason</th>' +
+                '<th scope="col">Category</th>' +
+                '<th scope="col" class="contrib-th--action">Action</th>' +
+                '</tr></thead>'
+            );
+        }
+
+        function bugTableHeader() {
+            return (
+                '<colgroup>' +
+                '<col class="contrib-col contrib-col--issue" />' +
+                '<col class="contrib-col contrib-col--assignee" />' +
+                '<col class="contrib-col contrib-col--summary" />' +
+                '<col class="contrib-col contrib-col--progress" />' +
+                '<col class="contrib-col contrib-col--field-a" />' +
+                '<col class="contrib-col contrib-col--field-b" />' +
+                '<col class="contrib-col contrib-col--action" />' +
+                '</colgroup>' +
+                '<thead><tr>' +
+                '<th scope="col">Issue</th>' +
+                '<th scope="col">Assignee</th>' +
+                '<th scope="col">Summary</th>' +
+                '<th scope="col">Progress</th>' +
+                '<th scope="col">PROD</th>' +
+                '<th scope="col">RCA</th>' +
+                '<th scope="col" class="contrib-th--action">Action</th>' +
+                '</tr></thead>'
+            );
+        }
+
+        function buildOneSpillRow(iss, editsByKey, token, index, doneSection) {
+            var k = iss.issueKey;
+            var ed = editsByKey[normalizeIssueKeyLookup(k)] || {};
+            var rid = 'cspill-' + index;
+            var sr =
+                ed.spillover_reason != null && ed.spillover_reason !== ''
+                    ? String(ed.spillover_reason)
+                    : '';
+            var sc =
+                ed.spillover_category != null && ed.spillover_category !== ''
+                    ? String(ed.spillover_category)
+                    : '';
+            var complete = spillEditsComplete(ed);
+            var rowClass = 'contrib-issue-row';
+            if (doneSection || complete) rowClass += ' contrib-issue-row--complete';
+            var html = '';
+            html += '<tr class="' + rowClass + '" data-issue-key="' + escapeAttr(k) + '">';
+            html += '<td><code class="contrib-code">' + escapeHtml(k) + '</code></td>';
+            html +=
+                '<td>' +
+                escapeHtml(iss.assignee && String(iss.assignee).trim() ? iss.assignee : '—') +
+                '</td>';
+            html +=
+                '<td class="contrib-td-summary" title="' +
+                escapeAttr(iss.summary || '') +
+                '"><span class="contrib-td-summary__text">' +
+                escapeHtml(iss.summary || '—') +
+                '</span></td>';
+            html += '<td class="contrib-td-progress">' + contributorProgressHtml(iss, ed) + '</td>';
+            html += '<td class="contrib-td-field contrib-td-field--wide"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-sr">Reason</label>';
+            html +=
+                '<textarea id="' +
+                rid +
+                '-sr" rows="1" placeholder="Reason">' +
+                escapeHtml(sr) +
+                '</textarea>';
+            html += '</div></td>';
+            html += '<td class="contrib-td-field"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-sc">Category</label>';
+            html += '<select id="' + rid + '-sc">' + categoryOptionsHtml(sc) + '</select>';
+            html += '</div></td>';
+            html += '<td class="contrib-td--action">';
+            html +=
+                '<button type="button" class="btn-save' +
+                (complete ? ' btn-save--saved' : '') +
+                '" data-token="' +
+                escapeAttr(token) +
+                '" data-row="' +
+                rid +
+                '" data-kind="spill">' +
+                (complete ? 'Saved' : 'Save') +
+                '</button>';
+            html += '</td></tr>';
+            return html;
+        }
+
+        function buildSpillIssueCardsHTML(issues, editsByKey, token) {
+            var part = partitionIssuesByEdits(issues, editsByKey, 'spill');
+            var html = '';
+            var idx = 0;
+            if (part.todo.length) {
+                html +=
+                    '<div class="contrib-table-section"><h3 class="contrib-section-head"><span class="contrib-section-head__title">Needs input</span><span class="contrib-section-head__badge contrib-section-head__badge--warn">' +
+                    part.todo.length +
+                    '</span></h3>';
+                html +=
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    spillTableHeader() +
+                    '<tbody>';
+                for (var i = 0; i < part.todo.length; i++) {
+                    html += buildOneSpillRow(part.todo[i], editsByKey, token, idx++, false);
+                }
+                html += '</tbody></table></div></div>';
+            }
+            if (part.done.length) {
+                html +=
+                    '<div class="contrib-table-section"><h3 class="contrib-section-head"><span class="contrib-section-head__title">Complete</span><span class="contrib-section-head__badge contrib-section-head__badge--ok">' +
+                    part.done.length +
+                    '</span></h3>';
+                html +=
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    spillTableHeader() +
+                    '<tbody>';
+                for (var j = 0; j < part.done.length; j++) {
+                    html += buildOneSpillRow(part.done[j], editsByKey, token, idx++, true);
+                }
+                html += '</tbody></table></div></div>';
+            }
+            return html;
+        }
+
+        function buildOneBugRow(iss, editsByKey, token, index, doneSection) {
+            var k = iss.issueKey;
+            var ed = editsByKey[normalizeIssueKeyLookup(k)] || {};
+            var rid = 'cbug-' + index;
+            var pv = ed.prod != null && ed.prod !== '' ? String(ed.prod) : '';
+            var rc = ed.rca != null && ed.rca !== '' ? String(ed.rca) : '';
+            var complete = bugEditsComplete(ed);
+            var rowClass = 'contrib-issue-row';
+            if (doneSection || complete) rowClass += ' contrib-issue-row--complete';
+            var html = '';
+            html += '<tr class="' + rowClass + '" data-issue-key="' + escapeAttr(k) + '">';
+            html += '<td><code class="contrib-code">' + escapeHtml(k) + '</code></td>';
+            html +=
+                '<td>' +
+                escapeHtml(iss.assignee && String(iss.assignee).trim() ? iss.assignee : '—') +
+                '</td>';
+            html +=
+                '<td class="contrib-td-summary" title="' +
+                escapeAttr(iss.summary || '') +
+                '"><span class="contrib-td-summary__text">' +
+                escapeHtml(iss.summary || '—') +
+                '</span></td>';
+            html += '<td class="contrib-td-progress">' + contributorProgressHtml(iss, ed) + '</td>';
+            html += '<td class="contrib-td-field"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-prod">PROD</label>';
+            html += '<select id="' + rid + '-prod">' + prodOptionsHtml(pv) + '</select>';
+            html += '</div></td>';
+            html += '<td class="contrib-td-field contrib-td-field--wide"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-rca">RCA</label>';
+            html +=
+                '<textarea id="' +
+                rid +
+                '-rca" rows="1" placeholder="RCA">' +
+                escapeHtml(rc) +
+                '</textarea>';
+            html += '</div></td>';
+            html += '<td class="contrib-td--action">';
+            html +=
+                '<button type="button" class="btn-save' +
+                (complete ? ' btn-save--saved' : '') +
+                '" data-token="' +
+                escapeAttr(token) +
+                '" data-row="' +
+                rid +
+                '" data-kind="bug">' +
+                (complete ? 'Saved' : 'Save') +
+                '</button>';
+            html += '</td></tr>';
+            return html;
+        }
+
+        function buildBugIssueCardsHTML(issues, editsByKey, token) {
+            var part = partitionIssuesByEdits(issues, editsByKey, 'bug');
+            var html = '';
+            var idx = 0;
+            if (part.todo.length) {
+                html +=
+                    '<div class="contrib-table-section"><h3 class="contrib-section-head"><span class="contrib-section-head__title">Needs input</span><span class="contrib-section-head__badge contrib-section-head__badge--warn">' +
+                    part.todo.length +
+                    '</span></h3>';
+                html +=
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    bugTableHeader() +
+                    '<tbody>';
+                for (var i = 0; i < part.todo.length; i++) {
+                    html += buildOneBugRow(part.todo[i], editsByKey, token, idx++, false);
+                }
+                html += '</tbody></table></div></div>';
+            }
+            if (part.done.length) {
+                html +=
+                    '<div class="contrib-table-section"><h3 class="contrib-section-head"><span class="contrib-section-head__title">Complete</span><span class="contrib-section-head__badge contrib-section-head__badge--ok">' +
+                    part.done.length +
+                    '</span></h3>';
+                html +=
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    bugTableHeader() +
+                    '<tbody>';
+                for (var j = 0; j < part.done.length; j++) {
+                    html += buildOneBugRow(part.done[j], editsByKey, token, idx++, true);
+                }
+                html += '</tbody></table></div></div>';
+            }
+            return html;
+        }
+
+        /** Read spill + bug fields from whichever panel(s) contain this issue (mixed invites). */
+        function collectAllFieldsForIssue(issueKey) {
+            var sr = '';
+            var sc = '';
+            var prod = '';
+            var rca = '';
+            var spillRows = document.querySelectorAll('#panelSpill tbody tr[data-issue-key]');
+            var bugRows = document.querySelectorAll('#panelBug tbody tr[data-issue-key]');
+            var i;
+            for (i = 0; i < spillRows.length; i++) {
+                if (spillRows[i].getAttribute('data-issue-key') === issueKey) {
+                    var ta = spillRows[i].querySelector('textarea[id$="-sr"]');
+                    var sel = spillRows[i].querySelector('select[id$="-sc"]');
+                    if (ta) sr = ta.value;
+                    if (sel) sc = sel.value;
+                    break;
+                }
+            }
+            for (i = 0; i < bugRows.length; i++) {
+                if (bugRows[i].getAttribute('data-issue-key') === issueKey) {
+                    var pe = bugRows[i].querySelector('select[id$="-prod"]');
+                    var rtx = bugRows[i].querySelector('textarea[id$="-rca"]');
+                    if (pe) prod = pe.value;
+                    if (rtx) rca = rtx.value;
+                    break;
+                }
+            }
+            return { sr: sr, sc: sc, prod: prod, rca: rca };
+        }
+
+        function wireSaveButtons(root, token) {
+            if (!root) return;
+            root.querySelectorAll('.btn-save').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var t = btn.getAttribute('data-token') || token;
+                    var kind = btn.getAttribute('data-kind') || 'spill';
+                    var row = btn.closest('[data-issue-key]');
+                    var issueKey = row ? row.getAttribute('data-issue-key') : '';
+                    if (!issueKey) return;
+                    btn.classList.remove('btn-save--saved');
+                    btn.textContent = 'Save';
+                    var all = collectAllFieldsForIssue(issueKey);
+                    var sr = all.sr;
+                    var sc = all.sc;
+                    var prod = all.prod;
+                    var rca = all.rca;
+                    btn.disabled = true;
+                    fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(t) + '/issue'), {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            issueKey: issueKey,
+                            kind: kind,
+                            spilloverReason: sr,
+                            spilloverCategory: sc,
+                            prod: prod,
+                            rca: rca
+                        })
+                    })
+                        .then(function (r) {
+                            return r.json().then(function (j) {
+                                return { ok: r.ok, body: j };
+                            });
+                        })
+                        .then(function (out) {
+                            if (!out.ok) {
+                                showBanner((out.body && out.body.error) || 'Save failed', 'err', 'session');
+                                btn.classList.remove('btn-save--saved');
+                                btn.textContent = 'Save';
+                            } else {
+                                showBanner('Saved · ' + issueKey, 'ok', 'session');
+                                btn.textContent = 'Saved';
+                                btn.classList.add('btn-save--saved');
+                                refreshContributorWorkspace(t);
+                            }
+                        })
+                        .catch(function () {
+                            showBanner('Network error', 'err', 'session');
+                            btn.classList.remove('btn-save--saved');
+                            btn.textContent = 'Save';
+                        })
+                        .finally(function () {
+                            btn.disabled = false;
+                        });
+                });
+            });
+        }
+
+        /** Single delegated handler — avoids stacking duplicate listeners on each refresh. */
+        function setupContribNavTabsDelegation() {
+            var nav = document.getElementById('contribNavTabs');
+            if (!nav || nav.dataset.contribNavWired === '1') return;
+            nav.dataset.contribNavWired = '1';
+            nav.addEventListener('click', function (ev) {
+                var tab = ev.target.closest('.contrib-sidenav__btn[data-panel]');
+                if (!tab) return;
+                var panel = tab.getAttribute('data-panel');
+                var tabs = nav.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                var panelSpill = document.getElementById('panelSpill');
+                var panelBug = document.getElementById('panelBug');
+                var i;
+                for (i = 0; i < tabs.length; i++) {
+                    var t = tabs[i];
+                    var on = t === tab;
+                    t.classList.toggle('contrib-sidenav__btn--active', on);
+                    t.setAttribute('aria-selected', on ? 'true' : 'false');
+                }
+                if (panelSpill) panelSpill.hidden = panel !== 'spill';
+                if (panelBug) panelBug.hidden = panel !== 'bug';
+                refreshMixedInviteHeader();
+            });
+        }
+
+        function getActiveContribPanel() {
+            var bugBtn = document.querySelector(
+                '#contribNavTabs .contrib-sidenav__btn.contrib-sidenav__btn--active[data-panel="bug"]'
+            );
+            return bugBtn ? 'bug' : 'spill';
+        }
+
+        function setContribPanelVisibility(panelSpill, panelBug, showSpill, showBug, opts) {
+            opts = opts || {};
+            var both = showSpill && showBug;
+            var wantBug = both && opts.activePanel === 'bug';
+            if (panelSpill) {
+                if (!showSpill) panelSpill.hidden = true;
+                else if (both) panelSpill.hidden = wantBug;
+                else panelSpill.hidden = false;
+            }
+            if (panelBug) {
+                if (!showBug) panelBug.hidden = true;
+                else if (both) panelBug.hidden = !wantBug;
+                else panelBug.hidden = false;
+            }
+        }
+
+        function refreshContributorWorkspace(token) {
+            token = String(token || '').trim();
+            if (!token) return;
+            var activePanel = getActiveContribPanel();
+            fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
+                .then(function (r) {
+                    return r.json().then(function (j) {
+                        return { ok: r.ok, status: r.status, body: j };
+                    });
+                })
+                .then(function (res) {
+                    if (res.status === 410 || !res.ok || !res.body || !res.body.ok) return;
+                    renderContributorWorkspace(res.body, token, { activePanel: activePanel });
+                })
+                .catch(function () {});
+        }
+
+        function renderContributorWorkspace(data, token, opts) {
+            opts = opts || {};
+            var issues = data.issues || [];
+            var editsByKey = editMapFromRows(data.edits);
+            var spillIssues = [];
+            var bugIssues = [];
+            for (var i = 0; i < issues.length; i++) {
+                var iss = issues[i];
+                if (issueNeedsSpilloverFields(iss)) spillIssues.push(iss);
+                if (issueNeedsBugFields(iss)) bugIssues.push(iss);
+            }
+            var showSpill = spillIssues.length > 0;
+            var showBug = bugIssues.length > 0;
+
+            var hints = {
+                onlySpillover: showSpill && !showBug,
+                onlyBugs: showBug && !showSpill,
+                mixed: showSpill && showBug
+            };
+
+            var spillPart = partitionIssuesByEdits(spillIssues, editsByKey, 'spill');
+            var bugPart = partitionIssuesByEdits(bugIssues, editsByKey, 'bug');
+            if (hints.mixed) {
+                contribChromeCtx = {
+                    hints: hints,
+                    spillStats: { todo: spillPart.todo.length, done: spillPart.done.length },
+                    bugStats: { todo: bugPart.todo.length, done: bugPart.done.length },
+                    data: data
+                };
+            } else {
+                contribChromeCtx = null;
+            }
+
+            var tabsEl = document.getElementById('contribNavTabs');
+            var panelSpill = document.getElementById('panelSpill');
+            var panelBug = document.getElementById('panelBug');
+
+            if (!issues.length) {
+                if (tabsEl) tabsEl.innerHTML = '';
+                if (panelSpill) {
+                    panelSpill.hidden = false;
+                    panelSpill.innerHTML =
+                        '<div class="empty-state">No issues match this invite (check assignee filter or upload).</div>';
+                }
+                if (panelBug) {
+                    panelBug.hidden = true;
+                    panelBug.innerHTML = '';
+                }
+                updateWorkspaceChrome(data, hints);
+                return;
+            }
+
+            if (tabsEl) {
+                tabsEl.innerHTML = '';
+                var icoSpill =
+                    '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>';
+                var icoBug =
+                    '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+                if (showSpill) {
+                    tabsEl.innerHTML +=
+                        '<button type="button" role="tab" class="contrib-sidenav__btn contrib-sidenav__btn--active" data-panel="spill" aria-selected="true">' +
+                        icoSpill +
+                        'Spillover</button>';
+                }
+                if (showBug) {
+                    tabsEl.innerHTML +=
+                        '<button type="button" role="tab" class="contrib-sidenav__btn' +
+                        (!showSpill ? ' contrib-sidenav__btn--active' : '') +
+                        '" data-panel="bug" aria-selected="' +
+                        (!showSpill ? 'true' : 'false') +
+                        '">' +
+                        icoBug +
+                        'Bugs</button>';
+                }
+                if (
+                    showSpill &&
+                    showBug &&
+                    opts.activePanel === 'bug' &&
+                    tabsEl.querySelector('[data-panel="spill"]') &&
+                    tabsEl.querySelector('[data-panel="bug"]')
+                ) {
+                    var bSpill = tabsEl.querySelector('[data-panel="spill"]');
+                    var bBug = tabsEl.querySelector('[data-panel="bug"]');
+                    bSpill.classList.remove('contrib-sidenav__btn--active');
+                    bSpill.setAttribute('aria-selected', 'false');
+                    bBug.classList.add('contrib-sidenav__btn--active');
+                    bBug.setAttribute('aria-selected', 'true');
+                }
+            }
+
+            if (panelSpill) {
+                if (showSpill) {
+                    panelSpill.innerHTML =
+                        '<h2 id="contribPanelSpillTitle" class="contrib-panel-dash__title">Spillover</h2>' +
+                        '<p class="contrib-panel-dash__hint">Enter spillover <strong>reason</strong> and <strong>category</strong> for each row below.</p>' +
+                        buildSpillIssueCardsHTML(spillIssues, editsByKey, token);
+                    wireSaveButtons(panelSpill, token);
+                } else {
+                    panelSpill.innerHTML = '';
+                    panelSpill.hidden = true;
+                }
+            }
+
+            if (panelBug) {
+                if (showBug) {
+                    panelBug.innerHTML =
+                        '<h2 id="contribPanelBugTitle" class="contrib-panel-dash__title">Bugs</h2>' +
+                        '<p class="contrib-panel-dash__hint">Enter <strong>PROD</strong> and <strong>RCA</strong> for each bug row.</p>' +
+                        buildBugIssueCardsHTML(bugIssues, editsByKey, token);
+                    wireSaveButtons(panelBug, token);
+                } else {
+                    panelBug.innerHTML = '';
+                    panelBug.hidden = true;
+                }
+            }
+
+            setContribPanelVisibility(panelSpill, panelBug, showSpill, showBug, opts);
+
+            updateWorkspaceChrome(data, hints);
+            if (hints.mixed) {
+                refreshMixedInviteHeader();
+            }
+            setupContribNavTabsDelegation();
+        }
+
+        function escapeHtml(s) {
+            if (s == null) return '';
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function escapeAttr(s) {
+            return escapeHtml(s).replace(/'/g, '&#39;');
+        }
+
+        function categoryOptionsHtml(selected) {
+            var o = '<option value="">Category</option>';
+            for (var i = 0; i < CATEGORY_OPTIONS.length; i++) {
+                var c = CATEGORY_OPTIONS[i];
+                o +=
+                    '<option value="' +
+                    escapeHtml(c) +
+                    '"' +
+                    (c === selected ? ' selected' : '') +
+                    '>' +
+                    escapeHtml(c) +
+                    '</option>';
+            }
+            return o;
+        }
+
+        function prodOptionsHtml(selected) {
+            var o = '';
+            for (var i = 0; i < PROD_OPTIONS.length; i++) {
+                var c = PROD_OPTIONS[i];
+                o +=
+                    '<option value="' +
+                    escapeHtml(c) +
+                    '"' +
+                    (c === selected ? ' selected' : '') +
+                    '>' +
+                    (c ? escapeHtml(c) : 'PROD') +
+                    '</option>';
+            }
+            return o;
+        }
+
+        function contributorRequestHeading(hints) {
+            hints = hints || {};
+            if (hints.onlySpillover) {
+                return "Hey, you're invited to fill the spillover data.";
+            }
+            if (hints.onlyBugs) {
+                return "Hey, you're invited to fill the bug data.";
+            }
+            if (hints.mixed) {
+                return "Hey, you're invited to fill the spillover data and bug data.";
+            }
+            return "Hey, you're invited to complete the fields for your assigned rows.";
+        }
+
+        function updateWorkspaceChrome(data, hints) {
+            hints = hints || {};
+            var fileLabel = data.originalName ? String(data.originalName) : 'Upload';
+            var shortName = fileLabel.replace(/\.[^.]+$/, '');
+            if (shortName.length > 36) shortName = shortName.slice(0, 34) + '…';
+            var assignee = data.assigneeScope ? String(data.assigneeScope).trim() : '';
+            var welcomeName = 'there';
+            if (assignee) {
+                welcomeName = assignee;
+            } else if (data.inviteeEmail) {
+                var em = String(data.inviteeEmail).trim();
+                var at = em.indexOf('@');
+                welcomeName = at > 0 ? em.slice(0, at) : em;
+            }
+            var wdn = document.getElementById('welcomeDisplayName');
+            if (wdn) wdn.textContent = welcomeName;
+            var wm = document.getElementById('workspaceMeta');
+            if (wm) {
+                var n = data.issues ? data.issues.length : 0;
+                var issueWord = n === 1 ? 'issue' : 'issues';
+                var metaParts = [(shortName || 'Workspace') + ' · ' + n + ' ' + issueWord];
+                if (!assignee && data.inviteeEmail) metaParts.push(String(data.inviteeEmail));
+                wm.textContent = metaParts.join(' · ');
+            }
+            var pt = document.getElementById('pageTitle');
+            var ps = document.getElementById('pageSub');
+            var sub = '';
+            if (hints.onlySpillover) {
+                sub = '';
+            } else if (hints.onlyBugs) {
+                sub = 'Bug-only invite — PROD & RCA on each card.';
+            } else if (hints.mixed) {
+                sub = '';
+            } else {
+                sub = 'Contributor invite session.';
+            }
+            if (pt) pt.textContent = contributorRequestHeading(hints);
+            if (ps) ps.textContent = sub;
+        }
+
+        function restoreContributorLandingView() {
+            document.body.classList.remove('contrib-session');
+            document.documentElement.classList.remove('contrib-invite-pending');
+            var shell = document.getElementById('workspaceShell');
+            var landing = document.getElementById('landingBlock');
+            var foot = document.getElementById('landingFoot');
+            if (shell) {
+                shell.hidden = true;
+                shell.classList.remove('contrib-shell--enter');
+            }
+            if (landing) landing.hidden = false;
+            if (foot) foot.hidden = false;
+        }
+
+        function triggerWorkspaceEnterAnimation() {
+            var shell = document.getElementById('workspaceShell');
+            if (!shell || shell.hidden) return;
+            shell.classList.remove('contrib-shell--enter');
+            void shell.offsetWidth;
+            shell.classList.add('contrib-shell--enter');
+        }
+
+        function showContributorWorkspaceLoading() {
+            document.body.classList.add('contrib-session');
+            document.documentElement.classList.add('contrib-invite-pending');
+            var shell = document.getElementById('workspaceShell');
+            var landing = document.getElementById('landingBlock');
+            var foot = document.getElementById('landingFoot');
+            if (landing) landing.hidden = true;
+            if (foot) foot.hidden = true;
+            if (shell) shell.hidden = false;
+            var pt = document.getElementById('pageTitle');
+            var wm = document.getElementById('workspaceMeta');
+            var ps = document.getElementById('pageSub');
+            if (pt) pt.textContent = 'Loading workspace…';
+            if (wm) wm.textContent = '';
+            if (ps) ps.textContent = '';
+        }
+
+        function loadSession(token) {
+            token = String(token || '').trim();
+            if (!token) {
+                showBanner('Enter an invite token.', 'err', 'landing');
+                return;
+            }
+
+            persistApiFromQuery();
+            if (blockFileProtocolWithoutApi()) return;
+
+            clearAllBanners();
+            showContributorWorkspaceLoading();
+
+            fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
+                .then(function (r) {
+                    return r.json().then(function (j) {
+                        return { ok: r.ok, status: r.status, body: j };
+                    });
+                })
+                .then(function (res) {
+                    if (res.status === 410) {
+                        restoreContributorLandingView();
+                        showBanner(
+                            (res.body && res.body.error) || 'This invite has expired.',
+                            'err',
+                            'landing'
+                        );
+                        return;
+                    }
+                    if (!res.ok || !res.body.ok) {
+                        restoreContributorLandingView();
+                        showBanner((res.body && res.body.error) || 'Could not load invite.', 'err', 'landing');
+                        return;
+                    }
+
+                    document.documentElement.classList.remove('contrib-invite-pending');
+
+                    var data = res.body;
+                    renderContributorWorkspace(data, token);
+                    requestAnimationFrame(function () {
+                        triggerWorkspaceEnterAnimation();
+                    });
+                })
+                .catch(function () {
+                    restoreContributorLandingView();
+                    showBanner(
+                        'Could not reach the server. Start the app (npm start) and open this page from that address. If the port is not 3000, add ?api=http://localhost:YOUR_PORT to the URL. Re-create the invite from the analyzer if your link is old (new links include the API address).',
+                        'err',
+                        'landing'
+                    );
+                });
+        }
+
+        function initTokenFromQuery() {
+            try {
+                var p = new URLSearchParams(window.location.search);
+                var t = p.get('token');
+                if (t) {
+                    document.getElementById('tokenInput').value = t;
+                    document.getElementById('tokenRow').style.display = 'none';
+                    document.getElementById('tokenCard').querySelector('.card__head').textContent =
+                        'Invite access · loaded from link';
+                    loadSession(t);
+                }
+            } catch (e) {}
+        }
+
+        document.getElementById('tokenLoadBtn').addEventListener('click', function () {
+            loadSession(document.getElementById('tokenInput').value);
+        });
+
+        var fullAnalyzerBtn = document.getElementById('fullAnalyzerGate');
+        if (fullAnalyzerBtn) {
+            fullAnalyzerBtn.addEventListener('click', function () {
+                showBanner('Only administrators have access to the full analyzer.', 'err', 'session');
+            });
+        }
+
+        initTokenFromQuery();
+    </script>
+</body>
+</html>
