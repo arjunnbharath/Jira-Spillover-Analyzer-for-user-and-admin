@@ -3,66 +3,76 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Workspace</title>
+    <title>Jira Spillover Analyzer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
         :root {
-            /* Palette: Dark #141413 · Light #faf9f5 · Mid gray #b0aea5 · Light gray #e8e6dc */
-            --dark: #141413;
-            --light: #faf9f5;
-            --mid-gray: #b0aea5;
-            --light-gray: #e8e6dc;
-
-            --bg: color-mix(in srgb, var(--dark) 11%, var(--light));
-            --surface: color-mix(in srgb, var(--dark) 5%, var(--light));
-            --sidebar-bg: var(--dark);
-            --sidebar-border: rgba(250, 249, 245, 0.12);
-            --sidebar-hover: rgba(250, 249, 245, 0.08);
-            --sidebar-active: rgba(250, 249, 245, 0.15);
-            --sidebar-width: 260px;
-            --border: var(--light-gray);
-            --text: var(--dark);
-            --text-muted: var(--mid-gray);
-            --text-dim: var(--mid-gray);
-            --accent: var(--dark);
-            --accent-hover: #2f2f2d;
-            --accent-soft: var(--light-gray);
-            --on-accent: var(--light);
-            --row-hover: color-mix(in srgb, var(--light-gray) 48%, var(--dark) 4%);
-            --row-done: color-mix(in srgb, var(--light-gray) 58%, var(--dark) 6%);
-            --thead-bg: color-mix(in srgb, var(--light-gray) 85%, var(--dark) 8%);
-            --radius: 10px;
+            /* Match main app (index.html) — dark dashboard chrome */
+            --bg: #0d0d0d;
+            --surface: #181818;
+            --surface-2: #1c1c1c;
+            --border: #2a2a2a;
+            --border-subtle: #333;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+            --text-dim: #6b6b6b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --accent-soft: rgba(59, 130, 246, 0.12);
+            --radius: 12px;
             --radius-sm: 8px;
-            --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            --shadow-sm: 0 1px 2px rgba(20, 20, 19, 0.06);
-            --shadow: 0 1px 3px rgba(20, 20, 19, 0.09);
-            --focus-ring: rgba(20, 20, 19, 0.16);
-            --page-bg-image: url('images/newimg.png');
-            /* Data table rows = same solid as navbar */
-            --contrib-table-row: var(--sidebar-bg);
-            --contrib-table-row-alt: var(--sidebar-bg);
-            --contrib-table-row-hover: color-mix(in srgb, var(--sidebar-bg) 88%, var(--light) 12%);
-            --contrib-table-thead: var(--sidebar-bg);
-            --contrib-table-complete: var(--sidebar-bg);
-            --contrib-table-complete-alt: var(--sidebar-bg);
-            --contrib-table-complete-hover: color-mix(in srgb, var(--sidebar-bg) 82%, #166534 18%);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --panel-shadow: 0 8px 32px rgba(0, 0, 0, 0.42);
+            --panel-edge: rgba(255, 255, 255, 0.06);
+            --focus-ring: rgba(59, 130, 246, 0.35);
+            --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.35);
+            --shadow: var(--panel-shadow);
+
+            /* Aliases used across this page */
+            --ink: var(--text);
+            --ink-soft: #94a3b8;
+            --sky-50: rgba(255, 255, 255, 0.04);
+            --sky-100: var(--surface-2);
+            --sky-200: var(--border);
+            --sky-300: var(--text-muted);
+            --brand-500: #3b82f6;
+            --brand-600: #2563eb;
+            --brand-700: #1d4ed8;
+            --dark: var(--text);
+            --light: #ffffff;
+            --mid-gray: var(--text-muted);
+            --on-accent: #ffffff;
+            --row-hover: rgba(255, 255, 255, 0.06);
+
+            --sidebar-bg: #0a0a0a;
+            --sidebar-border: var(--border);
+            --sidebar-hover: rgba(255, 255, 255, 0.06);
+            --sidebar-active: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 272px;
+
+            --contrib-table-row: var(--surface);
+            --contrib-table-row-alt: #141414;
+            --contrib-table-row-hover: rgba(255, 255, 255, 0.06);
+            --contrib-table-thead: rgba(0, 0, 0, 0.35);
+            --contrib-table-complete: rgba(34, 197, 94, 0.14);
+            --contrib-table-complete-alt: rgba(34, 197, 94, 0.1);
+            --contrib-table-complete-hover: rgba(34, 197, 94, 0.22);
+            --table-header-border: var(--border);
+            --table-row-border: var(--border);
+            --contrib-table-row-gap: 0.4rem;
+            --contrib-table-corner: 6px;
         }
         @supports not (background: color-mix(in srgb, white, black)) {
             :root {
-                --bg: #e8e6e0;
-                --surface: #efeee9;
-                --row-hover: #e2e0d8;
-                --row-done: #dbd9d0;
-                --thead-bg: #dddad2;
-                --contrib-table-row: #141413;
-                --contrib-table-row-alt: #141413;
-                --contrib-table-row-hover: #222220;
-                --contrib-table-thead: #141413;
-                --contrib-table-complete: #141413;
-                --contrib-table-complete-alt: #141413;
-                --contrib-table-complete-hover: #1a261f;
+                --contrib-table-row: #181818;
+                --contrib-table-row-alt: #141414;
+                --contrib-table-row-hover: rgba(255, 255, 255, 0.06);
+                --contrib-table-thead: rgba(0, 0, 0, 0.35);
+                --contrib-table-complete: rgba(34, 197, 94, 0.14);
+                --contrib-table-complete-alt: rgba(34, 197, 94, 0.1);
+                --contrib-table-complete-hover: rgba(34, 197, 94, 0.22);
             }
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -72,96 +82,85 @@
             min-height: 100vh;
             padding: 1.25rem 1rem 2.5rem;
             line-height: 1.5;
-            background-color: var(--dark);
-            background-image:
-                linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.78)),
-                var(--page-bg-image);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
         }
         body.contrib-session {
-            padding-top: 0;
-            padding-left: 0;
-            padding-right: 0;
-            padding-bottom: 0;
+            padding: 0;
             overflow-x: hidden;
+            background: var(--bg);
         }
         body.contrib-session #landingFoot {
             display: none;
         }
         .wrap { max-width: 1140px; margin: 0 auto; }
 
-        /* Landing: light text on dark scrim (cards keep their own surfaces) */
+        /* Landing — same vocabulary as index dashboard */
         #landingBlock .hero {
-            border-bottom-color: rgba(250, 249, 245, 0.14);
+            border-bottom-color: rgba(255, 255, 255, 0.06);
         }
         #landingBlock .hero h1 {
-            color: var(--light);
+            color: var(--text);
         }
         #landingBlock .hero__sub {
-            color: rgba(250, 249, 245, 0.78);
+            color: #94a3b8;
         }
         #landingBlock .hero__sub strong {
-            color: var(--light);
+            color: var(--text);
         }
         #landingBlock .hero__badge {
-            color: rgba(250, 249, 245, 0.88);
-            background: rgba(250, 249, 245, 0.1);
-            border-color: rgba(250, 249, 245, 0.18);
+            color: var(--text-muted);
+            background: var(--accent-soft);
+            border-color: var(--border);
         }
         #landingFoot .foot {
-            color: rgba(250, 249, 245, 0.62);
+            color: var(--text-muted);
         }
         #landingFoot .foot a {
-            color: #93c5fd;
+            color: var(--accent);
         }
 
-        /* Session main column: white text and rules on dark scrim */
+        /* Session main column — index dashboard text hierarchy */
         body.contrib-session .contrib-session-summary__title {
-            color: #ffffff;
+            color: var(--text);
             text-align: right;
         }
         body.contrib-session .contrib-session-summary__file-line {
-            color: #ffffff;
+            color: #94a3b8;
             text-align: right;
         }
         body.contrib-session .contrib-session-bar {
-            border-bottom: 1px solid #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             justify-content: flex-end;
         }
         body.contrib-session .contrib-session-summary {
             align-items: flex-end;
         }
         body.contrib-session .contrib-page-head__sub {
-            color: #ffffff;
-        }
-        body.contrib-session .contrib-panel-dash__title {
-            color: #ffffff;
+            color: #94a3b8;
         }
         body.contrib-session .contrib-panel-dash__hint {
-            color: #ffffff;
+            color: #94a3b8;
         }
         body.contrib-session .contrib-panel-dash__hint strong {
-            color: #ffffff;
+            color: var(--text);
         }
         body.contrib-session .contrib-section-head__title {
-            color: #ffffff;
+            color: var(--text-dim);
         }
         body.contrib-session .contrib-section-head:has(.contrib-section-head__badge--warn) .contrib-section-head__title {
-            color: #ffffff;
+            color: var(--text);
         }
         body.contrib-session .contrib-section-head__badge--warn {
-            color: #ffffff;
+            color: var(--text);
         }
         body.contrib-session .contrib-section-head__badge--ok {
-            background: rgba(255, 255, 255, 0.12);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
         }
         body.contrib-session .muted {
-            color: #ffffff;
+            color: var(--text-muted);
         }
 
         /* —— Dashboard shell (sidebar + stage) —— */
@@ -216,7 +215,7 @@
             flex-direction: column;
             background: var(--sidebar-bg);
             border-right: 1px solid var(--sidebar-border);
-            padding: 1.25rem 0 1rem;
+            padding: 0 0 1rem;
             position: fixed;
             top: 0;
             left: 0;
@@ -225,29 +224,44 @@
             overflow: hidden;
         }
         .contrib-sidebar__brand {
-            padding: 0 1.25rem 1.25rem;
-            border-bottom: 1px solid var(--sidebar-border);
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.55rem 1.25rem 0.55rem;
+            margin: 0 0 0.65rem;
+            background: #151515;
+            border-radius: 0 0 var(--radius) var(--radius);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .contrib-welcome {
+        .contrib-sidebar__logo {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .contrib-sidebar__logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transform: scale(1.65);
+            transform-origin: center center;
+            display: block;
+        }
+        .contrib-sidebar__app-title {
+            margin: 0;
+            flex: 1;
             min-width: 0;
-        }
-        .contrib-welcome__label {
-            display: block;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--mid-gray);
-            margin-bottom: 0.375rem;
-        }
-        .contrib-welcome__name {
-            display: block;
-            font-size: 1rem;
+            font-size: 0.98rem;
             font-weight: 600;
             letter-spacing: -0.02em;
             line-height: 1.35;
-            color: var(--light);
-            word-break: break-word;
+            color: #f8fafc;
         }
         .contrib-sidebar__scroll {
             flex: 1;
@@ -262,7 +276,7 @@
             font-weight: 600;
             letter-spacing: 0.06em;
             text-transform: uppercase;
-            color: var(--mid-gray);
+            color: #94a3b8;
             margin: 1rem 0 0.5rem 0.5rem;
         }
         .contrib-nav-section__label:first-child {
@@ -277,7 +291,7 @@
             appearance: none;
             border: none;
             background: transparent;
-            color: var(--mid-gray);
+            color: #94a3b8;
             font-family: inherit;
             font-size: 0.8125rem;
             font-weight: 500;
@@ -291,11 +305,11 @@
             transition: background 0.15s, color 0.15s;
         }
         .contrib-sidenav__btn:hover {
-            color: var(--light);
+            color: #f8fafc;
             background: var(--sidebar-hover);
         }
         .contrib-sidenav__btn--active {
-            color: var(--light);
+            color: #f8fafc;
             background: var(--sidebar-active);
             font-weight: 600;
         }
@@ -307,12 +321,12 @@
             border-radius: var(--radius-sm);
             font-size: 0.8125rem;
             font-weight: 500;
-            color: var(--mid-gray);
+            color: #94a3b8;
             text-decoration: none;
             transition: background 0.15s, color 0.15s;
         }
         .contrib-sidenav__link:hover {
-            color: var(--light);
+            color: #f8fafc;
             background: var(--sidebar-hover);
         }
         .contrib-sidenav__link--button {
@@ -326,7 +340,7 @@
             font-family: inherit;
             border: none;
             background: transparent;
-            color: var(--mid-gray);
+            color: #94a3b8;
             padding: 0.5rem 0.75rem;
             border-radius: var(--radius-sm);
             cursor: pointer;
@@ -334,11 +348,11 @@
             transition: background 0.15s, color 0.15s;
         }
         .contrib-sidenav__link--button:focus-visible {
-            outline: 2px solid var(--light);
+            outline: 2px solid rgba(255, 255, 255, 0.45);
             outline-offset: 2px;
         }
         .contrib-sidenav__link--button:hover {
-            color: var(--light);
+            color: #f8fafc;
             background: var(--sidebar-hover);
         }
         .contrib-sidenav__link svg,
@@ -349,7 +363,7 @@
             flex-shrink: 0;
         }
         .contrib-sidenav__btn:focus-visible {
-            outline: 2px solid var(--light);
+            outline: 2px solid rgba(255, 255, 255, 0.45);
             outline-offset: 2px;
         }
         .contrib-sidenav__ico {
@@ -358,13 +372,61 @@
             opacity: 0.75;
             flex-shrink: 0;
         }
+        .contrib-submitted-list {
+            list-style: none;
+            margin: 0 0 0.25rem;
+            padding: 0 0.5rem 0 0.75rem;
+            max-height: 11rem;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .contrib-submitted-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .contrib-submitted-list::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 10px;
+        }
+        .contrib-submitted-list__item {
+            font-size: 0.75rem;
+            line-height: 1.45;
+            padding: 0.2rem 0;
+            color: #cbd5e1;
+        }
+        .contrib-submitted-list__item code {
+            font-family: ui-monospace, 'Consolas', monospace;
+            font-size: 0.75rem;
+            color: #e2e8f0;
+        }
+        .contrib-submitted-list__empty {
+            font-size: 0.75rem;
+            padding: 0.15rem 0 0.35rem;
+        }
         .contrib-sidebar__footer {
-            padding: 0.75rem 1.25rem;
+            padding: 1rem 1.25rem 1.1rem;
             margin-top: auto;
             border-top: 1px solid var(--sidebar-border);
-            font-size: 0.75rem;
-            color: var(--mid-gray);
-            line-height: 1.5;
+            line-height: 1.35;
+        }
+        .contrib-sidebar__welcome {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .contrib-sidebar__welcome-label {
+            font-size: 0.625rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .contrib-sidebar__welcome-name {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #f1f5f9;
+            line-height: 1.25;
+            word-break: break-word;
         }
 
         .contrib-stage {
@@ -374,7 +436,7 @@
             margin-left: var(--sidebar-width);
             display: flex;
             flex-direction: column;
-            background: transparent;
+            background: var(--bg);
         }
         .contrib-session-bar {
             display: flex;
@@ -383,7 +445,7 @@
             gap: 1rem;
             flex-wrap: wrap;
             padding: 1.25rem 0;
-            border-bottom: 1px solid var(--dark);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             margin-bottom: 0.5rem;
         }
         .contrib-session-summary {
@@ -396,14 +458,14 @@
         }
         .contrib-session-summary__title {
             font-family: var(--font);
-            font-size: clamp(1.0625rem, 2vw, 1.25rem);
+            font-size: clamp(1.35rem, 2.2vw, 1.65rem);
             font-weight: 600;
-            letter-spacing: -0.02em;
-            line-height: 1.35;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
             margin: 0;
             max-width: 56ch;
             width: 100%;
-            color: var(--dark);
+            color: var(--text);
         }
         .contrib-session-summary__file-line {
             margin: 0;
@@ -422,7 +484,7 @@
             padding: 0.5rem 1rem;
             font-size: 0.8125rem;
             font-weight: 600;
-            color: var(--dark);
+            color: var(--text);
             text-decoration: none;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
@@ -430,8 +492,8 @@
             transition: background 0.15s, border-color 0.15s;
         }
         .contrib-btn-outline:hover {
-            background: var(--row-hover);
-            border-color: var(--mid-gray);
+            background: var(--surface-2);
+            border-color: rgba(255, 255, 255, 0.12);
         }
         .contrib-btn-outline--sm {
             padding: 0.35rem 0.75rem;
@@ -440,10 +502,11 @@
 
         .contrib-main-dash {
             flex: 1;
-            padding: 1.25rem 1.75rem 2.5rem;
-            max-width: min(1200px, 100%);
+            padding: 1.25rem 1.25rem 2.5rem;
+            max-width: min(1520px, 100%);
             width: 100%;
             margin: 0 auto;
+            background: transparent;
         }
         .contrib-banner {
             margin-bottom: 1rem;
@@ -461,22 +524,132 @@
             max-width: 52ch;
             line-height: 1.55;
         }
+        .contrib-page-head__invite {
+            display: block;
+            color: var(--text);
+            font-weight: 500;
+            margin-bottom: 0.35rem;
+            max-width: 52ch;
+        }
+        .contrib-page-head__statline {
+            display: block;
+            font-size: 0.8125rem;
+        }
         .contrib-panel-dash {
             margin-bottom: 2rem;
+        }
+        body.contrib-session .contrib-panel-dash:not([hidden]) {
+            background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(20, 20, 20, 0.99) 100%);
+            border: 1px solid var(--panel-edge);
+            border-radius: var(--radius);
+            box-shadow: var(--panel-shadow);
+            padding: 1.1rem 1.25rem 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        body.contrib-session .contrib-panel-dash:not([hidden]) .contrib-panel-dash__title {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            margin-bottom: 0.65rem;
+            color: #a8a8a8;
         }
         .contrib-panel-dash__title {
             font-size: 1.125rem;
             font-weight: 600;
             letter-spacing: -0.02em;
             margin-bottom: 0.375rem;
-            color: var(--dark);
+            color: var(--text);
         }
         .contrib-panel-dash__hint {
             font-size: 0.8125rem;
-            color: var(--dark);
+            color: #94a3b8;
             margin-bottom: 1rem;
             line-height: 1.55;
             max-width: 56ch;
+        }
+        /* Save / validation errors: inside Spillover (or Bugs) panel, not fixed viewport */
+        .contrib-panel-alert {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 0 0.85rem;
+            padding: 0.75rem 1.1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            line-height: 1.45;
+            text-align: center;
+            transition: opacity 0.45s ease;
+            opacity: 1;
+        }
+        .contrib-panel-alert[hidden] {
+            display: none !important;
+        }
+        .contrib-panel-alert--err {
+            color: #fecaca;
+            border: 1px solid rgba(252, 165, 165, 0.35);
+            background: rgba(30, 10, 10, 0.45);
+            backdrop-filter: blur(18px) saturate(1.15);
+            -webkit-backdrop-filter: blur(18px) saturate(1.15);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+                0 8px 28px rgba(0, 0, 0, 0.35);
+        }
+        .contrib-panel-alert--err.contrib-panel-alert--hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .contrib-spill-done-cta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem 1.25rem;
+            margin-bottom: 1rem;
+            padding: 0.65rem 1rem 0.65rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.065);
+            border-left: 3px solid var(--accent);
+            background: var(--surface);
+            box-shadow: none;
+            max-width: min(100%, 56rem);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .contrib-spill-done-cta__copy {
+            flex: 1 1 22rem;
+            min-width: 0;
+        }
+        .contrib-spill-done-cta__lead {
+            margin: 0 0 0.15rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: var(--accent);
+            line-height: 1.3;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .contrib-spill-done-cta__next {
+            margin: 0;
+            font-size: 0.8125rem;
+            line-height: 1.35;
+            color: #94a3b8;
+        }
+        .contrib-spill-done-cta__btn {
+            appearance: none;
+            flex-shrink: 0;
+            padding: 0.42rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--accent);
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .contrib-spill-done-cta__btn:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
         }
         .contrib-section-head {
             display: flex;
@@ -495,25 +668,25 @@
             color: var(--text-dim);
         }
         .contrib-section-head:has(.contrib-section-head__badge--warn) .contrib-section-head__title {
-            color: var(--dark);
+            color: var(--text);
         }
         .contrib-section-head__badge {
             font-size: 0.6875rem;
             font-weight: 600;
-            padding: 0.125rem 0.5rem;
-            border-radius: 999px;
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-sm);
         }
         .contrib-section-head__badge--warn {
             padding: 0;
             border-radius: 0;
             border: none;
             background: transparent;
-            color: var(--dark);
+            color: var(--text);
             font-weight: 600;
         }
         .contrib-section-head__badge--ok {
-            background: var(--row-hover);
-            color: var(--dark);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
             border: 1px solid var(--border);
         }
 
@@ -523,98 +696,118 @@
         .contrib-table-section:last-child {
             margin-bottom: 0;
         }
-        /* Card rows — spaced rectangles on workspace background (no black canvas) */
         .contrib-table-wrap {
             background: transparent;
             border: none;
             border-radius: 0;
-            overflow-x: auto;
+            overflow-x: hidden;
             overflow-y: auto;
-            max-height: min(65vh, 640px);
+            max-height: min(72vh, 720px);
             -webkit-overflow-scrolling: touch;
-            padding: 12px 4px 16px;
+            padding: 0.2rem 0.15rem 0.4rem;
             box-shadow: none;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* legacy Edge */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+            -ms-overflow-style: auto;
+        }
+        body.contrib-session .contrib-table-wrap {
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.22);
+            padding: 0.4rem 0.5rem 0.45rem;
         }
         .contrib-table-wrap::-webkit-scrollbar {
-            display: none;
-            width: 0;
+            width: 8px;
             height: 0;
+        }
+        .contrib-table-wrap::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 6px;
+        }
+        .contrib-table-wrap::-webkit-scrollbar-track {
+            background: transparent;
         }
         .contrib-data-table {
             width: 100%;
-            min-width: 920px;
+            min-width: 0;
             table-layout: fixed;
             border-collapse: separate;
-            border-spacing: 0 10px;
-            font-size: 0.8125rem;
+            border-spacing: 0 var(--contrib-table-row-gap);
+            font-size: 0.875rem;
             font-family: var(--font);
-            color: var(--light);
+            color: var(--text);
+            border: none;
+            background: transparent;
         }
-        .contrib-data-table col.contrib-col--issue { width: 17%; }
-        .contrib-data-table col.contrib-col--assignee { width: 9%; }
-        .contrib-data-table col.contrib-col--summary { width: 16%; }
-        .contrib-data-table col.contrib-col--progress { width: 13%; }
-        .contrib-data-table col.contrib-col--field-a { width: 14%; }
-        .contrib-data-table col.contrib-col--field-b { width: 14%; }
-        .contrib-data-table col.contrib-col--action { width: 9rem; }
+        .contrib-data-table col.contrib-col--issue { width: 12%; }
+        .contrib-data-table col.contrib-col--assignee { width: 10%; }
+        .contrib-data-table col.contrib-col--summary { width: 22%; }
+        .contrib-data-table col.contrib-col--progress { width: 15%; }
+        .contrib-data-table col.contrib-col--field-a { width: 17%; }
+        .contrib-data-table col.contrib-col--field-b { width: 16%; }
+        .contrib-data-table col.contrib-col--action { width: 8.5rem; }
         .contrib-data-table thead th {
             text-align: left;
-            padding: 1rem 0.875rem;
+            padding: 0.85rem 1rem;
             font-size: 0.6875rem;
             font-weight: 600;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.07em;
             text-transform: uppercase;
-            color: var(--mid-gray);
+            color: var(--text-muted);
             background: var(--contrib-table-thead);
-            border: none;
+            border-style: solid;
+            border-color: var(--table-header-border);
+            border-width: 1px 1px 2px 0;
+            border-bottom-color: rgba(255, 255, 255, 0.1);
             white-space: nowrap;
             vertical-align: middle;
             position: sticky;
             top: 0;
             z-index: 5;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
         }
         .contrib-data-table thead th:first-child {
-            padding-left: 1.125rem;
-            padding-right: 0.35rem;
-        }
-        .contrib-data-table thead th:nth-child(2) {
-            padding-left: 0.35rem;
+            border-left-width: 1px;
+            padding-left: 1.15rem;
+            padding-right: 0.5rem;
+            border-top-left-radius: var(--contrib-table-corner);
         }
         .contrib-data-table thead th:last-child {
-            padding-right: 1.125rem;
+            padding-right: 1.15rem;
+            border-top-right-radius: var(--contrib-table-corner);
+        }
+        .contrib-data-table thead th:nth-child(2) {
+            padding-left: 0.5rem;
         }
         .contrib-data-table thead th.contrib-th--action {
             text-align: right;
         }
         .contrib-data-table tbody td {
-            padding: 1rem 0.875rem;
+            padding: 0.85rem 1rem;
             vertical-align: top;
-            border: none;
+            border-style: solid;
+            border-color: var(--table-row-border);
+            border-width: 1px 1px 1px 0;
             background: var(--contrib-table-row);
-            color: var(--light);
+            color: var(--text);
+        }
+        .contrib-data-table tbody td:first-child {
+            border-left-width: 1px;
+            padding-left: 1.15rem;
+            padding-right: 0.5rem;
+            min-width: 10rem;
+            width: 12%;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        .contrib-data-table tbody td:last-child {
+            padding-right: 1.15rem;
         }
         .contrib-data-table tbody tr:nth-child(even) td {
             background: var(--contrib-table-row-alt);
         }
-        .contrib-data-table tbody td:first-child {
-            padding-left: 1.125rem;
-            padding-right: 0.35rem;
-            min-width: 11rem;
-            width: 17%;
-            white-space: nowrap;
-            vertical-align: middle;
-        }
         .contrib-data-table tbody td:nth-child(2) {
-            padding-left: 0.35rem;
-        }
-        .contrib-data-table tbody td:last-child {
-            padding-right: 1.125rem;
-        }
-        .contrib-data-table tbody tr:last-child td {
-            border-bottom: none;
+            padding-left: 0.5rem;
         }
         .contrib-data-table tbody tr.contrib-issue-row--complete td {
             background: var(--contrib-table-complete);
@@ -634,55 +827,76 @@
         .contrib-data-table tbody tr.contrib-issue-row--complete:hover td:first-child {
             box-shadow: inset 3px 0 0 0 rgba(74, 222, 128, 0.55);
         }
+        .contrib-data-table tbody tr.contrib-issue-row--not-submitted td {
+            background: rgba(220, 38, 38, 0.12) !important;
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--not-submitted:hover td {
+            background: rgba(220, 38, 38, 0.18) !important;
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--not-submitted td:first-child {
+            box-shadow: inset 3px 0 0 0 #dc2626;
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--not-submitted:hover td:first-child {
+            box-shadow: inset 3px 0 0 0 #b91c1c;
+        }
+        .contrib-data-table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: var(--contrib-table-corner);
+        }
+        .contrib-data-table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: var(--contrib-table-corner);
+        }
         .contrib-data-table textarea::placeholder {
-            color: #525252;
+            color: var(--text-dim);
         }
         .contrib-data-table textarea,
         .contrib-data-table select {
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
-            background: #d4d4d4;
-            border: 1px solid #a3a3a3;
-            border-radius: 8px;
-            color: var(--dark);
-            font-size: 0.75rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 0.8125rem;
             font-family: var(--font);
-            padding: 0.32rem 0.45rem;
-            line-height: 1.25;
-            min-height: 2.125rem;
-            height: 2.125rem;
+            padding: 0.45rem 0.55rem;
+            line-height: 1.35;
+            min-height: 2.35rem;
+            height: 2.35rem;
             transition: border-color 0.15s, box-shadow 0.15s;
         }
         .contrib-data-table textarea {
-            resize: none;
+            resize: vertical;
             overflow-y: auto;
+            min-height: 2.65rem;
+            height: auto;
+            max-height: 7rem;
         }
         .contrib-data-table textarea:focus,
         .contrib-data-table select:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
-            background: #e0e0e0;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+            background: var(--surface-2);
         }
         .contrib-data-table select option {
-            color: var(--dark);
-            background: #d4d4d4;
+            color: var(--text);
+            background: var(--surface);
         }
         .contrib-data-table .contrib-code {
             font-family: ui-monospace, 'Consolas', monospace;
             font-size: 0.8125rem;
             font-weight: 600;
-            color: var(--light);
-            background: rgba(250, 249, 245, 0.08);
-            padding: 0.38rem 0.55rem;
-            border-radius: 8px;
+            color: var(--text);
+            background: none;
+            padding: 0;
+            border-radius: 0;
+            border: none;
             word-break: break-all;
             letter-spacing: -0.02em;
-            border: 1px solid rgba(250, 249, 245, 0.14);
         }
         .contrib-data-table tbody td:first-child .contrib-code {
-            display: inline-block;
+            display: inline;
             max-width: 100%;
             white-space: nowrap;
             word-break: normal;
@@ -691,45 +905,48 @@
         .contrib-data-table td.contrib-td-summary {
             min-width: 0;
             vertical-align: top;
-            color: rgba(250, 249, 245, 0.72);
+            color: var(--text-muted);
             font-size: 0.8125rem;
-            line-height: 1.45;
+            line-height: 1.5;
         }
         .contrib-td-summary__text {
             display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
             word-break: break-word;
             color: inherit;
         }
         .contrib-data-table td.contrib-td-progress {
-            min-width: 0;
+            min-width: 9.5rem;
             vertical-align: middle;
-            font-size: 0.6875rem;
-            line-height: 1.45;
-            color: rgba(250, 249, 245, 0.88);
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            white-space: normal;
+            word-break: break-word;
         }
         body.contrib-session .contrib-data-table td.contrib-td-progress {
-            color: rgba(250, 249, 245, 0.92);
+            color: var(--text-muted);
         }
         .contrib-data-table .contrib-status {
             font-weight: 600;
-            font-size: 0.6875rem;
-            line-height: 1.35;
+            font-size: 0.75rem;
+            line-height: 1.4;
         }
         .contrib-data-table .contrib-status--ok {
-            color: #86efac;
+            color: #4ade80;
         }
         .contrib-data-table .contrib-status--pending {
-            color: #facc15;
+            color: #fbbf24;
         }
         .contrib-data-table .contrib-status--err {
-            color: #fca5a5;
+            color: #dc2626;
+            font-weight: 700;
         }
         .contrib-data-table .contrib-status-sep {
-            color: rgba(250, 249, 245, 0.42);
+            color: var(--sky-300);
             font-weight: 500;
         }
         .contrib-data-table .field-stack {
@@ -747,38 +964,40 @@
             vertical-align: top;
         }
         .contrib-data-table .btn-save {
-            min-width: 6rem;
-            padding: 0.32rem 0.95rem;
-            border-radius: 8px;
-            font-size: 0.6875rem;
+            min-width: 6.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
             white-space: nowrap;
-            background: #2563eb;
-            border: none;
+            background: var(--accent);
+            border: 1px solid var(--accent);
             color: #ffffff;
             cursor: pointer;
             font-family: var(--font);
-            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.45);
-            transition: background 0.15s, transform 0.12s, box-shadow 0.15s;
+            box-shadow: none;
+            transition: background 0.15s, border-color 0.15s;
         }
         .contrib-data-table .btn-save:hover {
-            background: #1d4ed8;
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
             color: #ffffff;
         }
         .contrib-data-table .btn-save--saved,
         .contrib-data-table .btn-save--saved:hover {
-            background: #dcfce7;
-            color: #15803d;
-            border: 1px solid #86efac;
-            box-shadow: 0 1px 3px rgba(22, 101, 52, 0.2);
+            background: rgba(34, 197, 94, 0.18);
+            color: #86efac;
+            border: 1px solid rgba(74, 222, 128, 0.45);
+            box-shadow: none;
         }
         .contrib-data-table .btn-save--saved:hover {
-            background: #bbf7d0;
-            color: #166534;
+            background: rgba(34, 197, 94, 0.28);
+            color: #bbf7d0;
         }
         .contrib-data-table .btn-save:active {
-            transform: scale(0.98);
+            transform: none;
         }
         .contrib-data-table td.contrib-td--action {
             text-align: right;
@@ -798,14 +1017,15 @@
                 height: auto;
                 flex-direction: column;
                 align-items: stretch;
-                padding: 0.85rem 0 0;
+                padding: 0;
                 border-right: none;
                 border-bottom: 1px solid var(--sidebar-border);
                 z-index: 50;
                 overflow: visible;
             }
             .contrib-sidebar__brand {
-                padding: 0 1rem 0.85rem;
+                padding: 0.55rem 1rem 0.55rem;
+                margin-bottom: 0.5rem;
             }
             .contrib-sidebar__scroll {
                 flex-direction: column;
@@ -839,7 +1059,7 @@
         .hero {
             margin-bottom: 1.5rem;
             padding-bottom: 1.25rem;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
         .hero__badge {
             display: inline-block;
@@ -859,7 +1079,7 @@
             font-weight: 600;
             letter-spacing: -0.03em;
             margin-bottom: 0.5rem;
-            color: var(--dark);
+            color: var(--text);
         }
         .hero__sub {
             color: var(--text-muted);
@@ -870,16 +1090,16 @@
 
         .card {
             border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background: var(--surface);
-            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--panel-edge);
+            background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(20, 20, 20, 0.99) 100%);
+            box-shadow: var(--panel-shadow);
             overflow: hidden;
             margin-bottom: 1rem;
         }
         .card__head {
             padding: 0.875rem 1.25rem;
-            border-bottom: 1px solid var(--border);
-            background: var(--accent-soft);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.025);
             font-size: 0.6875rem;
             font-weight: 600;
             letter-spacing: 0.06em;
@@ -901,21 +1121,25 @@
         .banner--err {
             position: fixed;
             top: 0.75rem;
-            left: 0;
-            right: 0;
+            left: 0.75rem;
+            right: 0.75rem;
             z-index: 20000;
-            margin: 0;
-            max-width: none;
+            margin: 0 auto;
+            max-width: min(1200px, calc(100vw - 1.5rem));
+            width: auto;
             text-align: center;
-            padding: 0.875rem 1.25rem;
+            padding: 0.85rem 1.5rem;
             border-radius: var(--radius-sm);
-            background: var(--dark);
-            color: #f87171;
-            border: 1px solid #dc2626;
+            font-size: 0.875rem;
+            line-height: 1.45;
+            color: #fecaca;
+            border: 1px solid rgba(252, 165, 165, 0.35);
+            background: rgba(30, 10, 10, 0.45);
+            backdrop-filter: blur(18px) saturate(1.15);
+            -webkit-backdrop-filter: blur(18px) saturate(1.15);
             box-shadow:
-                0 0 0 1px rgba(220, 38, 38, 0.35),
-                0 0 28px rgba(220, 38, 38, 0.5),
-                0 8px 32px rgba(0, 0, 0, 0.45);
+                0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+                0 12px 40px rgba(0, 0, 0, 0.4);
             transition: opacity 0.45s ease;
             opacity: 1;
         }
@@ -931,53 +1155,57 @@
             z-index: 20000;
             margin: 0;
             width: max-content;
-            max-width: min(18rem, calc(100vw - 2rem));
+            min-width: min(100%, 12rem);
+            max-width: min(1200px, calc(100vw - 2rem));
             text-align: center;
-            padding: 0.4rem 0.85rem;
-            border-radius: 999px;
+            padding: 0.55rem 1.35rem;
+            border-radius: var(--radius-sm);
             transform: translateX(-50%);
-            background: rgba(20, 83, 45, 0.38);
-            color: #bbf7d0;
-            border: 1px solid rgba(134, 239, 172, 0.45);
+            color: #d1fae5;
+            border: 1px solid rgba(134, 239, 172, 0.35);
+            background: rgba(10, 30, 18, 0.45);
+            backdrop-filter: blur(18px) saturate(1.15);
+            -webkit-backdrop-filter: blur(18px) saturate(1.15);
             box-shadow:
-                0 0 0 1px rgba(34, 197, 94, 0.15),
-                0 8px 32px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 12px 40px rgba(0, 0, 0, 0.35);
             transition: opacity 0.45s ease;
             opacity: 1;
             font-weight: 600;
-            font-size: 0.8125rem;
-            line-height: 1.35;
+            font-size: 0.875rem;
+            line-height: 1.4;
         }
         .banner--ok.banner--ok-hiding {
             opacity: 0;
             pointer-events: none;
         }
-        /* Session: error bar spans main column; success pill is centered in main area */
+        /* Session: error / success toasts sit in main column (glass, no solid tint) */
         body.contrib-session .banner.banner--err {
-            left: var(--sidebar-width);
-            right: 0;
+            left: calc(var(--sidebar-width) + 0.75rem);
+            right: 0.75rem;
             width: auto;
             transform: none;
-            max-width: none;
+            max-width: min(1200px, calc(100vw - var(--sidebar-width) - 1.5rem));
+            margin-left: 0;
+            margin-right: auto;
         }
         body.contrib-session .banner.banner--ok {
             left: calc(var(--sidebar-width) + (100vw - var(--sidebar-width)) / 2);
             right: auto;
             width: max-content;
-            max-width: min(17rem, calc(100vw - var(--sidebar-width) - 1.5rem));
+            max-width: min(1200px, calc(100vw - var(--sidebar-width) - 1.5rem));
             transform: translateX(-50%);
         }
         @media (max-width: 960px) {
             body.contrib-session .banner.banner--err {
-                left: 0;
-                right: 0;
+                left: 0.75rem;
+                right: 0.75rem;
+                width: auto;
+                max-width: min(1200px, calc(100vw - 1.5rem));
             }
             body.contrib-session .banner.banner--ok {
                 left: 50%;
-                max-width: min(17rem, calc(100vw - 1.5rem));
+                max-width: min(1200px, calc(100vw - 1.5rem));
                 transform: translateX(-50%);
             }
         }
@@ -1055,6 +1283,98 @@
         }
         .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        .contrib-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 21000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            box-sizing: border-box;
+        }
+        .contrib-modal[hidden] {
+            display: none !important;
+        }
+        .contrib-modal__backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.42);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .contrib-modal__panel {
+            position: relative;
+            max-width: 22rem;
+            width: 100%;
+            padding: 1.35rem 1.35rem 1.15rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(22, 22, 24, 0.55);
+            backdrop-filter: blur(22px) saturate(1.2);
+            -webkit-backdrop-filter: blur(22px) saturate(1.2);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 16px 48px rgba(0, 0, 0, 0.45);
+        }
+        .contrib-modal__title {
+            margin: 0 0 0.65rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--dark);
+        }
+        .contrib-modal__text {
+            margin: 0 0 1.15rem;
+            font-size: 0.875rem;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+        .contrib-modal__actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        .contrib-modal__btn {
+            appearance: none;
+            padding: 0.5rem 1.1rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--accent);
+            color: var(--on-accent);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .contrib-modal__btn:hover {
+            background: var(--accent-hover);
+        }
+        .contrib-modal--admin .contrib-modal__panel {
+            border-color: rgba(253, 224, 71, 0.28);
+            background: rgba(28, 24, 12, 0.5);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 16px 48px rgba(0, 0, 0, 0.45);
+        }
+        .contrib-modal--admin .contrib-modal__title {
+            color: var(--text);
+        }
+
+        .contrib-panel-save-msg {
+            text-align: right;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #4ade80;
+            margin: 0.15rem 0 0.55rem;
+            padding-right: 0.05rem;
+            min-height: 1.2rem;
+            letter-spacing: -0.02em;
+        }
+        .contrib-panel-save-msg[hidden] {
+            display: none !important;
+        }
+
         .empty-state {
             padding: 2rem 1.25rem;
             text-align: center;
@@ -1123,7 +1443,7 @@
             <h1>Your workload</h1>
             <p class="hero__sub">
                 Open your invite link or paste a token. When your invite includes both views, use the
-                <strong>Spillover</strong> and <strong>Bugs</strong> tabs for reason, category, PROD, and RCA fields.
+                <strong>Spillover</strong> and <strong>Bugs</strong> tabs for reason, category, Yes/No, and RCA fields.
             </p>
         </header>
 
@@ -1151,10 +1471,10 @@
         <div class="contrib-app">
             <aside class="contrib-sidebar" aria-label="Workspace navigation">
                 <div class="contrib-sidebar__brand">
-                    <div class="contrib-welcome">
-                        <span class="contrib-welcome__label">Welcome</span>
-                        <span id="welcomeDisplayName" class="contrib-welcome__name">—</span>
+                    <div class="contrib-sidebar__logo" aria-hidden="true">
+                        <img src="images/LOGO.gif" alt="" width="48" height="48" decoding="async" />
                     </div>
+                    <p class="contrib-sidebar__app-title">Jira Spillover Analyzer</p>
                 </div>
                 <div class="contrib-sidebar__scroll">
                     <p class="contrib-nav-section__label">Your tasks</p>
@@ -1164,9 +1484,14 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         Full analyzer
                     </button>
+                    <p class="contrib-nav-section__label">Submitted</p>
+                    <ul id="contribSubmittedList" class="contrib-submitted-list" aria-label="Issues saved this session"></ul>
                 </div>
                 <div class="contrib-sidebar__footer">
-                    Saves merge into the analyst export for this upload.
+                    <div class="contrib-sidebar__welcome">
+                        <span class="contrib-sidebar__welcome-label">Welcome</span>
+                        <span class="contrib-sidebar__welcome-name" id="contribSidebarWelcomeName">—</span>
+                    </div>
                 </div>
             </aside>
             <div class="contrib-stage">
@@ -1177,10 +1502,10 @@
                             <p id="workspaceMeta" class="contrib-session-summary__file-line muted"></p>
                         </div>
                     </div>
-                    <div id="banner" class="banner contrib-banner" hidden></div>
                     <header class="contrib-page-head">
                         <p id="pageSub" class="contrib-page-head__sub"></p>
                     </header>
+                    <div id="banner" class="banner contrib-banner" hidden aria-hidden="true"></div>
                     <section id="panelSpill" class="contrib-panel-dash" aria-labelledby="contribPanelSpillTitle" hidden></section>
                     <section id="panelBug" class="contrib-panel-dash" aria-labelledby="contribPanelBugTitle" hidden></section>
                 </main>
@@ -1190,6 +1515,31 @@
 
     <div class="wrap" id="landingFoot">
         <p class="foot">Invite links fill your token automatically.</p>
+    </div>
+
+    <div id="contribThankModal" class="contrib-modal" role="dialog" aria-modal="true" aria-labelledby="contribThankTitle" hidden>
+        <div class="contrib-modal__backdrop" data-modal-close tabindex="-1" aria-hidden="true"></div>
+        <div class="contrib-modal__panel">
+            <h2 id="contribThankTitle" class="contrib-modal__title">Thanks — you're all done</h2>
+            <p id="contribThankBody" class="contrib-modal__text"></p>
+            <div class="contrib-modal__actions">
+                <button type="button" class="contrib-modal__btn" data-modal-close>OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="contribAdminModal" class="contrib-modal contrib-modal--admin" role="dialog" aria-modal="true" aria-labelledby="contribAdminTitle" hidden>
+        <div class="contrib-modal__backdrop" data-modal-close tabindex="-1" aria-hidden="true"></div>
+        <div class="contrib-modal__panel">
+            <h2 id="contribAdminTitle" class="contrib-modal__title">Full analyzer — admin access only</h2>
+            <p class="contrib-modal__text">
+                The main Spillover Analyzer app is restricted to workspace administrators. This invite page is only for updating the issues you were assigned.
+                If you need the full analyzer, ask your admin for access or the correct link.
+            </p>
+            <div class="contrib-modal__actions">
+                <button type="button" class="contrib-modal__btn" data-modal-close>Got it</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1256,6 +1606,65 @@
         }
 
         var errToastTimers = {};
+        var panelErrToastTimers = {};
+
+        function clearContribPanelErrorTimer(elId) {
+            var T = panelErrToastTimers[elId];
+            if (!T) return;
+            if (T.fadeTimeout) clearTimeout(T.fadeTimeout);
+            if (T.removeTimeout) clearTimeout(T.removeTimeout);
+            delete panelErrToastTimers[elId];
+        }
+
+        function scheduleContribPanelAlertHide(alertEl) {
+            var elId = alertEl.id;
+            clearContribPanelErrorTimer(elId);
+            var st = {};
+            st.fadeTimeout = setTimeout(function () {
+                alertEl.classList.add('contrib-panel-alert--hiding');
+                st.removeTimeout = setTimeout(function () {
+                    alertEl.hidden = true;
+                    alertEl.classList.remove('contrib-panel-alert--hiding');
+                    delete panelErrToastTimers[elId];
+                }, 450);
+            }, 3000);
+            panelErrToastTimers[elId] = st;
+        }
+
+        /** saveKind: 'spill' | 'bug' — message goes to that panel when present (Spillover section for spill). */
+        function showContributorSaveError(text, saveKind) {
+            text = String(text || '').trim();
+            if (!text) return;
+            saveKind = saveKind === 'bug' ? 'bug' : 'spill';
+            var spillAlert = document.getElementById('contribSpillPanelAlert');
+            var bugAlert = document.getElementById('contribBugPanelAlert');
+            var panelSpill = document.getElementById('panelSpill');
+            var panelBug = document.getElementById('panelBug');
+            var target = null;
+            if (saveKind === 'spill' && spillAlert) {
+                target = spillAlert;
+            } else if (saveKind === 'bug' && bugAlert) {
+                target = bugAlert;
+            } else if (spillAlert) {
+                target = spillAlert;
+            } else if (bugAlert) {
+                target = bugAlert;
+            }
+            if (!target) {
+                showBanner(text, 'err', 'session');
+                return;
+            }
+            if (target === spillAlert && panelSpill && panelSpill.hidden && bugAlert && panelBug && !panelBug.hidden) {
+                target = bugAlert;
+            }
+            showBanner(null, '', 'session');
+            clearContribPanelErrorTimer(target.id);
+            target.classList.remove('contrib-panel-alert--hiding');
+            target.textContent = text;
+            target.className = 'contrib-panel-alert contrib-panel-alert--err';
+            target.hidden = false;
+            scheduleContribPanelAlertHide(target);
+        }
 
         function clearErrToastTimers(bannerId) {
             var T = errToastTimers[bannerId];
@@ -1308,6 +1717,61 @@
         function clearAllBanners() {
             showBanner(null, '', 'landing');
             showBanner(null, '', 'session');
+            ['contribSpillPanelAlert', 'contribBugPanelAlert'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    clearContribPanelErrorTimer(id);
+                    el.hidden = true;
+                    el.textContent = '';
+                    el.classList.remove('contrib-panel-alert--hiding');
+                }
+            });
+        }
+
+        function wireContribModals() {
+            ['contribThankModal', 'contribAdminModal'].forEach(function (id) {
+                var root = document.getElementById(id);
+                if (!root) return;
+                root.querySelectorAll('[data-modal-close]').forEach(function (el) {
+                    el.addEventListener('click', function () {
+                        root.hidden = true;
+                    });
+                });
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'Escape') return;
+                var t = document.getElementById('contribThankModal');
+                var a = document.getElementById('contribAdminModal');
+                if (t && !t.hidden) t.hidden = true;
+                if (a && !a.hidden) a.hidden = true;
+            });
+        }
+
+        function showThankYouModal(issueKey) {
+            var root = document.getElementById('contribThankModal');
+            var body = document.getElementById('contribThankBody');
+            var key = issueKey ? String(issueKey).trim() : '';
+            if (body) {
+                body.textContent = key
+                    ? 'Everything for this invite is submitted. Your last save was for ' +
+                      key +
+                      '. You can leave this page when you are ready, or stay if you need to change something.'
+                    : 'Everything for this invite is submitted. You can leave this page when you are ready.';
+            }
+            if (root) {
+                root.hidden = false;
+                var ok = root.querySelector('.contrib-modal__btn');
+                if (ok) try { ok.focus(); } catch (e) {}
+            }
+        }
+
+        function showAdminOnlyModal() {
+            var root = document.getElementById('contribAdminModal');
+            if (root) {
+                root.hidden = false;
+                var ok = root.querySelector('.contrib-modal__btn');
+                if (ok) try { ok.focus(); } catch (e) {}
+            }
         }
 
         function normalizeIssueKeyLookup(ik) {
@@ -1343,29 +1807,126 @@
         /** Set by renderContributorWorkspace for mixed invites — drives header when switching Spillover / Bugs tabs. */
         var contribChromeCtx = null;
 
+        /** Todo counts from last render — used to detect “last save” (all work complete). */
+        var contribLastWorkspaceStats = { spillTodo: 0, bugTodo: 0 };
+
+        var contribSaveInlineTimer = null;
+
+        function getWorkspaceCompletionState(data) {
+            data = data || {};
+            var issues = data.issues || [];
+            var editsByKey = editMapFromRows(data.edits);
+            var spillIssues = [];
+            var bugIssues = [];
+            for (var i = 0; i < issues.length; i++) {
+                var iss = issues[i];
+                if (issueNeedsSpilloverFields(iss)) spillIssues.push(iss);
+                if (issueNeedsBugFields(iss)) bugIssues.push(iss);
+            }
+            var showSpill = spillIssues.length > 0;
+            var showBug = bugIssues.length > 0;
+            var spillPart = partitionIssuesByEdits(spillIssues, editsByKey, 'spill');
+            var bugPart = partitionIssuesByEdits(bugIssues, editsByKey, 'bug');
+            var spillTodo = spillPart.todo.length;
+            var bugTodo = bugPart.todo.length;
+            var allComplete = true;
+            if (showSpill && spillTodo > 0) allComplete = false;
+            if (showBug && bugTodo > 0) allComplete = false;
+            if (!showSpill && !showBug) allComplete = false;
+            return {
+                allComplete: allComplete,
+                spillTodo: spillTodo,
+                bugTodo: bugTodo,
+                spillDone: spillPart.done.length,
+                bugDone: bugPart.done.length,
+                showSpill: showSpill,
+                showBug: showBug
+            };
+        }
+
+        function todoDoneStatPhrase(todo, done) {
+            return (
+                todo +
+                (todo === 1 ? ' row needs input · ' : ' rows need input · ') +
+                done +
+                ' complete'
+            );
+        }
+
+        /** Green line above the table (right-aligned, Action column side). kind: 'spill' | 'bug'. */
+        function showInlineSaveMessage(issueKey, kind) {
+            kind = kind === 'bug' ? 'bug' : 'spill';
+            var k = issueKey ? String(issueKey).trim() : '';
+            var text = k ? k + ' · Saved' : 'Saved';
+            var spillEl = document.getElementById('contribSpillSaveMsg');
+            var bugEl = document.getElementById('contribBugSaveMsg');
+            if (contribSaveInlineTimer) {
+                clearTimeout(contribSaveInlineTimer);
+                contribSaveInlineTimer = null;
+            }
+            if (kind === 'bug') {
+                if (spillEl) {
+                    spillEl.hidden = true;
+                    spillEl.textContent = '';
+                }
+                if (bugEl) {
+                    bugEl.textContent = text;
+                    bugEl.hidden = false;
+                }
+            } else {
+                if (bugEl) {
+                    bugEl.hidden = true;
+                    bugEl.textContent = '';
+                }
+                if (spillEl) {
+                    spillEl.textContent = text;
+                    spillEl.hidden = false;
+                }
+            }
+            contribSaveInlineTimer = setTimeout(function () {
+                if (kind === 'bug' && bugEl) {
+                    bugEl.hidden = true;
+                    bugEl.textContent = '';
+                } else if (spillEl) {
+                    spillEl.hidden = true;
+                    spillEl.textContent = '';
+                }
+                contribSaveInlineTimer = null;
+            }, 3200);
+        }
+
         function refreshMixedInviteHeader() {
             if (!contribChromeCtx || !contribChromeCtx.hints || !contribChromeCtx.hints.mixed) return;
             var panel = getActiveContribPanel();
             var pt = document.getElementById('pageTitle');
             var ps = document.getElementById('pageSub');
             if (!pt || !ps) return;
+            var data = contribChromeCtx.data || {};
             var ss = contribChromeCtx.spillStats || { todo: 0, done: 0 };
             var bs = contribChromeCtx.bugStats || { todo: 0, done: 0 };
+            var invite = contributorRequestHeading({ mixed: true });
+            var statsLine;
             if (panel === 'bug') {
-                pt.textContent = 'Bugs — PROD & RCA';
-                ps.textContent =
+                pt.textContent = contributorDisplayName(data);
+                statsLine =
                     bs.todo +
                     (bs.todo === 1 ? ' row needs input · ' : ' rows need input · ') +
                     bs.done +
                     ' complete';
             } else {
-                pt.textContent = 'Spillover — reason & category';
-                ps.textContent =
+                pt.textContent = contributorDisplayName(data);
+                statsLine =
                     ss.todo +
                     (ss.todo === 1 ? ' row needs input · ' : ' rows need input · ') +
                     ss.done +
                     ' complete';
             }
+            ps.innerHTML =
+                '<span class="contrib-page-head__invite">' +
+                escapeHtml(invite) +
+                '</span><br /><span class="contrib-page-head__statline muted">' +
+                escapeHtml(statsLine) +
+                '</span>';
         }
 
         function spillEditsComplete(ed) {
@@ -1501,7 +2062,7 @@
                 '<th scope="col">Assignee</th>' +
                 '<th scope="col">Summary</th>' +
                 '<th scope="col">Progress</th>' +
-                '<th scope="col">PROD</th>' +
+                '<th scope="col">Yes / No</th>' +
                 '<th scope="col">RCA</th>' +
                 '<th scope="col" class="contrib-th--action">Action</th>' +
                 '</tr></thead>'
@@ -1523,6 +2084,7 @@
             var complete = spillEditsComplete(ed);
             var rowClass = 'contrib-issue-row';
             if (doneSection || complete) rowClass += ' contrib-issue-row--complete';
+            if (spillProgressTier(ed) === 'err') rowClass += ' contrib-issue-row--not-submitted';
             var html = '';
             html += '<tr class="' + rowClass + '" data-issue-key="' + escapeAttr(k) + '">';
             html += '<td><code class="contrib-code">' + escapeHtml(k) + '</code></td>';
@@ -1609,6 +2171,7 @@
             var complete = bugEditsComplete(ed);
             var rowClass = 'contrib-issue-row';
             if (doneSection || complete) rowClass += ' contrib-issue-row--complete';
+            if (bugProgressTier(ed) === 'err') rowClass += ' contrib-issue-row--not-submitted';
             var html = '';
             html += '<tr class="' + rowClass + '" data-issue-key="' + escapeAttr(k) + '">';
             html += '<td><code class="contrib-code">' + escapeHtml(k) + '</code></td>';
@@ -1624,7 +2187,7 @@
                 '</span></td>';
             html += '<td class="contrib-td-progress">' + contributorProgressHtml(iss, ed) + '</td>';
             html += '<td class="contrib-td-field"><div class="field-stack">';
-            html += '<label class="visually-hidden" for="' + rid + '-prod">PROD</label>';
+            html += '<label class="visually-hidden" for="' + rid + '-prod">Yes or No</label>';
             html += '<select id="' + rid + '-prod">' + prodOptionsHtml(pv) + '</select>';
             html += '</div></td>';
             html += '<td class="contrib-td-field contrib-td-field--wide"><div class="field-stack">';
@@ -1752,18 +2315,21 @@
                         })
                         .then(function (out) {
                             if (!out.ok) {
-                                showBanner((out.body && out.body.error) || 'Save failed', 'err', 'session');
+                                showContributorSaveError((out.body && out.body.error) || 'Save failed', kind);
                                 btn.classList.remove('btn-save--saved');
                                 btn.textContent = 'Save';
                             } else {
-                                showBanner('Saved · ' + issueKey, 'ok', 'session');
                                 btn.textContent = 'Saved';
                                 btn.classList.add('btn-save--saved');
-                                refreshContributorWorkspace(t);
+                                recordSubmittedIssueKey(issueKey, t);
+                                refreshContributorWorkspace(t, {
+                                    afterSaveIssueKey: issueKey,
+                                    saveKind: kind
+                                });
                             }
                         })
                         .catch(function () {
-                            showBanner('Network error', 'err', 'session');
+                            showContributorSaveError('Network error', kind);
                             btn.classList.remove('btn-save--saved');
                             btn.textContent = 'Save';
                         })
@@ -1822,10 +2388,15 @@
             }
         }
 
-        function refreshContributorWorkspace(token) {
+        function refreshContributorWorkspace(token, opts) {
+            opts = opts || {};
             token = String(token || '').trim();
             if (!token) return;
             var activePanel = getActiveContribPanel();
+            var saveKey = opts.afterSaveIssueKey;
+            var saveKind = opts.saveKind === 'bug' ? 'bug' : 'spill';
+            var prevSpillTodo = contribLastWorkspaceStats.spillTodo;
+            var prevBugTodo = contribLastWorkspaceStats.bugTodo;
             fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
                 .then(function (r) {
                     return r.json().then(function (j) {
@@ -1835,6 +2406,14 @@
                 .then(function (res) {
                     if (res.status === 410 || !res.ok || !res.body || !res.body.ok) return;
                     renderContributorWorkspace(res.body, token, { activePanel: activePanel });
+                    if (!saveKey) return;
+                    var st = getWorkspaceCompletionState(res.body);
+                    var hadIncompleteBefore = prevSpillTodo > 0 || prevBugTodo > 0;
+                    if (st.allComplete && hadIncompleteBefore) {
+                        showThankYouModal(saveKey);
+                    } else {
+                        showInlineSaveMessage(saveKey, saveKind);
+                    }
                 })
                 .catch(function () {});
         }
@@ -1861,6 +2440,8 @@
 
             var spillPart = partitionIssuesByEdits(spillIssues, editsByKey, 'spill');
             var bugPart = partitionIssuesByEdits(bugIssues, editsByKey, 'bug');
+            contribLastWorkspaceStats.spillTodo = spillPart.todo.length;
+            contribLastWorkspaceStats.bugTodo = bugPart.todo.length;
             if (hints.mixed) {
                 contribChromeCtx = {
                     hints: hints,
@@ -1877,6 +2458,8 @@
             var panelBug = document.getElementById('panelBug');
 
             if (!issues.length) {
+                contribLastWorkspaceStats.spillTodo = 0;
+                contribLastWorkspaceStats.bugTodo = 0;
                 if (tabsEl) tabsEl.innerHTML = '';
                 if (panelSpill) {
                     panelSpill.hidden = false;
@@ -1888,6 +2471,7 @@
                     panelBug.innerHTML = '';
                 }
                 updateWorkspaceChrome(data, hints);
+                initSubmittedStoreForToken(token);
                 return;
             }
 
@@ -1931,9 +2515,22 @@
 
             if (panelSpill) {
                 if (showSpill) {
+                    var spillDoneBugRemaining =
+                        hints.mixed && spillPart.todo.length === 0 && bugPart.todo.length > 0;
+                    var spillHintBlock = spillDoneBugRemaining
+                        ? '<div class="contrib-spill-done-cta" role="status">' +
+                          '<div class="contrib-spill-done-cta__copy">' +
+                          '<p class="contrib-spill-done-cta__lead">Spillover is complete for every issue in this invite.</p>' +
+                          '<p class="contrib-spill-done-cta__next"><strong>Now you need to fill bug data</strong> — open the <strong>Bugs</strong> tab and choose <strong>Yes or No</strong> and enter <strong>RCA</strong> for each row.</p>' +
+                          '</div>' +
+                          '<button type="button" class="contrib-spill-done-cta__btn" id="contribGoToBugsFromSpill">Open Bugs tab</button>' +
+                          '</div>'
+                        : '<p class="contrib-panel-dash__hint">Enter spillover <strong>reason</strong> and <strong>category</strong> for each row below.</p>';
                     panelSpill.innerHTML =
                         '<h2 id="contribPanelSpillTitle" class="contrib-panel-dash__title">Spillover</h2>' +
-                        '<p class="contrib-panel-dash__hint">Enter spillover <strong>reason</strong> and <strong>category</strong> for each row below.</p>' +
+                        '<div id="contribSpillPanelAlert" class="contrib-panel-alert contrib-panel-alert--err" role="alert" hidden></div>' +
+                        spillHintBlock +
+                        '<div id="contribSpillSaveMsg" class="contrib-panel-save-msg" role="status" aria-live="polite" hidden></div>' +
                         buildSpillIssueCardsHTML(spillIssues, editsByKey, token);
                     wireSaveButtons(panelSpill, token);
                 } else {
@@ -1944,9 +2541,22 @@
 
             if (panelBug) {
                 if (showBug) {
+                    var bugDoneSpillRemaining =
+                        hints.mixed && bugPart.todo.length === 0 && spillPart.todo.length > 0;
+                    var bugHintBlock = bugDoneSpillRemaining
+                        ? '<div class="contrib-spill-done-cta" role="status">' +
+                          '<div class="contrib-spill-done-cta__copy">' +
+                          '<p class="contrib-spill-done-cta__lead">Bugs are complete for every issue in this invite.</p>' +
+                          '<p class="contrib-spill-done-cta__next"><strong>Spillover is still missing</strong> — open the <strong>Spillover</strong> tab and enter <strong>reason</strong> and <strong>category</strong> for each row.</p>' +
+                          '</div>' +
+                          '<button type="button" class="contrib-spill-done-cta__btn" id="contribGoToSpillFromBug">Open Spillover tab</button>' +
+                          '</div>'
+                        : '<p class="contrib-panel-dash__hint">For each bug row, choose <strong>Yes or No</strong> and enter <strong>RCA</strong>.</p>';
                     panelBug.innerHTML =
                         '<h2 id="contribPanelBugTitle" class="contrib-panel-dash__title">Bugs</h2>' +
-                        '<p class="contrib-panel-dash__hint">Enter <strong>PROD</strong> and <strong>RCA</strong> for each bug row.</p>' +
+                        '<div id="contribBugPanelAlert" class="contrib-panel-alert contrib-panel-alert--err" role="alert" hidden></div>' +
+                        bugHintBlock +
+                        '<div id="contribBugSaveMsg" class="contrib-panel-save-msg" role="status" aria-live="polite" hidden></div>' +
                         buildBugIssueCardsHTML(bugIssues, editsByKey, token);
                     wireSaveButtons(panelBug, token);
                 } else {
@@ -1962,6 +2572,7 @@
                 refreshMixedInviteHeader();
             }
             setupContribNavTabsDelegation();
+            initSubmittedStoreForToken(token);
         }
 
         function escapeHtml(s) {
@@ -1975,6 +2586,71 @@
 
         function escapeAttr(s) {
             return escapeHtml(s).replace(/'/g, '&#39;');
+        }
+
+        var contribSubmittedStore = { token: '', keys: [] };
+
+        function submittedStorageKey(token) {
+            return 'jiraSpilloverSubmitted:' + String(token || '').trim();
+        }
+
+        function loadSubmittedFromStorage(token) {
+            try {
+                var raw = sessionStorage.getItem(submittedStorageKey(token));
+                if (!raw) return [];
+                var arr = JSON.parse(raw);
+                return Array.isArray(arr) ? arr : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveSubmittedToStorage(token, keys) {
+            try {
+                sessionStorage.setItem(submittedStorageKey(token), JSON.stringify(keys));
+            } catch (e) {}
+        }
+
+        function renderSubmittedNavList() {
+            var ul = document.getElementById('contribSubmittedList');
+            if (!ul) return;
+            var keys = contribSubmittedStore.keys.slice().sort();
+            if (!keys.length) {
+                ul.innerHTML =
+                    '<li class="contrib-submitted-list__empty muted" role="presentation">None yet</li>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < keys.length; i++) {
+                html +=
+                    '<li class="contrib-submitted-list__item"><code>' +
+                    escapeHtml(keys[i]) +
+                    '</code></li>';
+            }
+            ul.innerHTML = html;
+        }
+
+        function initSubmittedStoreForToken(token) {
+            token = String(token || '').trim();
+            if (!token) return;
+            contribSubmittedStore.token = token;
+            contribSubmittedStore.keys = loadSubmittedFromStorage(token);
+            renderSubmittedNavList();
+        }
+
+        function recordSubmittedIssueKey(issueKey, token) {
+            token = String(token || '').trim();
+            var k = normalizeIssueKeyLookup(issueKey);
+            if (!token || !k) return;
+            if (contribSubmittedStore.token !== token) {
+                contribSubmittedStore.token = token;
+                contribSubmittedStore.keys = loadSubmittedFromStorage(token);
+            }
+            if (contribSubmittedStore.keys.indexOf(k) === -1) {
+                contribSubmittedStore.keys.push(k);
+                saveSubmittedToStorage(token, contribSubmittedStore.keys);
+            }
+            renderSubmittedNavList();
         }
 
         function categoryOptionsHtml(selected) {
@@ -2003,24 +2679,63 @@
                     '"' +
                     (c === selected ? ' selected' : '') +
                     '>' +
-                    (c ? escapeHtml(c) : 'PROD') +
+                    (c ? escapeHtml(c) : '(yes/no)') +
                     '</option>';
             }
             return o;
         }
 
+        /** Title-case a contributor name from the email local-part (e.g. alex.smith → Alex Smith). */
+        function formatNameFromInviteEmail(email) {
+            email = String(email || '').trim();
+            var at = email.indexOf('@');
+            if (at <= 0) return '';
+            var local = email.slice(0, at);
+            var plus = local.indexOf('+');
+            if (plus >= 0) local = local.slice(0, plus);
+            var parts = local.split(/[._-]+/).filter(function (p) {
+                return p.length > 0;
+            });
+            if (!parts.length) return '';
+            return parts
+                .map(function (p) {
+                    return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+                })
+                .join(' ');
+        }
+
+        /** Short name for sidebar welcome: assignee, derived from email, or Contributor. */
+        function contributorSidebarWelcomeName(data) {
+            data = data || {};
+            var scope = data.assigneeScope != null ? String(data.assigneeScope).trim() : '';
+            if (scope) return scope;
+            var fromEmail = formatNameFromInviteEmail(data.inviteeEmail);
+            if (fromEmail) return fromEmail;
+            return 'Contributor';
+        }
+
+        /** Main headline when the workspace loads. */
+        function contributorDisplayName(data) {
+            data = data || {};
+            var scope = data.assigneeScope != null ? String(data.assigneeScope).trim() : '';
+            if (scope) return scope;
+            var fromEmail = formatNameFromInviteEmail(data.inviteeEmail);
+            if (fromEmail) return fromEmail;
+            return 'Your workspace';
+        }
+
         function contributorRequestHeading(hints) {
             hints = hints || {};
             if (hints.onlySpillover) {
-                return "Hey, you're invited to fill the spillover data.";
+                return 'Use the Spillover tab for your assigned issues.';
             }
             if (hints.onlyBugs) {
-                return "Hey, you're invited to fill the bug data.";
+                return 'Use the Bugs tab for your assigned issues.';
             }
             if (hints.mixed) {
-                return "Hey, you're invited to fill the spillover data and bug data.";
+                return 'Use Spillover and Bugs tabs for your assigned issues.';
             }
-            return "Hey, you're invited to complete the fields for your assigned rows.";
+            return 'Use the tabs below for your assigned issues.';
         }
 
         function updateWorkspaceChrome(data, hints) {
@@ -2029,16 +2744,6 @@
             var shortName = fileLabel.replace(/\.[^.]+$/, '');
             if (shortName.length > 36) shortName = shortName.slice(0, 34) + '…';
             var assignee = data.assigneeScope ? String(data.assigneeScope).trim() : '';
-            var welcomeName = 'there';
-            if (assignee) {
-                welcomeName = assignee;
-            } else if (data.inviteeEmail) {
-                var em = String(data.inviteeEmail).trim();
-                var at = em.indexOf('@');
-                welcomeName = at > 0 ? em.slice(0, at) : em;
-            }
-            var wdn = document.getElementById('welcomeDisplayName');
-            if (wdn) wdn.textContent = welcomeName;
             var wm = document.getElementById('workspaceMeta');
             if (wm) {
                 var n = data.issues ? data.issues.length : 0;
@@ -2049,18 +2754,40 @@
             }
             var pt = document.getElementById('pageTitle');
             var ps = document.getElementById('pageSub');
-            var sub = '';
-            if (hints.onlySpillover) {
-                sub = '';
-            } else if (hints.onlyBugs) {
-                sub = 'Bug-only invite — PROD & RCA on each card.';
-            } else if (hints.mixed) {
-                sub = '';
-            } else {
-                sub = 'Contributor invite session.';
+            var displayName = contributorDisplayName(data);
+            if (pt) pt.textContent = displayName;
+            var wn = document.getElementById('contribSidebarWelcomeName');
+            if (wn) wn.textContent = contributorSidebarWelcomeName(data);
+            if (!ps) return;
+
+            if (hints.mixed) {
+                ps.textContent = '';
+                return;
             }
-            if (pt) pt.textContent = contributorRequestHeading(hints);
-            if (ps) ps.textContent = sub;
+
+            var st = getWorkspaceCompletionState(data);
+            var invite = contributorRequestHeading(hints);
+            var statsLine = '';
+            if (hints.onlySpillover && st.showSpill) {
+                statsLine = todoDoneStatPhrase(st.spillTodo, st.spillDone);
+            } else if (hints.onlyBugs && st.showBug) {
+                statsLine = todoDoneStatPhrase(st.bugTodo, st.bugDone);
+            } else {
+                var parts = [];
+                if (st.showSpill) parts.push(todoDoneStatPhrase(st.spillTodo, st.spillDone));
+                if (st.showBug) parts.push(todoDoneStatPhrase(st.bugTodo, st.bugDone));
+                statsLine = parts.join(' · ');
+            }
+
+            ps.innerHTML =
+                '<span class="contrib-page-head__invite">' +
+                escapeHtml(invite) +
+                '</span>' +
+                (statsLine
+                    ? '<br /><span class="contrib-page-head__statline muted">' +
+                      escapeHtml(statsLine) +
+                      '</span>'
+                    : '');
         }
 
         function restoreContributorLandingView() {
@@ -2075,6 +2802,8 @@
             }
             if (landing) landing.hidden = false;
             if (foot) foot.hidden = false;
+            var wn = document.getElementById('contribSidebarWelcomeName');
+            if (wn) wn.textContent = '—';
         }
 
         function triggerWorkspaceEnterAnimation() {
@@ -2100,6 +2829,8 @@
             if (pt) pt.textContent = 'Loading workspace…';
             if (wm) wm.textContent = '';
             if (ps) ps.textContent = '';
+            var wn = document.getElementById('contribSidebarWelcomeName');
+            if (wn) wn.textContent = '—';
         }
 
         function loadSession(token) {
@@ -2176,10 +2907,31 @@
         var fullAnalyzerBtn = document.getElementById('fullAnalyzerGate');
         if (fullAnalyzerBtn) {
             fullAnalyzerBtn.addEventListener('click', function () {
-                showBanner('Only administrators have access to the full analyzer.', 'err', 'session');
+                showAdminOnlyModal();
             });
         }
 
+        wireContribModals();
+        (function wireCrossTabCta() {
+            var shell = document.getElementById('workspaceShell');
+            if (!shell || shell.dataset.crossTabCtaWired === '1') return;
+            shell.dataset.crossTabCtaWired = '1';
+            shell.addEventListener('click', function (ev) {
+                if (ev.target && ev.target.closest('#contribGoToBugsFromSpill')) {
+                    var bugTab = document.querySelector(
+                        '#contribNavTabs .contrib-sidenav__btn[data-panel="bug"]'
+                    );
+                    if (bugTab) bugTab.click();
+                    return;
+                }
+                if (ev.target && ev.target.closest('#contribGoToSpillFromBug')) {
+                    var spillTab = document.querySelector(
+                        '#contribNavTabs .contrib-sidenav__btn[data-panel="spill"]'
+                    );
+                    if (spillTab) spillTab.click();
+                }
+            });
+        })();
         initTokenFromQuery();
     </script>
 </body>

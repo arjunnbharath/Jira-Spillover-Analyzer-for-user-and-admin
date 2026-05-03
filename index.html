@@ -87,7 +87,7 @@
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 1.1rem 0 0.85rem;
+            padding: 0 0 0.85rem;
             overflow: hidden;
             transition:
                 width var(--sidebar-dur) var(--sidebar-ease),
@@ -383,11 +383,12 @@
 
         .sidebar__brand {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 0.65rem;
-            padding: 0 1rem 1rem;
-            margin: 0 0.65rem 0.75rem;
-            border-bottom: 1px solid var(--border);
+            padding: 0.55rem 1rem 0.55rem;
+            margin: 0 0 0.65rem;
+            background: #151515;
+            border-radius: 0 0 12px 12px;
             transition:
                 padding var(--sidebar-dur) var(--sidebar-ease),
                 margin var(--sidebar-dur) var(--sidebar-ease);
@@ -467,11 +468,12 @@
             align-items: center;
             justify-content: flex-start;
             gap: 0;
-            padding: 0 0 0.85rem;
-            margin: 0 0 0.75rem;
+            padding: 0.55rem 0 0.55rem;
+            margin: 0 0 0.65rem;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
+            background: #151515;
         }
 
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__logo {
@@ -586,17 +588,28 @@
         }
 
         .sidebar__logo {
-            width: 34px;
-            height: 34px;
-            border-radius: var(--radius-sm);
-            background: linear-gradient(145deg, #2d2d2d, #141414);
-            border: 1px solid var(--border);
+            width: 48px;
+            height: 48px;
+            background: none;
+            border: none;
+            border-radius: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #fff;
+            flex-shrink: 0;
+            overflow: hidden;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .sidebar__logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transform: scale(1.65);
+            transform-origin: center center;
+            display: block;
         }
 
         .sidebar__title {
@@ -1781,9 +1794,117 @@
             font-size: 0.85em;
         }
 
-        #dashboardPhase .dash-view__activity {
+        #dashboardPhase .dash-view__top-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem 1.25rem;
             margin-top: 1rem;
             margin-bottom: 1.5rem;
+            align-items: stretch;
+        }
+        @media (min-width: 961px) {
+            #dashboardPhase .dash-view__top-grid {
+                grid-template-columns: repeat(2, minmax(20rem, 1fr));
+            }
+        }
+        @media (max-width: 960px) {
+            #dashboardPhase .dash-view__top-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        #dashboardPhase .dash-view__activity {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        #dashboardPhase .dash-view__submission {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        #dashboardPhase .dash-submission__refresh {
+            flex-shrink: 0;
+            padding: 0.38rem 0.75rem;
+            font-size: 0.72rem;
+        }
+        /* Match Contributor updates: header fixed, tbody scrolls at same max-height as .dash-activity__list */
+        #dashboardPhase .dash-submission__table-wrap {
+            margin-top: 0.35rem;
+            padding: 0.5rem 0.85rem 0.55rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.18);
+            overflow: visible;
+        }
+        #dashboardPhase .dash-submission__table-wrap .invite-bulk-table.dash-submission__table {
+            display: block;
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+        }
+        #dashboardPhase .dash-submission__table-wrap thead {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        #dashboardPhase .dash-submission__table-wrap thead th {
+            padding: 0.2rem 0.5rem 0.55rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.625rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(250, 249, 245, 0.45);
+            text-align: left;
+            vertical-align: bottom;
+        }
+        #dashboardPhase .dash-submission__table-wrap thead th:first-child {
+            width: 38%;
+        }
+        #dashboardPhase .dash-submission__table-wrap tbody {
+            display: block;
+            max-height: min(34vh, 260px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #dashboardPhase .dash-submission__table-wrap tbody::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
+        }
+        #dashboardPhase .dash-submission__table-wrap tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        #dashboardPhase .dash-submission__table-wrap tbody td {
+            padding: 0.42rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.8125rem;
+            vertical-align: middle;
+        }
+        #dashboardPhase .dash-submission__table-wrap tbody tr:last-child td {
+            border-bottom: none;
+        }
+        #dashboardPhase .dash-submission__table-wrap .invite-bulk-table {
+            margin-top: 0;
+        }
+        #dashboardPhase .dash-submission__empty {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            line-height: 1.45;
+            margin: 0;
+            margin-top: 0.65rem;
+        }
+        #dashboardPhase .dash-submission__empty[hidden] {
+            display: none !important;
+        }
+        #dashboardPhase .dash-submission__loading-cell {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            padding: 0.65rem 0.5rem;
         }
 
         #dashboardPhase .dash-activity .panel-dark__body.dash-activity__body {
@@ -1791,8 +1912,9 @@
             padding-bottom: 1.1rem;
         }
 
-        #dashboardPhase .dash-activity__head .dash-view__panel-desc {
-            margin-top: 0.15rem;
+        #dashboardPhase .dash-submission .panel-dark__body.dash-submission__body {
+            padding-top: 1rem;
+            padding-bottom: 1.1rem;
         }
 
         #dashboardPhase .dash-activity__refresh {
@@ -2388,6 +2510,119 @@
             justify-content: flex-end;
         }
 
+        .export-contrib-modal__intro {
+            margin: 0 0 0.85rem;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+        .export-contrib-modal.workspace-db-clear-modal {
+            max-width: min(44rem, calc(100vw - 2rem));
+        }
+        .invite-email-preview-overlay .invite-email-preview-modal {
+            max-width: min(52rem, calc(100vw - 2rem));
+        }
+        .invite-email-preview-iframe-wrap {
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            background: #ececec;
+            margin-top: 0.35rem;
+        }
+        .invite-email-preview-iframe {
+            width: 100%;
+            height: min(480px, 68vh);
+            border: 0;
+            display: block;
+            vertical-align: top;
+        }
+        .export-contrib-modal__table-wrap {
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            overflow: auto;
+            max-height: min(20rem, 48vh);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(100, 116, 139, 0.45) transparent;
+        }
+        .export-contrib-modal__table-wrap::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .export-contrib-modal__table-wrap::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 4px;
+        }
+        .export-contrib-modal__table-wrap::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.35);
+            border-radius: 4px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        .export-contrib-modal__table-wrap::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.55);
+            background-clip: padding-box;
+        }
+        .export-contrib-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+            line-height: 1.45;
+        }
+        .export-contrib-table thead th {
+            text-align: left;
+            padding: 0.45rem 0.85rem 0.5rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: transparent;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .export-contrib-table tbody td {
+            padding: 0.45rem 0.85rem;
+            vertical-align: top;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        .export-contrib-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .export-contrib-table__assignee {
+            font-weight: 500;
+            max-width: 14rem;
+            word-break: break-word;
+        }
+        .export-contrib-table__status {
+            font-weight: 400;
+        }
+        .export-contrib-table tbody td.export-contrib-table__status--ok {
+            color: #15803d;
+            font-weight: 500;
+        }
+        .export-contrib-table tbody td.export-contrib-table__status--pending {
+            color: #a16207;
+            font-weight: 500;
+        }
+        .export-contrib-table tbody td.export-contrib-table__status--muted {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .export-contrib-modal__loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.5rem 1rem 1.25rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        .export-contrib-modal__loading .auth-gate-overlay__spinner {
+            margin-bottom: 0;
+        }
+
         #setupPhase.uc-setup .uc-field-label {
             display: block;
             font-size: 0.65rem;
@@ -2494,12 +2729,16 @@
             color: var(--text);
         }
         .invite-people-insight {
-            margin-top: 1rem;
+            margin-top: 0.85rem;
         }
         .invite-people-cols {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
         }
         @media (max-width: 720px) {
             .invite-people-cols {
@@ -2507,31 +2746,97 @@
             }
         }
         .invite-people-col {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 0.75rem 0.85rem;
+            padding: 0.65rem 0.75rem;
+            min-width: 0;
         }
-        .invite-people-col h4 {
-            font-size: 0.65rem;
+        .invite-people-col + .invite-people-col {
+            border-left: 1px solid var(--border);
+        }
+        @media (max-width: 720px) {
+            .invite-people-col + .invite-people-col {
+                border-left: 0;
+                border-top: 1px solid var(--border);
+            }
+        }
+        .invite-people-col__head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.45rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .invite-people-col__title {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-dim);
-            margin-bottom: 0.5rem;
-        }
-        .invite-people-col ul {
-            list-style: none;
-            font-size: 0.78rem;
             color: var(--text-muted);
-            line-height: 1.4;
         }
-        .invite-people-col li {
-            margin-bottom: 0.4rem;
+        .invite-people-col__total {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
         }
-        .invite-people-col .insight-stat {
+        .invite-people-note {
+            margin: 0 0 0.4rem;
+            font-size: 0.68rem;
+            line-height: 1.35;
+        }
+        .invite-people-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 0.32rem;
+        }
+        .invite-people-row {
+            display: grid;
+            grid-template-columns: minmax(0, min(32%, 7.5rem)) minmax(0, 1fr) auto;
+            align-items: baseline;
+            gap: 0.4rem 0.5rem;
+            font-size: 0.76rem;
+            line-height: 1.25;
+            min-width: 0;
+        }
+        .invite-people-row__name {
+            color: var(--text);
+            font-weight: 500;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .invite-people-row__keys {
+            min-width: 0;
+            font-size: 0.65rem;
+            font-family: ui-monospace, 'Consolas', monospace;
+            color: var(--text-dim);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .invite-people-row[title] {
+            cursor: help;
+        }
+        .invite-people-row__count {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            font-variant-numeric: tabular-nums;
+            justify-self: end;
+            white-space: nowrap;
+        }
+        .invite-people-empty {
+            margin: 0;
             font-size: 0.72rem;
             color: var(--text-dim);
-            margin-bottom: 0.5rem;
+            line-height: 1.35;
+        }
+        .invite-people-foot {
+            margin-top: 0.6rem;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            line-height: 1.4;
         }
         .invite-help-text {
             line-height: 1.45;
@@ -2558,11 +2863,182 @@
             font-size: 0.78rem;
         }
 
+        /* Single invite link section */
+        .invite-single-section {
+            margin-top: 1.75rem;
+        }
+        .invite-single-section__header {
+            margin-bottom: 0.9rem;
+        }
+        .invite-single-section__title {
+            margin-bottom: 0.35rem;
+        }
+        .invite-single-section__lead {
+            margin: 0;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            max-width: 40rem;
+        }
+
+        .panel.db-load-panel.invite-single-form {
+            margin-top: 0;
+            padding: 0;
+            overflow: hidden;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.18) 100%);
+            box-shadow: var(--panel-shadow);
+        }
+        .invite-single-form__group {
+            padding: 0.95rem 1.15rem 1rem;
+            border-bottom: 0;
+        }
+        .invite-single-form__group--last {
+            padding-bottom: 1.05rem;
+        }
+        .invite-single-form__group--last > .field:first-child {
+            margin-bottom: 0.9rem;
+        }
+
+        .invite-single-form .field {
+            margin-bottom: 0;
+        }
+        .panel.db-load-panel.invite-single-form .field label {
+            font-size: 0.74rem;
+        }
+        .invite-single-form__row--bottom {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 0.85rem 1.1rem;
+            margin-bottom: 0;
+        }
+        .invite-single-form__field--grow {
+            flex: 1 1 14rem;
+            min-width: 10rem;
+        }
+        .invite-single-form__field--expires {
+            flex: 0 0 auto;
+            width: 8.5rem;
+            min-width: 6.5rem;
+        }
+        .invite-single-form__field--expires input {
+            max-width: 100%;
+        }
+        .invite-single-form__actions {
+            flex: 0 0 auto;
+        }
+        .invite-single-form__actions .btn {
+            white-space: nowrap;
+        }
+        @media (max-width: 520px) {
+            .invite-single-form__row--bottom .invite-single-form__actions {
+                width: 100%;
+            }
+            .invite-single-form__row--bottom .invite-single-form__actions .btn {
+                width: 100%;
+            }
+        }
+
+        .invite-single-result {
+            margin-top: 0;
+            padding: 0.95rem 1.15rem 1.05rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(59, 130, 246, 0.06);
+        }
+        .invite-single-result__label {
+            margin-top: 0;
+            margin-bottom: 0.45rem;
+        }
+        .invite-single-result__row {
+            margin-top: 0;
+        }
+        .invite-single-result__meta {
+            margin-top: 0.4rem;
+            margin-bottom: 0;
+        }
+
+        /* Per-person links (bulk invites) */
+        .invite-bulk-section {
+            margin-top: 1.5rem;
+        }
+        .invite-bulk-section__header {
+            margin-bottom: 0.9rem;
+        }
+        .invite-bulk-section__title {
+            margin-bottom: 0.35rem;
+        }
+        .invite-bulk-section__lead {
+            margin: 0;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            max-width: 40rem;
+        }
+        .panel.db-load-panel.invite-bulk-card {
+            margin-top: 0;
+            padding: 0.95rem 1.15rem 1.05rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.16) 100%);
+            box-shadow: var(--panel-shadow);
+        }
+        .invite-bulk-card__kicker {
+            margin: 0 0 0.4rem;
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .invite-bulk-card__hint {
+            margin: 0 0 0.75rem;
+            line-height: 1.45;
+        }
+        .invite-bulk-card__btn {
+            margin-bottom: 0;
+        }
+        .invite-bulk-panel {
+            margin-top: 0;
+        }
+        .invite-bulk-panel:not([hidden]) {
+            margin-top: 0.9rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .invite-bulk-panel-inner {
+            min-width: 0;
+        }
+        .invite-bulk-panel__toolbar {
+            margin-bottom: 0.35rem;
+        }
+        .invite-bulk-panel__expires {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .invite-bulk-panel__hint {
+            margin: 0 0 0.55rem;
+            line-height: 1.45;
+        }
+        .invite-bulk-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.15);
+        }
+
         .invite-bulk-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 0.75rem;
+            margin-top: 0;
             font-size: 0.78rem;
+        }
+        .invite-bulk-table-wrap .invite-bulk-table thead th {
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .invite-bulk-table th,
         .invite-bulk-table td {
@@ -2581,6 +3057,19 @@
             font-family: ui-monospace, 'Consolas', monospace;
             font-size: 0.72rem;
             padding: 0.35rem 0.45rem;
+        }
+        #inviteBulkPanel .invite-bulk-table input.invite-bulk-email-input {
+            width: 100%;
+            min-width: 8rem;
+            max-width: 18rem;
+            font-size: 0.78rem;
+            padding: 0.35rem 0.45rem;
+        }
+        .invite-bulk-email-cell {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            max-width: 12rem;
+            word-break: break-word;
         }
         .invite-bulk-status {
             max-width: 14rem;
@@ -2692,6 +3181,17 @@
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        /* Checkboxes/radios must not inherit full-width input rules from .field input */
+        .field input[type='checkbox'],
+        .field input[type='radio'] {
+            width: auto;
+            height: auto;
+            min-width: 1rem;
+            padding: 0;
+            flex-shrink: 0;
+            vertical-align: top;
         }
 
         .button-group {
@@ -3835,7 +4335,15 @@
         </header>
         <aside class="sidebar sidebar--rail" id="sidebarNavHost" aria-label="Primary navigation">
             <div class="sidebar__brand">
-                <div class="sidebar__logo" aria-hidden="true">J</div>
+                <div class="sidebar__logo" aria-hidden="true">
+                    <img
+                        src="images/LOGO.gif"
+                        alt=""
+                        width="48"
+                        height="48"
+                        decoding="async"
+                    />
+                </div>
                 <div class="sidebar__brand-text">
                     <span class="sidebar__title">Jira Spillover<span>Analyzer</span></span>
                 </div>
@@ -3959,18 +4467,18 @@
                                             <div class="upload-visual uc-drop-visual">
                                                 <div class="upload-lead uc-drop-lead">
                                                     <svg class="upload-icon uc-drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                                                        <path d="M12 16V4m0 0l4 4m-4-4L8 8" stroke-linecap="round" stroke-linejoin="round"/>
-                                                        <path d="M4 14v4a2 2 0 002 2h12a2 2 0 002-2v-4" stroke-linecap="round"/>
-                                                    </svg>
+                                    <path d="M12 16V4m0 0l4 4m-4-4L8 8" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 14v4a2 2 0 002 2h12a2 2 0 002-2v-4" stroke-linecap="round"/>
+                                </svg>
                                                     <div class="uc-drop-copy">
                                                         <span class="uc-drop-title">Choose or drop a file</span>
                                                         <span class="uc-drop-sub">First sheet is analyzed</span>
                                                     </div>
-                                                </div>
-                                                <div class="upload-actions">
+                            </div>
+                            <div class="upload-actions">
                                                     <span class="btn-upload uc-drop-btn">Browse</span>
-                                                </div>
-                                            </div>
+                            </div>
+                        </div>
                                         </label>
                                     </div>
                                 </div>
@@ -4019,23 +4527,23 @@
                                     <div class="uc-panel-run__bd">
                                         <div class="file-chip uc-file-chip">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                                                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
-                                            </svg>
-                                            <span><strong>Loaded</strong> · <span id="fileName"></span></span>
-                                        </div>
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                                </svg>
+                                <span><strong>Loaded</strong> · <span id="fileName"></span></span>
+                            </div>
                                         <div class="field uc-field">
-                                            <label for="baseVersion">Base version</label>
-                                            <input type="text" id="baseVersion" placeholder="e.g. 14.0" autocomplete="off" />
-                                        </div>
+                                <label for="baseVersion">Base version</label>
+                                <input type="text" id="baseVersion" placeholder="e.g. 14.0" autocomplete="off" />
+                            </div>
                                         <div class="field uc-field">
                                             <label for="compareThreshold">Sprint threshold <span class="field-hint">(SpillOver Yes when any sprint equals this)</span></label>
                                             <input type="text" id="compareThreshold" placeholder="e.g. 14.1" inputmode="decimal" autocomplete="off" />
-                                        </div>
+                            </div>
                                         <div class="button-group uc-actions">
-                                            <button type="button" class="btn btn-primary" onclick="runProceed()">Proceed</button>
-                                            <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
-                                        </div>
+                                <button type="button" class="btn btn-primary" onclick="runProceed()">Proceed</button>
+                                <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                            </div>
                                     </div>
                                 </div>
                             </aside>
@@ -4082,28 +4590,55 @@
                         </article>
                     </section>
 
-                    <section id="dashContributorActivity" class="panel-dark dash-view__activity dash-activity" aria-labelledby="dashActivityTitle">
-                        <div class="panel-dark__head dash-view__panel-head dash-activity__head">
-                            <div>
-                                <h2 id="dashActivityTitle" class="dash-view__panel-title">Contributor updates</h2>
-                                <p class="dash-view__panel-desc">One row per update: assignee name, issue key, Spillover and/or Bug, and time (no field text).</p>
+                    <div class="dash-view__top-grid">
+                        <section id="dashContributorActivity" class="panel-dark dash-view__activity dash-activity" aria-labelledby="dashActivityTitle">
+                            <div class="panel-dark__head dash-view__panel-head dash-activity__head">
+                                <div>
+                                    <h2 id="dashActivityTitle" class="dash-view__panel-title">Contributor updates</h2>
                             </div>
-                            <button type="button" class="btn btn-secondary dash-activity__refresh" id="dashActivityRefresh">Refresh</button>
-                        </div>
-                        <div class="panel-dark__body dash-activity__body">
-                            <p class="dash-activity__status" id="dashActivityStatus" hidden></p>
-                            <div class="dash-activity__list-wrap">
-                                <div class="dash-activity__thead" id="dashActivityColumnHeaders" hidden>
-                                    <span class="dash-activity__th dash-activity__th--assignee">Assignee</span>
-                                    <span class="dash-activity__th dash-activity__th--issue">Ticket</span>
-                                    <span class="dash-activity__th dash-activity__th--kind">Update</span>
-                                    <span class="dash-activity__th dash-activity__th--time">When</span>
+                                <button type="button" class="btn btn-secondary dash-activity__refresh" id="dashActivityRefresh">Refresh</button>
+                            </div>
+                            <div class="panel-dark__body dash-activity__body">
+                                <p class="dash-activity__status" id="dashActivityStatus" hidden></p>
+                                <div class="dash-activity__list-wrap">
+                                    <div class="dash-activity__thead" id="dashActivityColumnHeaders" hidden>
+                                        <span class="dash-activity__th dash-activity__th--assignee">Assignee</span>
+                                        <span class="dash-activity__th dash-activity__th--issue">Ticket</span>
+                                        <span class="dash-activity__th dash-activity__th--kind">Update</span>
+                                        <span class="dash-activity__th dash-activity__th--time">When</span>
+                                    </div>
+                                    <ul class="dash-activity__list" id="dashActivityList"></ul>
                                 </div>
-                                <ul class="dash-activity__list" id="dashActivityList"></ul>
+                                <p class="dash-activity__empty" id="dashActivityEmpty">Save your workbook to the database so contributor edits can be linked to this session.</p>
                             </div>
-                            <p class="dash-activity__empty" id="dashActivityEmpty">Save your workbook to the database so contributor edits can be linked to this session.</p>
-                        </div>
-                    </section>
+                        </section>
+
+                        <section id="dashSubmissionSummary" class="panel-dark dash-view__submission dash-submission" aria-labelledby="dashSubmissionTitle">
+                            <div class="panel-dark__head dash-view__panel-head dash-submission__head">
+                                <div>
+                                    <h2 id="dashSubmissionTitle" class="dash-view__panel-title">Submission status</h2>
+                                </div>
+                                <button type="button" class="btn btn-secondary dash-submission__refresh" id="dashSubmissionRefresh">Refresh</button>
+                            </div>
+                            <div class="panel-dark__body dash-submission__body">
+                                <p class="dash-activity__status" id="dashSubmissionStatus" hidden></p>
+                                <div class="dash-submission__table-wrap" id="dashSubmissionTableWrap" hidden>
+                                    <table class="invite-bulk-table dash-submission__table" role="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Assignee</th>
+                                                <th scope="col">Submission</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dashSubmissionTbody"></tbody>
+                                    </table>
+                                </div>
+                                <p class="dash-submission__empty" id="dashSubmissionEmpty">
+                                    Save your workbook to the database so submission status can use your upload.
+                                </p>
+                            </div>
+                        </section>
+                    </div>
 
                     <div class="dash-row dash-view__panels">
                         <section class="panel-dark chart-panel dash-view__chart" aria-labelledby="dashChartTitle">
@@ -4116,22 +4651,22 @@
                             <p class="chart-note dash-view__chart-note" id="chartNote">Run analysis to plot spillover across rows.</p>
                             <div class="panel-dark__body dash-view__chart-body" id="chartPanelBody">
                                 <div class="dash-view__chart-frame">
-                                    <svg class="chart-svg" id="analysisChartSvg" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
-                                </div>
+                                <svg class="chart-svg" id="analysisChartSvg" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
                             </div>
+                        </div>
                         </section>
                         <section class="panel-dark dash-view__side" aria-labelledby="dashIssueTitle">
                             <div class="panel-dark__head dash-view__panel-head">
                                 <div>
                                     <h2 id="dashIssueTitle" class="dash-view__panel-title">Issue types</h2>
                                     <p class="dash-view__panel-desc">Distribution after analysis.</p>
-                                </div>
                             </div>
+                                </div>
                             <div class="panel-dark__body dash-view__side-body">
                                 <div id="previewCount" class="preview-box preview-box--empty dash-view__preview">
                                     <p class="preview-hint">Issue-type counts appear here once you run Proceed.</p>
-                                </div>
                             </div>
+                        </div>
                         </section>
                     </div>
 
@@ -4360,7 +4895,7 @@
                                     type="button"
                                     id="exportDownloadBtn"
                                     class="export-filename-panel__btn"
-                                    onclick="processExcel()"
+                                    onclick="startExportDownloadWithContributorCheck()"
                                     title="Download Excel workbook"
                                 >
                                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -4417,57 +4952,124 @@
                                 />
                             </div>
                             <div id="invitePeopleInsight" class="invite-people-insight" hidden></div>
-                            <div class="field" style="margin-top: 1rem">
-                                <p class="section-label">One link per person</p>
-                                <p class="db-load-hint invite-help-text" style="margin-bottom: 0.65rem">
-                                    Uses the <strong>same threshold</strong> as above. Creates <strong>one invite per assignee name</strong> (each person with spillover <em>or</em> bug rows gets one link — not one link per issue). Copy each row and send it only to that assignee.
-                                </p>
-                                <button
-                                    type="button"
-                                    id="inviteBulkCreateBtn"
-                                    class="btn btn-primary"
-                                    onclick="submitCreateBulkInvites()"
-                                >
-                                    Create links for each assignee
-                                </button>
+                        </div>
+                    </section>
+                    <section class="data-section invite-bulk-section">
+                        <div class="invite-bulk-section__header">
+                            <h3 class="data-section__title invite-bulk-section__title">Per-person links</h3>
+                            <p class="invite-bulk-section__lead">
+                                One private link per assignee who has spillover or bug work at your threshold. Copy or email each row only to that person.
+                            </p>
+                        </div>
+                        <div class="panel db-load-panel invite-bulk-card">
+                            <p class="invite-bulk-card__kicker">Bulk invites</p>
+                            <p class="invite-bulk-card__hint db-load-hint">
+                                Uses the <strong>same upload and threshold</strong> as Invite settings. Not one link per issue — one link per name in the lists above.
+                            </p>
+                            <button
+                                type="button"
+                                id="inviteBulkCreateBtn"
+                                class="btn btn-primary invite-bulk-card__btn"
+                                onclick="submitCreateBulkInvites()"
+                            >
+                                Create links for each assignee
+                            </button>
+                            <div id="inviteBulkPanel" class="invite-result-panel invite-bulk-panel" hidden></div>
+                        </div>
+                    </section>
+                    <div
+                        id="inviteEmailPreviewOverlay"
+                        class="workspace-db-clear-overlay invite-email-preview-overlay"
+                        hidden
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="inviteEmailPreviewTitle"
+                    >
+                                <div class="workspace-db-clear-backdrop" onclick="closeInviteEmailPreviewModal()"></div>
+                                <div class="workspace-db-clear-modal invite-email-preview-modal">
+                                    <h2 id="inviteEmailPreviewTitle" class="workspace-db-clear-modal__title">Styled email (HTML)</h2>
+                                    <p class="export-contrib-modal__intro" style="margin-top: 0">
+                                        <strong>Email</strong> opens an in-window message you can copy (or open your mail app from there). It does not include the HTML layout below.
+                                        For the styled design: <strong>Copy HTML</strong> and paste where your client allows HTML. Preview below is the HTML you copy.
+                                    </p>
+                                    <div class="invite-email-preview-iframe-wrap">
+                                        <iframe id="inviteEmailPreviewIframe" class="invite-email-preview-iframe" title="Email preview" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+                                    </div>
+                                    <div class="workspace-db-clear-modal__actions" style="margin-top: 0.75rem; justify-content: space-between">
+                                        <button type="button" class="btn btn-secondary" onclick="closeInviteEmailPreviewModal()">Close</button>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end">
+                                            <button type="button" class="btn btn-secondary" onclick="copyInviteEmailHtmlToClipboard()">Copy HTML</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div id="inviteBulkPanel" class="invite-result-panel" hidden></div>
-                            <div class="field" style="margin-top: 1rem">
-                                <label for="inviteEmailInput">Contributor email <span class="field-hint">(optional; shown on their page)</span></label>
-                                <input type="email" id="inviteEmailInput" class="export-filename-panel__input" placeholder="name@company.com" autocomplete="off" />
+                            <div
+                                id="invitePlainEmailOverlay"
+                                class="workspace-db-clear-overlay invite-email-preview-overlay"
+                                hidden
+                                role="dialog"
+                                aria-modal="true"
+                                aria-labelledby="invitePlainEmailTitle"
+                            >
+                                <div class="workspace-db-clear-backdrop" onclick="closeInvitePlainEmailModal()"></div>
+                                <div class="workspace-db-clear-modal invite-email-preview-modal">
+                                    <h2 id="invitePlainEmailTitle" class="workspace-db-clear-modal__title">Email message</h2>
+                                    <p class="export-contrib-modal__intro" style="margin-top: 0">
+                                        Everything stays in this window. Copy the message and paste into Gmail / Outlook, or use
+                                        <strong>Open in mail app</strong> only if you want your default mail program.
+                                    </p>
+                                    <div class="field" style="margin-top: 0.35rem">
+                                        <label for="invitePlainEmailTo">To</label>
+                                        <input type="email" id="invitePlainEmailTo" readonly class="export-filename-panel__input" autocomplete="off" />
+                                    </div>
+                                    <div class="field">
+                                        <label for="invitePlainEmailSubject">Subject</label>
+                                        <input type="text" id="invitePlainEmailSubject" readonly class="export-filename-panel__input" autocomplete="off" />
+                                    </div>
+                                    <div class="field">
+                                        <label for="invitePlainEmailBody">Message</label>
+                                        <textarea id="invitePlainEmailBody" readonly rows="14" class="export-filename-panel__input" style="resize: vertical; min-height: 12rem; font-family: inherit; line-height: 1.45"></textarea>
+                                    </div>
+                                    <div class="workspace-db-clear-modal__actions" style="margin-top: 0.75rem; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem">
+                                        <button type="button" class="btn btn-secondary" onclick="closeInvitePlainEmailModal()">Close</button>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end">
+                                            <button type="button" class="btn btn-secondary" onclick="copyInvitePlainEmailBody()">Copy message</button>
+                                            <button type="button" class="btn btn-secondary" onclick="copyInvitePlainEmailAll()">Copy all</button>
+                                            <button type="button" class="btn btn-primary" onclick="openInvitePlainEmailExternal()">Open in mail app</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="field">
-                                <label for="inviteNoteInput">Note <span class="field-hint">(optional)</span></label>
-                                <input type="text" id="inviteNoteInput" class="export-filename-panel__input" placeholder="e.g. Sprint 14.1 spillover review" autocomplete="off" />
+                    <section class="data-section invite-single-section">
+                        <div class="invite-single-section__header">
+                            <h3 class="data-section__title invite-single-section__title">Single invite link</h3>
+                            <p class="invite-single-section__lead">
+                                One link for a contributor to open the workspace below. Same upload and sprint threshold as Invite settings.
+                            </p>
+                        </div>
+                        <div class="panel db-load-panel invite-single-form">
+                            <div class="invite-single-form__group invite-single-form__group--last">
+                                <div class="field">
+                                    <label for="inviteEmailInput">Contributor email <span class="field-hint">(optional · shown on their page)</span></label>
+                                    <input type="email" id="inviteEmailInput" class="export-filename-panel__input" placeholder="name@company.com" autocomplete="off" />
+                                </div>
+                                <div class="invite-single-form__row invite-single-form__row--bottom">
+                                    <div class="field invite-single-form__field--grow">
+                                        <label for="inviteNoteInput">Note <span class="field-hint">(optional)</span></label>
+                                        <input type="text" id="inviteNoteInput" class="export-filename-panel__input" placeholder="e.g. Sprint 14.1 review" autocomplete="off" />
+                                    </div>
+                                    <div class="field invite-single-form__field--expires">
+                                        <label for="inviteExpiresInput">Expires (days)</label>
+                                        <input type="number" id="inviteExpiresInput" class="export-filename-panel__input" min="1" max="365" value="30" />
+                                    </div>
+                                    <div class="invite-single-form__actions">
+                                        <button type="button" id="inviteSingleCreateBtn" class="btn btn-primary" onclick="submitCreateInvite()">Create invite link</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="field">
-                                <label for="inviteExpiresInput">Expires in (days)</label>
-                                <input type="number" id="inviteExpiresInput" class="export-filename-panel__input" min="1" max="365" value="30" style="max-width:8rem" />
-                            </div>
-                            <div class="field">
-                                <label for="inviteAssigneeScopeInput"
-                                    >Exact assignee name <span class="field-hint">(optional — for a single link, restrict to this name from the Assignee column)</span></label
-                                >
-                                <input
-                                    type="text"
-                                    id="inviteAssigneeScopeInput"
-                                    class="export-filename-panel__input"
-                                    placeholder="e.g. Jane Doe (must match export)"
-                                    autocomplete="off"
-                                />
-                            </div>
-                            <div class="field">
-                                <label class="field-hint" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
-                                    <input type="checkbox" id="inviteFilterAssignee" />
-                                    Only show rows where Assignee contains the email above (if no exact name)
-                                </label>
-                            </div>
-                            <div class="button-group">
-                                <button type="button" id="inviteSingleCreateBtn" class="btn btn-primary" onclick="submitCreateInvite()">Create invite link</button>
-                            </div>
-                            <div id="inviteResultPanel" class="invite-result-panel" hidden>
-                                <p class="section-label" style="margin-top:1rem">Invite link</p>
-                                <div class="invite-link-row">
+                            <div id="inviteResultPanel" class="invite-result-panel invite-single-result" hidden>
+                                <p class="section-label invite-single-result__label">Generated link</p>
+                                <div class="invite-link-row invite-single-result__row">
                                     <input type="text" id="inviteLinkOutput" readonly class="export-filename-panel__input invite-link-input" />
                                     <button
                                         type="button"
@@ -4477,8 +5079,16 @@
                                     >
                                         Copy
                                     </button>
+                                    <button
+                                        type="button"
+                                        id="inviteSingleEmailBtn"
+                                        class="btn btn-secondary"
+                                        onclick="openSingleInvitePlainEmail()"
+                                    >
+                                        Email
+                                    </button>
                                 </div>
-                                <p id="inviteMetaText" class="db-load-hint"></p>
+                                <p id="inviteMetaText" class="db-load-hint invite-single-result__meta"></p>
                             </div>
                         </div>
                     </section>
@@ -4530,6 +5140,34 @@
                     spellcheck="false"
                 />
                 <ul id="globalSearchResults" class="global-search-results"></ul>
+            </div>
+        </div>
+
+        <div id="exportContributorStatusOverlay" class="workspace-db-clear-overlay" hidden>
+            <div class="workspace-db-clear-backdrop" onclick="closeExportContributorModal()" aria-hidden="true"></div>
+            <div
+                class="workspace-db-clear-modal export-contrib-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="exportContributorModalTitle"
+                onclick="event.stopPropagation()"
+            >
+                <h2 id="exportContributorModalTitle" class="workspace-db-clear-modal__title">Contributor status before download</h2>
+                <p class="export-contrib-modal__intro">
+                    Each assignee matches your Send invite workload (spillover threshold and bug rows). Review the list, then continue to download.
+                </p>
+                <div id="exportContributorModalBody"></div>
+                <div class="workspace-db-clear-modal__actions" style="margin-top: 1rem">
+                    <button type="button" class="btn btn-secondary" onclick="closeExportContributorModal()">Cancel</button>
+                    <button
+                        type="button"
+                        id="exportContributorModalContinueBtn"
+                        class="btn btn-primary"
+                        onclick="confirmExportContributorModalDownload()"
+                    >
+                        Continue to download
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -4702,6 +5340,9 @@
         /** When set, this success copy is shown only while the main dashboard view is active. */
         let dashboardOnlySuccessText = null;
 
+        /** Contributor updates + Submission status tables on Overview: same max row count. */
+        var DASH_PANEL_RECENT_LIMIT = 11;
+
         let toastDismissTimer = null;
         let toastFadeFallbackTimer = null;
         let toastTransitionEndCleanup = null;
@@ -4798,6 +5439,8 @@
 
         /** Database upload id when file was saved or loaded from DB (used to merge shared issue edits). */
         let currentUploadId = null;
+        /** Invalidates in-flight export contributor checks when the user closes the modal during loading. */
+        let exportContributorModalReqToken = 0;
         /** Poll contributor activity while Overview dashboard is visible. */
         let contributorActivityPollTimer = null;
 
@@ -4833,6 +5476,20 @@
 
         function setDashActivityStatus(message, kind) {
             var el = document.getElementById('dashActivityStatus');
+            if (!el) return;
+            if (!message) {
+                el.hidden = true;
+                el.textContent = '';
+                el.removeAttribute('data-kind');
+                return;
+            }
+            el.hidden = false;
+            el.textContent = message;
+            el.setAttribute('data-kind', kind || '');
+        }
+
+        function setDashSubmissionStatus(message, kind) {
+            var el = document.getElementById('dashSubmissionStatus');
             if (!el) return;
             if (!message) {
                 el.hidden = true;
@@ -4890,7 +5547,8 @@
                         base +
                             '/api/uploads/' +
                             encodeURIComponent(currentUploadId) +
-                            '/issue-edits/recent?limit=25'
+                            '/issue-edits/recent?limit=' +
+                            encodeURIComponent(String(DASH_PANEL_RECENT_LIMIT))
                     );
                 })
                 .then(function (r) {
@@ -5051,6 +5709,7 @@
                     var dash = document.getElementById('dashboardPhase');
                     if (dash && !dash.hidden) {
                         refreshContributorActivity();
+                        refreshDashSubmissionSummary();
                     }
                 })
                 .catch(function () {});
@@ -5124,6 +5783,7 @@
             }
             if (view === 'dashboard') {
                 refreshContributorActivity();
+                refreshDashSubmissionSummary();
             }
             if (
                 view === 'dashboard' ||
@@ -5277,6 +5937,8 @@
                         invites: (invitesFromApi || []).map(function (row) {
                             return {
                                 assignee: row.assignee,
+                                inviteeEmail: row.inviteeEmail != null ? String(row.inviteeEmail) : '',
+                                token: row.token != null ? String(row.token) : '',
                                 inviteUrl: row.inviteUrl || ''
                             };
                         })
@@ -5310,8 +5972,340 @@
             stopBulkInviteStatusPoll();
         }
 
+        function persistBulkInvitePanelFromDom(panel) {
+            if (!panel || panel.hidden) return;
+            var sel = document.getElementById('inviteUploadSelect');
+            var uploadId = panel.dataset.uploadId || (sel && sel.value);
+            if (!uploadId) return;
+            var thVal = ((document.getElementById('inviteThresholdInput') || {}).value || '').trim();
+            var exp = panel.getAttribute('data-expires-at') || panel.dataset.expiresAt || '';
+            var invites = [];
+            panel.querySelectorAll('tbody tr[data-invite-token]').forEach(function (tr) {
+                var tok = tr.getAttribute('data-invite-token');
+                var inp = tr.querySelector('.invite-bulk-email-input');
+                var urlInp = tr.querySelector('.invite-bulk-url');
+                var assigneeTd = tr.cells[0];
+                var assignee = '';
+                if (assigneeTd) {
+                    var stEl = assigneeTd.querySelector('strong');
+                    assignee = stEl ? stEl.textContent.trim() : assigneeTd.textContent.trim();
+                }
+                invites.push({
+                    assignee: assignee,
+                    inviteeEmail: inp ? String(inp.value || '').trim() : '',
+                    token: tok || '',
+                    inviteUrl: urlInp ? urlInp.value || '' : ''
+                });
+            });
+            saveBulkInvitePanelState(uploadId, thVal, exp, invites);
+        }
+
+        /** Plain-text templates for the per-row "Email" button (mailto). Keep lines reasonable — very long links + body can hit URL limits in some browsers. */
+        var INVITE_EMAIL_APP_NAME = 'Jira Spillover Analyzer';
+
+        function buildInviteEmailSubject(assigneeName) {
+            var n = String(assigneeName || '').trim();
+            if (!n) n = 'Contributor';
+            return 'Your contributor link — ' + n + ' — ' + INVITE_EMAIL_APP_NAME;
+        }
+
+        function buildInviteEmailBody(assigneeName, invitePageUrl) {
+            var n = String(assigneeName || '').trim();
+            var link = String(invitePageUrl || '').trim();
+            var hi =
+                n && n !== 'Contributor' ? 'Hi ' + n + ',' : "Hi,";
+            return (
+                hi +
+                '\n\n' +
+                "You're invited to use the " +
+                INVITE_EMAIL_APP_NAME +
+                ' contributor workspace to enter spillover and bug information for the issues assigned to you in the shared export.\n\n' +
+                'YOUR LINK (private — do not share)\n' +
+                '-----------------------------------\n' +
+                link +
+                '\n\n' +
+                'What to do\n' +
+                '----------\n' +
+                '1. Open the link in your browser (Chrome, Edge, or Firefox recommended).\n' +
+                "2. Complete the spillover and bug fields shown for your tickets.\n" +
+                '3. Your progress is saved in the team database when you use the app online.\n\n' +
+                "If the link doesn't open, paste it into your browser's address bar.\n\n" +
+                'Thanks,\n'
+            );
+        }
+
+        /**
+         * Workspace invitation HTML (table layout for email clients).
+         */
+        function buildContributorInviteHtml(assigneeName, invitePageUrl) {
+            var displayName = String(assigneeName || '').trim() || 'Contributor';
+            var link = String(invitePageUrl || '').trim();
+            var app = escapeHtml(INVITE_EMAIL_APP_NAME);
+            var nameH = escapeHtml(displayName);
+            var linkH = escapeHtml(link);
+            var linkAttr = escapeHtml(link);
+            return (
+                '<!DOCTYPE html><html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>' +
+                '<title>Jira Spillover Analyzer - Workspace Invitation</title>' +
+                '<style type="text/css">' +
+                '#outlook a{padding:0;}body{margin:0!important;padding:0!important;width:100%!important;-webkit-text-size-adjust:100%;}' +
+                '.email-inv-wrap{font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;}' +
+                '.email-inv-cta{display:inline-block;background-color:#1a1a1a;color:#ffffff!important;text-decoration:none;padding:13px 35px;border-radius:30px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:1px;mso-padding-alt:13px 35px;transition:background-color .2s ease,color .2s ease;}' +
+                'a.email-inv-cta:hover{background-color:#ea580c!important;color:#ffffff!important;}' +
+                'a.email-inv-cta:focus{background-color:#ea580c!important;color:#ffffff!important;outline:2px solid #ea580c;outline-offset:2px;}' +
+                '@media only screen and (max-width:620px){.email-inv-pad-h{padding-left:20px!important;padding-right:20px!important;}.email-inv-header-pad{padding:28px 20px!important;}.email-inv-content-pad{padding:30px 20px!important;}.email-inv-footer-pad{padding:24px 20px 28px!important;}.email-inv-cta{display:block!important;width:100%!important;box-sizing:border-box!important;text-align:center!important;}}</style></head>' +
+                '<body style="margin:0;padding:0;background-color:#2a2a2a;">' +
+                '<table role="presentation" class="email-inv-wrap" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#2a2a2a;"><tr><td align="center" style="padding:20px 12px;">' +
+                '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;box-shadow:0 4px 6px rgba(0,0,0,0.1);">' +
+                '<tr><td class="email-inv-header-pad" style="padding:36px 32px;background-color:#1a1a1a;">' +
+                '<p style="margin:0 0 8px;font-size:17px;font-weight:700;color:#ffffff;letter-spacing:0.08em;line-height:1.25;text-transform:uppercase;">' +
+                app +
+                '</p>' +
+                '<p style="margin:0;font-size:11px;font-weight:600;color:#b8bcc4;letter-spacing:0.22em;text-transform:uppercase;line-height:1.4;">Contributor workspace</p>' +
+                '</td></tr>' +
+                '<tr><td class="email-inv-pad-h email-inv-content-pad" style="padding:40px 30px;background-color:#ffffff;color:#333333;">' +
+                '<p style="margin:0 0 35px;font-size:18px;font-weight:600;line-height:1.35;color:#1a1a1a;">' +
+                nameH +
+                ', your workspace link is ready.</p>' +
+                '<p style="margin:0 0 35px;font-size:13px;line-height:1.7;color:#555555;">Your team shared a Jira export for spillover and bug follow-up. Use the secure link below — it is tied to your assignee name and should not be forwarded.</p>' +
+                '<p style="margin:0 0 4px;font-size:11px;font-weight:600;text-transform:uppercase;color:#666666;letter-spacing:0.5px;">Contributor</p>' +
+                '<p style="margin:0 0 25px;font-size:13px;color:#333333;font-weight:500;">' +
+                nameH +
+                '</p>' +
+                '<p style="margin:0 0 4px;font-size:11px;font-weight:600;text-transform:uppercase;color:#666666;letter-spacing:0.5px;">Workspace</p>' +
+                '<p style="margin:0 0 30px;font-size:13px;color:#333333;font-weight:500;">' +
+                app +
+                '</p>' +
+                '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="height:1px;background-color:#e5e5e5;line-height:1px;font-size:1px;">&nbsp;</td></tr></table>' +
+                '<p style="margin:30px 0 8px;font-size:11px;font-weight:600;text-transform:uppercase;color:#666666;letter-spacing:0.5px;">Your Personal Link</p>' +
+                '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 25px;background-color:#f5f5f5;border:1px solid #dddddd;border-radius:4px;"><tr><td style="padding:12px;font-family:\'Courier New\',Courier,monospace;font-size:11px;line-height:1.5;color:#333333;word-break:break-all;"><a href="' +
+                linkAttr +
+                '" style="color:#333333;text-decoration:underline;">' +
+                linkH +
+                '</a></td></tr></table>' +
+                '<p style="margin:25px 0;font-size:13px;line-height:1.7;color:#555555;">Open the workspace in your browser to enter spillover and bug fields for your issues.</p>' +
+                '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:25px 0;"><tr><td align="center" style="text-align:center;"><a class="email-inv-cta" href="' +
+                linkAttr +
+                '" style="color:#ffffff!important;">Open Contributor Workspace</a></td></tr></table></td></tr>' +
+                '<tr><td class="email-inv-footer-pad" style="padding:28px 28px 32px;background-color:#000000;text-align:center;">' +
+                '<p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:#e8e8e8;">Questions? Reply to the person who sent this invite.</p>' +
+                '<p style="margin:0 0 20px;font-size:12px;line-height:1.55;color:#a8a8a8;">' +
+                app +
+                ' · Spillover &amp; bug intake tied to your database upload.</p>' +
+                '<p style="margin:0;font-size:15px;font-weight:600;line-height:1.45;color:#ffffff;letter-spacing:0.03em;">Thank you.</p>' +
+                '</td></tr>' +
+                '</table></td></tr></table></body></html>'
+            );
+        }
+
+        function openInviteEmailPreviewModal(assigneeName, invitePageUrl) {
+            var html = buildContributorInviteHtml(assigneeName, invitePageUrl);
+            try {
+                window._inviteEmailPreviewHtmlLast = html;
+            } catch (e1) {}
+            var iframe = document.getElementById('inviteEmailPreviewIframe');
+            var overlay = document.getElementById('inviteEmailPreviewOverlay');
+            if (iframe) {
+                if (iframe._inviteBlobUrl) {
+                    try {
+                        URL.revokeObjectURL(iframe._inviteBlobUrl);
+                    } catch (eRev) {}
+                    iframe._inviteBlobUrl = null;
+                }
+                iframe.removeAttribute('srcdoc');
+                iframe.removeAttribute('src');
+                var loaded = false;
+                try {
+                    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+                    iframe._inviteBlobUrl = URL.createObjectURL(blob);
+                    iframe.src = iframe._inviteBlobUrl;
+                    loaded = true;
+                } catch (eBlob) {}
+                if (!loaded) {
+                    try {
+                        iframe.srcdoc = html;
+                    } catch (e2) {}
+                }
+            }
+            if (overlay) {
+                overlay.hidden = false;
+            }
+        }
+
+        function closeInviteEmailPreviewModal() {
+            var overlay = document.getElementById('inviteEmailPreviewOverlay');
+            var iframe = document.getElementById('inviteEmailPreviewIframe');
+            if (iframe) {
+                if (iframe._inviteBlobUrl) {
+                    try {
+                        URL.revokeObjectURL(iframe._inviteBlobUrl);
+                    } catch (e4) {}
+                    iframe._inviteBlobUrl = null;
+                }
+                iframe.removeAttribute('src');
+                iframe.removeAttribute('srcdoc');
+            }
+            if (overlay) {
+                overlay.hidden = true;
+            }
+        }
+
+        function copyInviteEmailHtmlToClipboard() {
+            var h = window._inviteEmailPreviewHtmlLast;
+            if (!h) {
+                showError('Open Styled first, then copy — or open Styled for that row so HTML is generated.');
+                return;
+            }
+            copyTextToClipboard(h, {});
+            showSuccess('HTML copied. Paste into a client that accepts HTML (mailto cannot send this layout).', {
+                dashboardOnly: false
+            });
+        }
+
+        /** Returns { em, subj, body, href } or null if To is missing. */
+        function composeInvitePlainEmailParts(toEmail, assigneeName, invitePageUrl) {
+            var em = String(toEmail || '').trim();
+            if (!em) return null;
+            var subj = buildInviteEmailSubject(assigneeName);
+            var body = buildInviteEmailBody(assigneeName, invitePageUrl);
+            var href =
+                'mailto:' +
+                encodeURIComponent(em) +
+                '?subject=' +
+                encodeURIComponent(subj) +
+                '&body=' +
+                encodeURIComponent(body);
+            return { em: em, subj: subj, body: body, href: href };
+        }
+
+        /** Opens the default mail client with To, subject, and body (no in-app preview). */
+        function openInvitePlainEmailDirect(toEmail, assigneeName, invitePageUrl) {
+            var p = composeInvitePlainEmailParts(toEmail, assigneeName, invitePageUrl);
+            if (!p) {
+                showError('Type an email address in that row first.');
+                return;
+            }
+            window._invitePlainMailtoHref = p.href;
+            openInvitePlainEmailExternal();
+        }
+
+        /** Shows invite message in-app; optional mail app via iframe so the page does not navigate away. */
+        function openInvitePlainEmailModal(toEmail, assigneeName, invitePageUrl) {
+            var p = composeInvitePlainEmailParts(toEmail, assigneeName, invitePageUrl);
+            if (!p) {
+                showError('Type an email address in that row first.');
+                return;
+            }
+            window._invitePlainMailtoHref = p.href;
+            var toEl = document.getElementById('invitePlainEmailTo');
+            var subjEl = document.getElementById('invitePlainEmailSubject');
+            var bodyEl = document.getElementById('invitePlainEmailBody');
+            var over = document.getElementById('invitePlainEmailOverlay');
+            if (toEl) toEl.value = p.em;
+            if (subjEl) subjEl.value = p.subj;
+            if (bodyEl) bodyEl.value = p.body;
+            if (over) over.hidden = false;
+        }
+
+        function closeInvitePlainEmailModal() {
+            var over = document.getElementById('invitePlainEmailOverlay');
+            if (over) over.hidden = true;
+        }
+
+        function copyInvitePlainEmailBody() {
+            var bodyEl = document.getElementById('invitePlainEmailBody');
+            if (!bodyEl) return;
+            copyTextToClipboard(bodyEl.value, {});
+            showSuccess('Message copied. Paste into your mail program.', { dashboardOnly: false });
+        }
+
+        function copyInvitePlainEmailAll() {
+            var toEl = document.getElementById('invitePlainEmailTo');
+            var subjEl = document.getElementById('invitePlainEmailSubject');
+            var bodyEl = document.getElementById('invitePlainEmailBody');
+            if (!toEl || !subjEl || !bodyEl) return;
+            var block = 'To: ' + toEl.value + '\nSubject: ' + subjEl.value + '\n\n' + bodyEl.value;
+            copyTextToClipboard(block, {});
+            showSuccess('Copied To, Subject, and message.', { dashboardOnly: false });
+        }
+
+        /** Triggers default mail client without replacing this page (iframe + fallback). */
+        function openInvitePlainEmailExternal() {
+            var href = window._invitePlainMailtoHref;
+            if (!href) return;
+            try {
+                var ifr = document.createElement('iframe');
+                ifr.setAttribute('aria-hidden', 'true');
+                ifr.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;border:0;left:-9999px';
+                ifr.src = href;
+                document.body.appendChild(ifr);
+                window.setTimeout(function () {
+                    try {
+                        if (ifr.parentNode) ifr.parentNode.removeChild(ifr);
+                    } catch (e0) {}
+                }, 4000);
+            } catch (e1) {
+                try {
+                    window.open(href, '_blank', 'noopener,noreferrer');
+                } catch (e2) {
+                    window.location.href = href;
+                }
+            }
+        }
+
+        function patchInviteEmailOnServer(uploadId, token, inviteeEmail) {
+            var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+            return fetch(base + '/api/invites/email', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    uploadId: uploadId,
+                    token: token,
+                    inviteeEmail: inviteeEmail != null ? String(inviteeEmail).trim() : '',
+                }),
+            }).then(parseHttpJsonResponse);
+        }
+
+        function wireBulkInviteEmailInputs(panel) {
+            function rowFromInput(inp) {
+                return inp.closest ? inp.closest('tr[data-invite-token]') : null;
+            }
+            panel.querySelectorAll('.invite-bulk-email-input').forEach(function (inp) {
+                inp.addEventListener('input', function () {
+                    persistBulkInvitePanelFromDom(panel);
+                });
+                inp.addEventListener('blur', function () {
+                    persistBulkInvitePanelFromDom(panel);
+                    var tr = rowFromInput(inp);
+                    var tok = tr && tr.getAttribute('data-invite-token');
+                    var uid = panel.dataset.uploadId;
+                    if (!tr || !tok || !uid) return;
+                    ensureApiBaseProbed()
+                        .then(function () {
+                            return patchInviteEmailOnServer(uid, tok, inp.value);
+                        })
+                        .catch(function () {});
+                });
+            });
+            panel.querySelectorAll('.invite-bulk-mailto-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var tr = btn.closest && btn.closest('tr[data-invite-token]');
+                    if (!tr) return;
+                    var inp = tr.querySelector('.invite-bulk-email-input');
+                    var urlInp = tr.querySelector('.invite-bulk-url');
+                    var nameEl = tr.querySelector('td:first-child strong');
+                    var assignee = nameEl ? nameEl.textContent.trim() : '';
+                    openInvitePlainEmailDirect(
+                        inp ? inp.value : '',
+                        assignee,
+                        urlInp ? urlInp.value || '' : ''
+                    );
+                });
+            });
+        }
+
         /** Builds the per-person links table and wires Copy buttons; returns assignee names in row order. */
-        function renderBulkInviteTable(panel, expiresAtISO, invitesList) {
+        function renderBulkInviteTable(panel, expiresAtISO, invitesList, uploadIdForSend) {
             var esc = function (s) {
                 if (s == null) return '';
                 return String(s)
@@ -5338,34 +6332,54 @@
             for (var i = 0; i < invitesList.length; i++) {
                 var row = invitesList[i];
                 var url = row.inviteUrl || '';
+                var tok = row.token != null ? String(row.token).trim() : '';
+                var em = row.inviteeEmail != null && String(row.inviteeEmail).trim() !== '' ? String(row.inviteeEmail).trim() : '';
                 names.push(row.assignee);
                 rows +=
-                    '<tr><td><strong>' +
+                    '<tr data-invite-token="' +
+                    escAttr(tok) +
+                    '">' +
+                    '<td><strong>' +
                     esc(row.assignee) +
-                    '</strong></td><td class="invite-bulk-status invite-bulk-status--loading" data-assignee="' +
+                    '</strong></td><td class="invite-bulk-email-cell">' +
+                    '<input type="email" class="export-filename-panel__input invite-bulk-email-input" inputmode="email" autocomplete="off" placeholder="name@company.com" value="' +
+                    escAttr(em) +
+                    '" data-invite-token="' +
+                    escAttr(tok) +
+                    '" aria-label="Contributor email for ' +
+                    escAttr(row.assignee) +
+                    '" />' +
+                    '</td><td class="invite-bulk-status invite-bulk-status--loading" data-assignee="' +
                     escAttr(row.assignee) +
                     '">Loading…</td><td><input type="text" readonly class="export-filename-panel__input invite-bulk-url" value="' +
                     escAttr(url) +
-                    '" /></td><td style="white-space:nowrap"><button type="button" class="btn btn-secondary" data-copy-invite-url="' +
+                    '" /></td><td class="invite-bulk-actions-cell" style="white-space:nowrap">' +
+                    '<button type="button" class="btn btn-secondary" data-copy-invite-url="' +
                     escAttr(url) +
-                    '">Copy</button></td></tr>';
+                    '">Copy</button> ' +
+                    '<button type="button" class="btn btn-secondary invite-bulk-mailto-btn">Email</button></td></tr>';
             }
             panel.hidden = false;
+            panel.dataset.uploadId = uploadIdForSend != null ? String(uploadIdForSend) : '';
+            panel.dataset.expiresAt = expiresAtISO ? String(expiresAtISO) : '';
             panel.innerHTML =
-                '<p class="section-label" style="margin-top:0.75rem">Per-person links</p>' +
-                '<p class="db-load-hint">Expires · ' +
-                expStr +
-                '</p>' +
-                '<p class="db-load-hint" style="margin-top:0.35rem;line-height:1.45">Submission shows whether each person has entered spillover (reason &amp; category) and bug (PROD &amp; RCA) for every issue on their link. Saved here and restored after refresh; updates every 20s while you stay on this page.</p>' +
-                '<table class="invite-bulk-table"><thead><tr><th>Assignee</th><th>Submission</th><th>Link</th><th></th></tr></thead><tbody>' +
+                '<div class="invite-bulk-panel-inner">' +
+                '<div class="invite-bulk-panel__toolbar">' +
+                '<span class="invite-bulk-panel__expires">Expires · ' +
+                esc(expStr) +
+                '</span></div>' +
+                '<p class="db-load-hint invite-bulk-panel__hint">Submission status per person. <strong>Copy</strong> shares the link; <strong>Email</strong> opens a plain-text message. Set <code>PUBLIC_APP_URL</code> when hosting.</p>' +
+                '<div class="invite-bulk-table-wrap">' +
+                '<table class="invite-bulk-table"><thead><tr><th>Assignee</th><th>Email</th><th>Submission</th><th>Link</th><th></th></tr></thead><tbody>' +
                 rows +
-                '</tbody></table>';
+                '</tbody></table></div></div>';
             panel.querySelectorAll('[data-copy-invite-url]').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     var u = btn.getAttribute('data-copy-invite-url');
                     copyTextToClipboard(u, { button: btn });
                 });
             });
+            wireBulkInviteEmailInputs(panel);
             return names;
         }
 
@@ -5405,7 +6419,7 @@
             inviteSel.value = String(st.uploadId);
             var thIn = document.getElementById('inviteThresholdInput');
             if (thIn && st.threshold != null) thIn.value = st.threshold;
-            var names = renderBulkInviteTable(panel, st.expiresAt, st.invites);
+            var names = renderBulkInviteTable(panel, st.expiresAt, st.invites, st.uploadId);
             var thVal = st.threshold != null ? String(st.threshold) : '';
             fetchInviteSubmitStatusesForPanel(panel, st.uploadId, thVal, names).then(function () {
                 startBulkInviteStatusPoll(panel, st.uploadId, thVal, names);
@@ -5490,6 +6504,122 @@
                 }
                 fetchInviteSubmitStatusesForPanel(panel, uploadId, threshold, assigneeNames);
             }, 20000);
+        }
+
+        /**
+         * Main dashboard: same assignee list + submission labels as Send invite, without link column.
+         * Uses people-insights for names, then invite-submit-status.
+         */
+        function refreshDashSubmissionSummary() {
+            var wrap = document.getElementById('dashSubmissionTableWrap');
+            var emptyEl = document.getElementById('dashSubmissionEmpty');
+            var tbody = document.getElementById('dashSubmissionTbody');
+            var section = document.getElementById('dashSubmissionSummary');
+            if (!wrap || !emptyEl || !tbody || !section) return;
+
+            function setSubmissionTableBlock(show) {
+                wrap.hidden = !show;
+            }
+
+            if (!currentUploadId) {
+                emptyEl.hidden = false;
+                emptyEl.textContent =
+                    'Save your workbook to the database so submission status can use your upload.';
+                setSubmissionTableBlock(false);
+                tbody.innerHTML = '';
+                setDashSubmissionStatus('', '');
+                return;
+            }
+            var uploadId = String(currentUploadId);
+            var thVal = getProceedThresholdForDashboards();
+            setDashSubmissionStatus('Loading submission status…', 'pending');
+            emptyEl.hidden = true;
+            setSubmissionTableBlock(true);
+            tbody.innerHTML =
+                '<tr><td colspan="2" class="dash-submission__loading-cell">Loading assignees…</td></tr>';
+
+            ensureApiBaseProbed()
+                .then(function () {
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(
+                        base +
+                            '/api/uploads/' +
+                            encodeURIComponent(uploadId) +
+                            '/people-insights?threshold=' +
+                            encodeURIComponent(thVal)
+                    );
+                })
+                .then(function (r) {
+                    return r.json().then(function (j) {
+                        return { ok: r.ok, data: j };
+                    });
+                })
+                .then(function (res) {
+                    tbody.innerHTML = '';
+                    if (!res.ok || !res.data || !res.data.ok) {
+                        emptyEl.hidden = true;
+                        setSubmissionTableBlock(false);
+                        setDashSubmissionStatus(
+                            'Could not load assignees for this upload.',
+                            'err'
+                        );
+                        return;
+                    }
+                    var names = collectAssigneeNamesFromPeopleInsights(res.data);
+                    names = names.slice(0, DASH_PANEL_RECENT_LIMIT);
+                    if (!names.length) {
+                        emptyEl.hidden = false;
+                        emptyEl.textContent =
+                            'No assignees in scope yet. Run Proceed with spillover or bug rows, or check your sprint threshold.';
+                        setSubmissionTableBlock(false);
+                        setDashSubmissionStatus(
+                            'No assignees in scope for submission status yet.',
+                            'ok'
+                        );
+                        return;
+                    }
+                    var escAttr = function (s) {
+                        return String(s || '')
+                            .replace(/&/g, '&amp;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/</g, '&lt;');
+                    };
+                    var rows = '';
+                    for (var i = 0; i < names.length; i++) {
+                        rows +=
+                            '<tr><td><strong>' +
+                            escapeHtml(names[i]) +
+                            '</strong></td><td class="invite-bulk-status invite-bulk-status--loading" data-assignee="' +
+                            escAttr(names[i]) +
+                            '">Loading…</td></tr>';
+                    }
+                    tbody.innerHTML = rows;
+                    emptyEl.hidden = true;
+                    setSubmissionTableBlock(true);
+                    setDashSubmissionStatus(
+                        'Showing ' +
+                            names.length +
+                            ' most recent update' +
+                            (names.length === 1 ? '' : 's') +
+                            '.',
+                        'ok'
+                    );
+                    return fetchInviteSubmitStatusesForPanel(section, uploadId, thVal, names);
+                })
+                .catch(function () {
+                    emptyEl.hidden = true;
+                    setSubmissionTableBlock(false);
+                    tbody.innerHTML = '';
+                    var hint =
+                        'Could not reach the API. Run npm start, open this page from that server URL, or add ?api=http://localhost:YOUR_PORT (use your real port).';
+                    try {
+                        if (window.location.protocol === 'file:') {
+                            hint =
+                                'Could not reach the API from a file URL. Open via npm start or use file:///…/index.html?api=http://localhost:PORT';
+                        }
+                    } catch (eHint) {}
+                    setDashSubmissionStatus(hint, 'err');
+                });
         }
 
         /** When reopening Send invite with an existing per-person table, resume live status updates. */
@@ -5583,6 +6713,13 @@
                             .replace(/>/g, '&gt;');
                     };
 
+                    var escAttr = function (s) {
+                        return String(s || '')
+                            .replace(/&/g, '&amp;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/</g, '&lt;');
+                    };
+
                     var nameSet = {};
                     for (var ai = 0; ai < sp.length; ai++) {
                         nameSet[sp[ai].assignee] = true;
@@ -5593,74 +6730,89 @@
                     _inviteBulkAssigneeNames = Object.keys(nameSet).sort(function (a, b) {
                         return a.localeCompare(b);
                     });
+                    function inviteKeysCommaLine(keys) {
+                        if (!keys || !keys.length) return '';
+                        return keys.join(', ');
+                    }
+
                     var colSp = '';
-                    colSp += '<div class="insight-stat">' + spTotal + ' issue(s) with spillover at this threshold</div>';
+                    colSp +=
+                        '<div class="invite-people-col__head">' +
+                        '<span class="invite-people-col__title">Spillover</span>' +
+                        '<span class="invite-people-col__total">' +
+                        esc(String(spTotal)) +
+                        ' issues</span></div>';
                     if (note) {
                         colSp +=
-                            '<p class="db-load-hint" style="margin-bottom:0.5rem">' + esc(note) + '</p>';
+                            '<p class="db-load-hint invite-people-note">' + esc(note) + '</p>';
                     }
                     if (!sp.length) {
-                        colSp += '<p class="db-load-hint">No assignees (or no matching sprint cells).</p>';
+                        colSp +=
+                            '<p class="invite-people-empty">No assignees at this threshold.</p>';
                     } else {
-                        colSp += '<ul>';
+                        colSp += '<div class="invite-people-rows">';
                         for (var i = 0; i < sp.length; i++) {
                             var a = sp[i];
-                            var keys = (a.issueKeys || []).slice(0, 8).join(', ');
-                            var more = (a.issueKeys || []).length > 8 ? ' …' : '';
+                            var keysLine = inviteKeysCommaLine(a.issueKeys || []);
                             colSp +=
-                                '<li><strong style="color:var(--text)">' +
+                                '<div class="invite-people-row"' +
+                                (keysLine ? ' title="' + escAttr(keysLine) + '"' : '') +
+                                '><span class="invite-people-row__name">' +
                                 esc(a.assignee) +
-                                '</strong> · ' +
-                                a.count +
-                                ' ticket(s)<br/><span style="font-size:0.72rem;opacity:0.85">' +
-                                esc(keys + more) +
-                                '</span></li>';
+                                '</span><span class="invite-people-row__keys">' +
+                                (keysLine ? esc(keysLine) : '\u2014') +
+                                '</span><span class="invite-people-row__count">' +
+                                esc(String(a.count)) +
+                                '</span></div>';
                         }
-                        colSp += '</ul>';
+                        colSp += '</div>';
                     }
 
                     var colBg = '';
-                    colBg += '<div class="insight-stat">' + bgTotal + ' bug row(s) in this export</div>';
+                    colBg +=
+                        '<div class="invite-people-col__head">' +
+                        '<span class="invite-people-col__title">Bugs</span>' +
+                        '<span class="invite-people-col__total">' +
+                        esc(String(bgTotal)) +
+                        ' rows</span></div>';
                     if (!bg.length) {
                         colBg +=
-                            '<p class="db-load-hint">No bugs (your sheet needs an <strong>Issue Type</strong> column).</p>';
+                            '<p class="invite-people-empty">No bug rows (needs Issue Type).</p>';
                     } else {
-                        colBg += '<ul>';
+                        colBg += '<div class="invite-people-rows">';
                         for (var j = 0; j < bg.length; j++) {
                             var b = bg[j];
-                            var keys2 = (b.issueKeys || []).slice(0, 8).join(', ');
-                            var more2 = (b.issueKeys || []).length > 8 ? ' …' : '';
+                            var keysLineB = inviteKeysCommaLine(b.issueKeys || []);
                             colBg +=
-                                '<li><strong style="color:var(--text)">' +
+                                '<div class="invite-people-row"' +
+                                (keysLineB ? ' title="' + escAttr(keysLineB) + '"' : '') +
+                                '><span class="invite-people-row__name">' +
                                 esc(b.assignee) +
-                                '</strong> · ' +
-                                b.count +
-                                ' bug(s)<br/><span style="font-size:0.72rem;opacity:0.85">' +
-                                esc(keys2 + more2) +
-                                '</span></li>';
+                                '</span><span class="invite-people-row__keys">' +
+                                (keysLineB ? esc(keysLineB) : '\u2014') +
+                                '</span><span class="invite-people-row__count">' +
+                                esc(String(b.count)) +
+                                '</span></div>';
                         }
-                        colBg += '</ul>';
+                        colBg += '</div>';
                     }
 
                     box.innerHTML =
                         '<div class="invite-people-cols">' +
-                        '<div class="invite-people-col"><h4>People with spillover</h4>' +
+                        '<div class="invite-people-col">' +
                         colSp +
                         '</div>' +
-                        '<div class="invite-people-col"><h4>People with bugs</h4>' +
+                        '<div class="invite-people-col">' +
                         colBg +
                         '</div>' +
                         '</div>' +
-                        '<p class="db-load-hint" style="margin-top:0.85rem;line-height:1.5">' +
-                        '<strong>Why invite count ≠ spillover issues:</strong> bulk invites create ' +
-                        '<strong>one link per assignee</strong> who has spillover <em>or</em> bugs — ' +
+                        '<p class="invite-people-foot">' +
+                        'Bulk invites: <strong>one link per assignee</strong> on this list (' +
                         esc(String(_inviteBulkAssigneeNames.length)) +
-                        ' people here — not one link per issue. The spillover column above (' +
-                        esc(String(spTotal)) +
-                        ' issue(s)) matches the dashboard when this threshold matches <strong>Upload &amp; configure</strong>. ' +
-                        'Bug assignees are included even if they have no spillover row.</p>';
+                        ' people), not per issue. Spillover total matches the dashboard when this threshold matches <strong>Upload &amp; configure</strong>.</p>';
                 })
                 .catch(function () {
+                    _inviteBulkAssigneeNames = [];
                     box.innerHTML =
                         '<p class="db-load-hint" style="color:#fca5a5">Could not reach server.</p>';
                 });
@@ -5673,6 +6825,7 @@
                 showError('Choose a saved upload from the list (upload a file first so it is stored in the database).');
                 return;
             }
+            var emailTrim = ((document.getElementById('inviteEmailInput') || {}).value || '').trim();
             var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
             var panel = document.getElementById('inviteResultPanel');
             var out = document.getElementById('inviteLinkOutput');
@@ -5683,13 +6836,11 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     uploadId: uploadId,
-                    inviteeEmail: (document.getElementById('inviteEmailInput') || {}).value || '',
-                    assigneeScope: ((document.getElementById('inviteAssigneeScopeInput') || {}).value || '').trim(),
+                    inviteeEmail: emailTrim,
+                    assigneeScope: '',
                     note: (document.getElementById('inviteNoteInput') || {}).value || '',
                     expiresInDays: parseInt((document.getElementById('inviteExpiresInput') || {}).value, 10) || 30,
-                    filterByAssignee: document.getElementById('inviteFilterAssignee')
-                        ? document.getElementById('inviteFilterAssignee').checked
-                        : false,
+                    filterByAssignee: false,
                     threshold: ((document.getElementById('inviteThresholdInput') || {}).value || '').trim()
                 })
             })
@@ -5796,7 +6947,7 @@
                     var list = res.body.invites || [];
                     if (panel) {
                         var thVal = ((document.getElementById('inviteThresholdInput') || {}).value || '').trim();
-                        var rowNames = renderBulkInviteTable(panel, res.body.expiresAt, list);
+                        var rowNames = renderBulkInviteTable(panel, res.body.expiresAt, list, uploadId);
                         saveBulkInvitePanelState(uploadId, thVal, res.body.expiresAt, list);
                         fetchInviteSubmitStatusesForPanel(panel, uploadId, thVal, rowNames).then(function () {
                             startBulkInviteStatusPoll(panel, uploadId, thVal, rowNames);
@@ -5873,6 +7024,24 @@
             var btn = document.getElementById('inviteSingleCopyBtn');
             if (!out || !out.value) return;
             copyTextToClipboard(out.value, { button: btn });
+        }
+
+        function openSingleInvitePlainEmail() {
+            var out = document.getElementById('inviteLinkOutput');
+            var emIn = document.getElementById('inviteEmailInput');
+            var url = out && out.value ? String(out.value).trim() : '';
+            var to = emIn ? String(emIn.value || '').trim() : '';
+            if (!url) {
+                showError('Create an invite link first.');
+                return;
+            }
+            if (!to) {
+                showError('Enter a contributor email above first.');
+                return;
+            }
+            var at = to.indexOf('@');
+            var assigneeLabel = at > 0 ? to.slice(0, at) : 'Contributor';
+            openInvitePlainEmailDirect(to, assigneeLabel, url);
         }
 
         function openTicketDetail(issueKey) {
@@ -7818,6 +8987,23 @@
         /** API base: '' = same origin. Set automatically via /api/health probe (see probeApiBase). */
         var API_BASE = '';
 
+        /** Avoids throw from r.json() when the response is HTML (wrong host/port, 404 page, etc.). */
+        function parseHttpJsonResponse(r) {
+            return r.text().then(function (text) {
+                var j = {};
+                try {
+                    j = text ? JSON.parse(text) : {};
+                } catch (eParse) {
+                    j = {
+                        ok: false,
+                        error:
+                            'The server did not return JSON. Open this app from the same URL as npm start (e.g. http://localhost:3000) or add ?api=http://localhost:3000 to the address bar.'
+                    };
+                }
+                return { ok: r.ok, status: r.status, body: j };
+            });
+        }
+
         function dedupeStrings(arr) {
             var seen = {};
             var res = [];
@@ -7839,6 +9025,22 @@
                     return out;
                 }
             } catch (e) {}
+            try {
+                var portStr = window.location.port || '';
+                var pagePort = portStr ? parseInt(portStr, 10) : NaN;
+                var h = window.location.hostname || '';
+                var isLocal = h === 'localhost' || h === '127.0.0.1';
+                var isApiRange = !isNaN(pagePort) && pagePort >= 3000 && pagePort <= 3010;
+                // Live Server / IDE preview (e.g. :5500): same-origin '' hits HTML, not /api/health — probe Node first.
+                if (isLocal && portStr !== '' && !isApiRange) {
+                    out.push('http://' + h + ':3000');
+                    if (h === 'localhost') {
+                        out.push('http://127.0.0.1:3000');
+                    } else if (h === '127.0.0.1') {
+                        out.push('http://localhost:3000');
+                    }
+                }
+            } catch (ePre) {}
             out.push('');
             try {
                 var saved = localStorage.getItem('jiraSpilloverApiBase');
@@ -7991,38 +9193,38 @@
 
         function applyLoadedWorkbook(wb, opts) {
             opts = opts || {};
-            dashboardOnlySuccessText = null;
-            workbookData = wb;
-            const sheet = workbookData.Sheets[workbookData.SheetNames[0]];
-            sprintIndices = getSprintColumnsIndices(sheet);
+                dashboardOnlySuccessText = null;
+                workbookData = wb;
+                const sheet = workbookData.Sheets[workbookData.SheetNames[0]];
+                sprintIndices = getSprintColumnsIndices(sheet);
 
             if (!opts.skipResetInputs) {
                 document.getElementById('baseVersion').value = '';
                 document.getElementById('compareThreshold').value = '';
             }
-            setPreviewPlaceholder('config');
-            clearDashboardMetrics();
-            renderChartPlaceholder();
-            analysisSheetData = null;
-            lastRunStats = null;
-            spilloverReasonByKey = {};
-            spilloverCategoryByKey = {};
-            bugProdByKey = {};
-            bugRcaByKey = {};
-            setPhase(false);
-            setAssigneesPanelOpen(false);
-            renderAssigneesPlaceholder('Run <strong>Proceed</strong>, then open <strong>Assignees</strong> for names and issue keys (needs those columns in the export).');
-            renderSpilloverDashboardPlaceholder('Run <strong>Proceed</strong> to list spillover issue keys here (sprint equals threshold).');
-            renderBugDashboardPlaceholder('Run <strong>Proceed</strong> to list bugs for PROD and RCA.');
+                setPreviewPlaceholder('config');
+                clearDashboardMetrics();
+                renderChartPlaceholder();
+                analysisSheetData = null;
+                lastRunStats = null;
+                spilloverReasonByKey = {};
+                spilloverCategoryByKey = {};
+                bugProdByKey = {};
+                bugRcaByKey = {};
+                setPhase(false);
+                setAssigneesPanelOpen(false);
+                renderAssigneesPlaceholder('Run <strong>Proceed</strong>, then open <strong>Assignees</strong> for names and issue keys (needs those columns in the export).');
+                renderSpilloverDashboardPlaceholder('Run <strong>Proceed</strong> to list spillover issue keys here (sprint equals threshold).');
+                renderBugDashboardPlaceholder('Run <strong>Proceed</strong> to list bugs for PROD and RCA.');
 
-            var fnPanel = document.getElementById('exportFilenamePanel');
-            var fnInput = document.getElementById('exportFileNameInput');
-            var fnSug = document.getElementById('exportFileNameSuggestion');
-            if (fnPanel) fnPanel.hidden = true;
-            if (fnInput) fnInput.value = '';
-            if (fnSug) fnSug.textContent = '';
+                var fnPanel = document.getElementById('exportFilenamePanel');
+                var fnInput = document.getElementById('exportFileNameInput');
+                var fnSug = document.getElementById('exportFileNameSuggestion');
+                if (fnPanel) fnPanel.hidden = true;
+                if (fnInput) fnInput.value = '';
+                if (fnSug) fnSug.textContent = '';
 
-            document.getElementById('fileDetails').classList.add('show');
+                document.getElementById('fileDetails').classList.add('show');
 
             if (opts.fileLabel) {
                 document.getElementById('fileName').textContent = opts.fileLabel;
@@ -8367,12 +9569,10 @@
             var inviteNote = document.getElementById('inviteNoteInput');
             var inviteExp = document.getElementById('inviteExpiresInput');
             var inviteEmail = document.getElementById('inviteEmailInput');
-            var inviteScope = document.getElementById('inviteAssigneeScopeInput');
             var inviteTh = document.getElementById('inviteThresholdInput');
             if (inviteNote) inviteNote.value = '';
             if (inviteExp) inviteExp.value = '30';
             if (inviteEmail) inviteEmail.value = '';
-            if (inviteScope) inviteScope.value = '';
             if (inviteTh) inviteTh.value = '';
 
             var dbSel = document.getElementById('dbUploadSelect');
@@ -8383,6 +9583,7 @@
             resetInviteSendButtonsDefault();
             resetForm();
             refreshContributorActivity();
+            refreshDashSubmissionSummary();
             refreshInvitePeopleInsights();
         }
 
@@ -8639,6 +9840,190 @@
                 return raw.replace(/\.[^.\\/]+$/, '') + '.xlsx';
             }
             return raw + '.xlsx';
+        }
+
+        function resolveExportUploadId() {
+            if (currentUploadId != null && currentUploadId !== '') return String(currentUploadId);
+            var dbSel = document.getElementById('dbUploadSelect');
+            if (dbSel && dbSel.value) return String(dbSel.value);
+            var invSel = document.getElementById('inviteUploadSelect');
+            if (invSel && invSel.value) return String(invSel.value);
+            return '';
+        }
+
+        function contributorStatusLine(st) {
+            if (!st) return '\u2014';
+            if (st.statusLabel === 'Submitted') return 'Submitted';
+            return describeContributorPending(st);
+        }
+
+        function collectAssigneeNamesFromPeopleInsights(data) {
+            if (!data) return [];
+            var set = {};
+            var i;
+            var arr = data.spilloverAssignees;
+            if (arr && arr.length) {
+                for (i = 0; i < arr.length; i++) {
+                    if (arr[i].assignee) set[arr[i].assignee] = true;
+                }
+            }
+            arr = data.bugAssignees;
+            if (arr && arr.length) {
+                for (i = 0; i < arr.length; i++) {
+                    if (arr[i].assignee) set[arr[i].assignee] = true;
+                }
+            }
+            return Object.keys(set).sort();
+        }
+
+        function describeContributorPending(st) {
+            if (!st) return 'Pending';
+            var bits = [];
+            if (st.spillover === 'pending') bits.push('Spillover');
+            if (st.bug === 'pending') bits.push('Bug');
+            if (bits.length) return bits.join(' & ') + ' not completed';
+            return st.statusLabel && st.statusLabel !== 'Submitted' ? st.statusLabel : 'Pending';
+        }
+
+        function contributorStatusCellClass(st) {
+            if (!st) return ' export-contrib-table__status--muted';
+            if (st.statusLabel === 'Submitted') return ' export-contrib-table__status--ok';
+            if (st.statusLabel === 'No issues on link' || st.statusLabel === '\u2014') {
+                return ' export-contrib-table__status--muted';
+            }
+            return ' export-contrib-table__status--pending';
+        }
+
+        function hideExportContributorModalOnly() {
+            var overlay = document.getElementById('exportContributorStatusOverlay');
+            if (overlay) {
+                overlay.hidden = true;
+                overlay.removeAttribute('data-export-loading');
+            }
+            var contBtn = document.getElementById('exportContributorModalContinueBtn');
+            if (contBtn) contBtn.disabled = false;
+        }
+
+        function openExportContributorModalLoading() {
+            var body = document.getElementById('exportContributorModalBody');
+            var overlay = document.getElementById('exportContributorStatusOverlay');
+            var contBtn = document.getElementById('exportContributorModalContinueBtn');
+            if (!body || !overlay) return;
+            body.innerHTML =
+                '<div class="export-contrib-modal__loading" role="status" aria-live="polite">' +
+                '<div class="auth-gate-overlay__spinner" aria-hidden="true"></div>' +
+                '<span>Loading contributor status\u2026</span>' +
+                '</div>';
+            overlay.setAttribute('data-export-loading', 'true');
+            overlay.hidden = false;
+            if (contBtn) contBtn.disabled = true;
+        }
+
+        function openExportContributorModal(statusRows) {
+            var body = document.getElementById('exportContributorModalBody');
+            var overlay = document.getElementById('exportContributorStatusOverlay');
+            var contBtn = document.getElementById('exportContributorModalContinueBtn');
+            if (!body || !overlay) return;
+            overlay.removeAttribute('data-export-loading');
+            if (contBtn) contBtn.disabled = false;
+            var html =
+                '<div class="export-contrib-modal__table-wrap">' +
+                '<table class="export-contrib-table">' +
+                '<thead><tr><th scope="col">Assignee</th><th scope="col">Status</th></tr></thead>' +
+                '<tbody>';
+            for (var i = 0; i < statusRows.length; i++) {
+                var s = statusRows[i];
+                html +=
+                    '<tr><td class="export-contrib-table__assignee">' +
+                    escapeHtml(s.assignee) +
+                    '</td><td class="export-contrib-table__status' +
+                    contributorStatusCellClass(s) +
+                    '">' +
+                    escapeHtml(contributorStatusLine(s)) +
+                    '</td></tr>';
+            }
+            html += '</tbody></table></div>';
+            body.innerHTML = html;
+            overlay.hidden = false;
+        }
+
+        function closeExportContributorModal() {
+            hideExportContributorModalOnly();
+            exportContributorModalReqToken++;
+        }
+
+        function confirmExportContributorModalDownload() {
+            hideExportContributorModalOnly();
+            processExcel();
+        }
+
+        function startExportDownloadWithContributorCheck() {
+            if (!workbookData || !sprintIndices) {
+                showError('Please upload a file (.xlsx, .xls, .csv) or load a saved upload from the database.');
+                return;
+            }
+            var uploadId = resolveExportUploadId();
+            if (!uploadId) {
+                processExcel();
+                return;
+            }
+            var myToken = ++exportContributorModalReqToken;
+            openExportContributorModalLoading();
+            var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+            var thVal = (document.getElementById('compareThreshold') || {}).value;
+            thVal = thVal != null ? String(thVal).trim() : '';
+            var url =
+                (base || '') +
+                '/api/uploads/' +
+                encodeURIComponent(String(uploadId)) +
+                '/people-insights?threshold=' +
+                encodeURIComponent(thVal);
+            fetch(url)
+                .then(function (r) {
+                    return r.json().then(function (j) {
+                        return { ok: r.ok, data: j };
+                    });
+                })
+                .then(function (res) {
+                    if (myToken !== exportContributorModalReqToken) return;
+                    if (!res.ok || !res.data || !res.data.ok) {
+                        hideExportContributorModalOnly();
+                        if (myToken !== exportContributorModalReqToken) return;
+                        processExcel();
+                        return;
+                    }
+                    var names = collectAssigneeNamesFromPeopleInsights(res.data);
+                    if (!names.length) {
+                        hideExportContributorModalOnly();
+                        if (myToken !== exportContributorModalReqToken) return;
+                        processExcel();
+                        return;
+                    }
+                    return fetch((base || '') + '/api/uploads/' + encodeURIComponent(String(uploadId)) + '/invite-submit-status', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ assignees: names, threshold: thVal })
+                    })
+                        .then(function (r2) {
+                            return r2.json();
+                        })
+                        .then(function (subData) {
+                            if (myToken !== exportContributorModalReqToken) return;
+                            if (!subData.ok || !subData.statuses || !subData.statuses.length) {
+                                hideExportContributorModalOnly();
+                                if (myToken !== exportContributorModalReqToken) return;
+                                processExcel();
+                                return;
+                            }
+                            openExportContributorModal(subData.statuses);
+                        });
+                })
+                .catch(function () {
+                    if (myToken !== exportContributorModalReqToken) return;
+                    hideExportContributorModalOnly();
+                    if (myToken !== exportContributorModalReqToken) return;
+                    processExcel();
+                });
         }
 
         function processExcel() {
@@ -9106,17 +10491,23 @@
             }
         }
 
-        function initContributorActivityPanel() {
-            var btn = document.getElementById('dashActivityRefresh');
-            if (btn) {
-                btn.addEventListener('click', function () {
+        function initDashboardTopPanels() {
+            var activityBtn = document.getElementById('dashActivityRefresh');
+            if (activityBtn) {
+                activityBtn.addEventListener('click', function () {
                     refreshContributorActivity();
+                });
+            }
+            var submissionBtn = document.getElementById('dashSubmissionRefresh');
+            if (submissionBtn) {
+                submissionBtn.addEventListener('click', function () {
+                    refreshDashSubmissionSummary();
                 });
             }
         }
 
         initMobileNav();
-        initContributorActivityPanel();
+        initDashboardTopPanels();
         setupWorkspacePersistenceHooks();
         renderChartPlaceholder();
     </script>

@@ -9,6 +9,7 @@ const multer = require('multer');
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
 const XLSX = require('xlsx');
+const nodemailer = require('nodemailer');
 
 dotenv.config({ path: path.join(__dirname, '.env'), override: true });
 
@@ -473,7 +474,7 @@ function normalizeAssigneeForMatch(s) {
     .toLowerCase();
 }
 
-/** When filter_by_assignee is true: exact match on assignee_scope, else legacy substring on invitee_email. */
+/** When filter_by_assignee is true: exact match on assignee_scope if set; else substring match of assignee cell against invitee_email. */
 function inviteAssigneeAllowsRow(invite, assigneeRaw) {
   if (!invite.filter_by_assignee) return true;
   const scope =
@@ -1106,6 +1107,15 @@ app.post('/api/invites', async (req, res) => {
   const assigneeScope = assigneeScopeRaw || null;
   let filterByAssignee = Boolean(body.filterByAssignee);
   if (assigneeScope) filterByAssignee = true;
+  if (filterByAssignee && !assigneeScope) {
+    const em = body.inviteeEmail != null ? String(body.inviteeEmail).trim() : '';
+    if (!em) {
+      return res.status(400).json({
+        error:
+          'Assignee filtering is on but no exact assignee name was given. Enter a contributor email (Assignee column substring match) or enter an exact assignee name.',
+      });
+    }
+  }
 
   const client = await p.connect();
   try {
@@ -1197,6 +1207,11 @@ app.post('/api/invites/bulk', async (req, res) => {
       ? String(body.threshold).trim()
       : null;
 
+  const emailMap =
+    body.assigneeEmails && typeof body.assigneeEmails === 'object' && !Array.isArray(body.assigneeEmails)
+      ? body.assigneeEmails
+      : {};
+
   const base = process.env.PUBLIC_APP_URL || `${req.protocol}://${req.get('host')}`;
   const baseClean = base.replace(/\/$/, '');
 
@@ -1213,13 +1228,19 @@ app.post('/api/invites/bulk', async (req, res) => {
     try {
       for (const assigneeName of assignees) {
         const token = crypto.randomUUID();
+        let inviteeEmail = null;
+        if (Object.prototype.hasOwnProperty.call(emailMap, assigneeName)) {
+          const em = String(emailMap[assigneeName] ?? '').trim();
+          if (em) inviteeEmail = em;
+        }
         await client.query(
           `INSERT INTO invites (token, upload_id, invitee_email, filter_by_assignee, assignee_scope, note, expires_at, sprint_threshold)
            VALUES ($1::uuid, $2, $3, true, $4, $5, $6, $7)`,
-          [token, uploadId, null, assigneeName, note, expires, sprintThreshold]
+          [token, uploadId, inviteeEmail, assigneeName, note, expires, sprintThreshold]
         );
         invites.push({
           assignee: assigneeName,
+          inviteeEmail: inviteeEmail,
           token,
           inviteUrl: `${baseClean}/user-dashboard.html?token=${encodeURIComponent(token)}&api=${encodeURIComponent(baseClean)}`,
           expiresAt: expires.toISOString(),
@@ -1241,6 +1262,305 @@ app.post('/api/invites/bulk', async (req, res) => {
     console.error(e);
     res.status(500).json({
       error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
+/** PATCH body: { uploadId, token (uuid string), inviteeEmail } — empty inviteeEmail clears stored email. */
+app.patch('/api/invites/email', async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({ error: 'DATABASE_URL is not set' });
+  }
+  const body = req.body || {};
+  const uploadId = body.uploadId;
+  const token = body.token != null ? String(body.token).trim() : '';
+  if (!uploadId || !/^\d+$/.test(String(uploadId))) {
+    return res.status(400).json({ error: 'uploadId required (numeric)' });
+  }
+  if (!token) {
+    return res.status(400).json({ error: 'token required' });
+  }
+  const rawEm = body.inviteeEmail != null ? String(body.inviteeEmail).trim() : '';
+  const inviteeEmail = rawEm === '' ? null : rawEm;
+
+  const client = await p.connect();
+  try {
+    const q = await client.query(
+      `UPDATE invites SET invitee_email = $1
+       WHERE token = $2::uuid AND upload_id = $3
+       RETURNING invitee_email`,
+      [inviteeEmail, token, uploadId]
+    );
+    if (!q.rows.length) {
+      return res.status(404).json({ error: 'Invite not found for this upload' });
+    }
+    const row = q.rows[0];
+    res.json({
+      ok: true,
+      inviteeEmail: row.invitee_email != null ? String(row.invitee_email) : '',
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
+function getSmtpTransport() {
+  if (!process.env.SMTP_HOST) return null;
+  const port = parseInt(process.env.SMTP_PORT, 10) || 587;
+  const secure = String(process.env.SMTP_SECURE || '').toLowerCase() === 'true';
+  const user = process.env.SMTP_USER;
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port,
+    secure,
+    auth: user ? { user, pass: process.env.SMTP_PASS || '' } : undefined,
+  });
+}
+
+/** MailerSend API token (https://www.mailersend.com/) — same value as in the dashboard. */
+function getMailerSendApiToken() {
+  const t = (
+    process.env.MAILERSEND_API_TOKEN ||
+    process.env.MAILERSEND_API_KEY ||
+    ''
+  ).trim();
+  return t || null;
+}
+
+/**
+ * Verified sender for MailerSend: MAILERSEND_FROM_EMAIL + MAILERSEND_FROM_NAME,
+ * or parse "Name <email@verified-domain.com>" from MAILERSEND_FROM / SMTP_FROM / MAIL_FROM.
+ */
+function getMailerSendFrom() {
+  const explicit = (process.env.MAILERSEND_FROM_EMAIL || '').trim();
+  if (explicit && explicit.includes('@')) {
+    const name = (process.env.MAILERSEND_FROM_NAME || '').trim();
+    return {
+      email: explicit,
+      name: name || 'Jira Spillover Analyzer',
+    };
+  }
+  const combined = (
+    process.env.MAILERSEND_FROM ||
+    process.env.SMTP_FROM ||
+    process.env.MAIL_FROM ||
+    ''
+  ).trim();
+  if (!combined) return null;
+  const angle = combined.match(/<([^>]+)>/);
+  const email = angle ? angle[1].trim() : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(combined) ? combined : '';
+  if (!email || !email.includes('@')) return null;
+  let name = combined.replace(/<[^>]*>/, '').trim().replace(/^["']|["']$/g, '');
+  if (!name) name = 'Jira Spillover Analyzer';
+  return { email, name };
+}
+
+async function sendInviteViaMailerSend({ apiToken, fromEmail, fromName, to, toName, subject, text, html }) {
+  const res = await fetch('https://api.mailersend.com/v1/email', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiToken}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      from: { email: fromEmail, name: fromName || 'Jira Spillover Analyzer' },
+      to: [{ email: to, name: toName || to }],
+      subject,
+      text,
+      html,
+    }),
+  });
+  if (res.ok) {
+    return { ok: true };
+  }
+  let detail = '';
+  try {
+    const j = await res.json();
+    detail = j.message || (j.errors && JSON.stringify(j.errors)) || JSON.stringify(j);
+  } catch (_) {
+    try {
+      detail = await res.text();
+    } catch (_) {
+      detail = '';
+    }
+  }
+  return { ok: false, error: detail || `HTTP ${res.status}` };
+}
+
+function escapeEmailHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function getInviteAppName() {
+  const x = (process.env.INVITE_APP_NAME || '').trim();
+  return x || 'Jira Spillover Analyzer';
+}
+
+let inviteEmailTemplateCache = null;
+function getInviteEmailTemplateString() {
+  if (inviteEmailTemplateCache) return inviteEmailTemplateCache;
+  const fp = path.join(ROOT, 'templates', 'contributor-invite-email.html');
+  inviteEmailTemplateCache = fs.readFileSync(fp, 'utf8');
+  return inviteEmailTemplateCache;
+}
+
+/** Same layout as the Send invite “Styled” preview — fills templates/contributor-invite-email.html */
+function renderInviteEmailHtml(assigneeName, inviteUrl) {
+  const appName = getInviteAppName();
+  const a = String(assigneeName || '').trim() || 'Contributor';
+  const u = String(inviteUrl || '').trim();
+  let html = getInviteEmailTemplateString();
+  const esc = escapeEmailHtml;
+  html = html.replace(/\{\{APP_NAME\}\}/g, esc(appName));
+  html = html.replace(/\{\{ASSIGNEE_NAME\}\}/g, esc(a));
+  html = html.replace(/\{\{INVITE_LINK\}\}/g, esc(u));
+  return html;
+}
+
+function buildServerInvitePlainText(assigneeName, inviteUrl) {
+  const appName = getInviteAppName();
+  const n = String(assigneeName || '').trim();
+  const link = String(inviteUrl || '').trim();
+  const hi = n && n !== 'Contributor' ? `Hi ${n},` : 'Hi,';
+  return [
+    hi,
+    '',
+    `You're invited to use the ${appName} contributor workspace to enter spillover and bug information for the issues assigned to you in the shared export.`,
+    '',
+    'YOUR LINK (private — do not share)',
+    '-----------------------------------',
+    link,
+    '',
+    'What to do',
+    '----------',
+    '1. Open the link in your browser (Chrome, Edge, or Firefox recommended).',
+    '2. Complete the spillover and bug fields shown for your tickets.',
+    '3. Your progress is saved in the team database when you use the app online.',
+    '',
+    "If the link doesn't open, paste it into your browser's address bar.",
+    '',
+    'Thanks,',
+  ].join('\n');
+}
+
+/** POST body: { uploadId, tokens: string[] } — sends each invite link to the email stored on that invite (never trusts client recipient). */
+app.post('/api/invites/send-by-tokens', async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({ error: 'DATABASE_URL is not set' });
+  }
+  const msToken = getMailerSendApiToken();
+  const msFrom = getMailerSendFrom();
+  if (msToken && !msFrom) {
+    return res.status(503).json({
+      error:
+        'MAILERSEND_API_TOKEN is set but sender is missing. Set MAILERSEND_FROM_EMAIL (verified domain) or MAILERSEND_FROM / SMTP_FROM as "Name <email@domain.com>".',
+    });
+  }
+  const useMailerSend = Boolean(msToken && msFrom);
+  const transport = getSmtpTransport();
+  if (!useMailerSend && !transport) {
+    return res.status(503).json({
+      error:
+        'Email not configured. Set MAILERSEND_API_TOKEN and MAILERSEND_FROM_EMAIL (MailerSend), or SMTP_HOST (and typically SMTP_USER, SMTP_PASS, SMTP_FROM) — see .env.example.',
+    });
+  }
+  const body = req.body || {};
+  const uploadId = body.uploadId;
+  const rawTokens = body.tokens;
+  if (!uploadId || !/^\d+$/.test(String(uploadId))) {
+    return res.status(400).json({ error: 'uploadId required (numeric)' });
+  }
+  if (!Array.isArray(rawTokens) || !rawTokens.length) {
+    return res.status(400).json({ error: 'tokens must be a non-empty array' });
+  }
+  const from =
+    process.env.SMTP_FROM || process.env.MAIL_FROM || process.env.SMTP_USER || 'noreply@localhost';
+  const base = process.env.PUBLIC_APP_URL || `${req.protocol}://${req.get('host')}`;
+  const baseClean = base.replace(/\/$/, '');
+
+  const client = await p.connect();
+  const results = [];
+  try {
+    for (const raw of rawTokens) {
+      const token = String(raw || '').trim();
+      if (!token) {
+        results.push({ token: '', ok: false, error: 'empty token' });
+        continue;
+      }
+      const q = await client.query(
+        `SELECT invitee_email, assignee_scope
+         FROM invites
+         WHERE token = $1::uuid AND upload_id = $2`,
+        [token, uploadId]
+      );
+      if (!q.rows.length) {
+        results.push({ token, ok: false, error: 'Invite not found for this upload' });
+        continue;
+      }
+      const row = q.rows[0];
+      const to = row.invitee_email != null ? String(row.invitee_email).trim() : '';
+      if (!to) {
+        results.push({ token, ok: false, error: 'No email stored for this invite' });
+        continue;
+      }
+      const name =
+        row.assignee_scope != null && String(row.assignee_scope).trim() !== ''
+          ? String(row.assignee_scope).trim()
+          : 'Contributor';
+      const inviteUrl = `${baseClean}/user-dashboard.html?token=${encodeURIComponent(token)}&api=${encodeURIComponent(baseClean)}`;
+      const appName = getInviteAppName();
+      const subject = `Your contributor link — ${name} — ${appName}`;
+      const text = buildServerInvitePlainText(name, inviteUrl);
+      const html = renderInviteEmailHtml(name, inviteUrl);
+      try {
+        if (useMailerSend) {
+          const msResult = await sendInviteViaMailerSend({
+            apiToken: msToken,
+            fromEmail: msFrom.email,
+            fromName: msFrom.name,
+            to,
+            toName: name,
+            subject,
+            text,
+            html,
+          });
+          if (!msResult.ok) {
+            throw new Error(msResult.error || 'MailerSend rejected request');
+          }
+        } else {
+          await transport.sendMail({ from, to, subject, text, html });
+        }
+        results.push({ token, ok: true, to });
+      } catch (sendErr) {
+        console.error(sendErr);
+        results.push({
+          token,
+          ok: false,
+          error:
+            process.env.NODE_ENV === 'development' ? String(sendErr.message || sendErr) : 'Send failed',
+        });
+      }
+    }
+    const sent = results.filter((r) => r.ok).length;
+    res.json({ ok: true, sent, results });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Server error',
     });
   } finally {
     client.release();

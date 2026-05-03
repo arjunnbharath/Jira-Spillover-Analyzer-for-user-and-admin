@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Jira Spillover Analyzer - Workspace Invitation</title>
+    <!-- Placeholders: {{APP_NAME}} {{ASSIGNEE_NAME}} {{INVITE_LINK}} -->
+    <style type="text/css">
+        #outlook a { padding: 0; }
+        body { margin: 0 !important; padding: 0 !important; width: 100% !important; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+        table { border-collapse: collapse !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        .email-inv-wrap { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important; }
+        .email-inv-cta {
+            display: inline-block !important;
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+            text-decoration: none !important;
+            padding: 13px 35px !important;
+            border-radius: 30px !important;
+            font-weight: 600 !important;
+            font-size: 12px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            transition: background-color 0.2s ease, color 0.2s ease !important;
+        }
+        a.email-inv-cta:hover,
+        a.email-inv-cta:focus {
+            background-color: #ea580c !important;
+            color: #ffffff !important;
+        }
+        @media only screen and (max-width: 620px) {
+            .email-inv-pad-h { padding-left: 20px !important; padding-right: 20px !important; }
+            .email-inv-header-pad { padding: 28px 20px !important; }
+            .email-inv-content-pad { padding: 30px 20px !important; }
+            .email-inv-footer-pad { padding: 24px 20px 28px !important; }
+            .email-inv-cta { display: block !important; width: 100% !important; box-sizing: border-box !important; text-align: center !important; }
+        }
+    </style>
+</head>
+<body style="margin:0;padding:0;background-color:#2a2a2a;">
+    <div style="display:none;max-height:0;overflow:hidden;">Your personal contributor workspace link — do not forward.</div>
+    <table role="presentation" class="email-inv-wrap" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#2a2a2a;">
+        <tr>
+            <td align="center" style="padding:20px 12px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td class="email-inv-header-pad" style="padding:36px 32px;background-color:#1a1a1a;">
+                            <p style="margin:0 0 8px;font-size:17px;font-weight:700;color:#ffffff;letter-spacing:0.08em;line-height:1.25;text-transform:uppercase;">{{APP_NAME}}</p>
+                            <p style="margin:0;font-size:11px;font-weight:600;color:#b8bcc4;letter-spacing:0.22em;text-transform:uppercase;line-height:1.4;">Contributor workspace</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="email-inv-pad-h email-inv-content-pad" style="padding:40px 30px;background-color:#ffffff;color:#333333;">
+                            <p style="margin:0 0 35px;font-size:18px;font-weight:600;line-height:1.35;color:#1a1a1a;">{{ASSIGNEE_NAME}}, your workspace link is ready.</p>
+                            <p style="margin:0 0 35px;font-size:13px;line-height:1.7;color:#555555;">Your team shared a Jira export for spillover and bug follow-up. Use the secure link below — it is tied to your assignee name and should not be forwarded.</p>
+                            <p style="margin:0 0 4px;font-size:11px;font-weight:600;text-transform:uppercase;color:#666666;letter-spacing:0.5px;">Contributor</p>
+                            <p style="margin:0 0 25px;font-size:13px;color:#333333;font-weight:500;">{{ASSIGNEE_NAME}}</p>
+                            <p style="margin:0 0 4px;font-size:11px;font-weight:600;text-transform:uppercase;color:#666666;letter-spacing:0.5px;">Workspace</p>
+                            <p style="margin:0 0 30px;font-size:13px;color:#333333;font-weight:500;">{{APP_NAME}}</p>
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr><td style="height:1px;background-color:#e5e5e5;line-height:1px;font-size:1px;">&nbsp;</td></tr>
+                            </table>
+                            <p style="margin:30px 0 8px;font-size:11px;font-weight:600;text-transform:uppercase;color:#666666;letter-spacing:0.5px;">Your Personal Link</p>
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 25px;background-color:#f5f5f5;border:1px solid #dddddd;border-radius:4px;">
+                                <tr>
+                                    <td style="padding:12px;font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.5;color:#333333;word-break:break-all;">
+                                        <a href="{{INVITE_LINK}}" style="color:#333333;text-decoration:underline;">{{INVITE_LINK}}</a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="margin:25px 0;font-size:13px;line-height:1.7;color:#555555;">Open the workspace in your browser to enter spillover and bug fields for your issues.</p>
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:25px 0;">
+                                <tr>
+                                    <td align="center" style="text-align:center;">
+                                        <a class="email-inv-cta" href="{{INVITE_LINK}}" style="color:#ffffff !important;">Open Contributor Workspace</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="email-inv-footer-pad" style="padding:28px 28px 32px;background-color:#000000;text-align:center;">
+                            <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:#e8e8e8;">Questions? Reply to the person who sent this invite.</p>
+                            <p style="margin:0 0 20px;font-size:12px;line-height:1.55;color:#a8a8a8;">{{APP_NAME}} · Spillover &amp; bug intake tied to your database upload.</p>
+                            <p style="margin:0;font-size:15px;font-weight:600;line-height:1.45;color:#ffffff;letter-spacing:0.03em;">Thank you.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

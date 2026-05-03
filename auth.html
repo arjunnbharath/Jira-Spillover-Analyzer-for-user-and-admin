@@ -114,6 +114,7 @@
         }
 
         .auth-panel--visual {
+            position: relative;
             flex: 0 0 var(--visual-col);
             width: var(--visual-col);
             max-width: var(--visual-col);
@@ -273,6 +274,16 @@
             background: var(--auth-btn-hover);
         }
 
+        .auth-btn-primary[type='submit']:hover {
+            background: #22c55e;
+            color: #052e16;
+        }
+
+        .auth-btn-primary[type='submit']:active {
+            background: #16a34a;
+            color: #fff;
+        }
+
         .auth-footer-link {
             margin-top: 2rem;
             font-size: 0.8125rem;
@@ -387,13 +398,29 @@
             border-color: rgba(255, 255, 255, 0.28);
         }
 
+        .auth-visual-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            z-index: 0;
+            transform: scale(1.03);
+        }
+
         .auth-visual-bg {
             position: absolute;
             inset: 0;
-            background:
-                linear-gradient(135deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.2) 40%, rgba(0, 0, 0, 0.65) 100%),
-                url('images/newimg.png') center / cover no-repeat;
-            transform: scale(1.03);
+            z-index: 1;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.45) 0%,
+                rgba(0, 0, 0, 0.2) 40%,
+                rgba(0, 0, 0, 0.65) 100%
+            );
+            pointer-events: none;
         }
 
         .auth-visual-copy {
@@ -538,7 +565,7 @@
                 border-inline-end: 6px solid #000000;
             }
 
-            .auth-visual-bg {
+            .auth-visual-img {
                 transform: scale(1.01);
             }
 
@@ -690,6 +717,15 @@
             </section>
 
             <section class="auth-panel auth-panel--visual" aria-label="Brand">
+                <img
+                    class="auth-visual-img"
+                    src="images/newimg.png"
+                    alt=""
+                    width="1600"
+                    height="1200"
+                    decoding="async"
+                    fetchpriority="high"
+                />
                 <div class="auth-visual-bg"></div>
                 <div class="auth-visual-copy">
                     <h2>A clearer view of spillover risk across every sprint.</h2>
@@ -748,35 +784,71 @@
                 var map = {
                     'auth/email-already-in-use': 'That email is already registered. Sign in instead.',
                     'auth/invalid-email': 'Enter a valid email address.',
-                    'auth/wrong-password': 'Wrong password. Try again or use Forgot password.',
-                    'auth/user-not-found': 'No account for that email. Sign up first.',
+                    'auth/wrong-password': 'Incorrect email or password.',
+                    'auth/user-not-found': 'Incorrect email or password.',
+                    'auth/invalid-credential': 'Incorrect email or password.',
                     'auth/weak-password': 'Password is too weak.',
                     'auth/too-many-requests': 'Too many attempts. Wait a bit and try again.',
                     'auth/network-request-failed': 'Network error. Check your connection.',
-                    'auth/operation-not-allowed': 'Email/password sign-in is disabled in Firebase Console (Authentication → Sign-in method).'
+                    'auth/operation-not-allowed': 'Email/password sign-in is not enabled for this app.',
+                    'auth/user-disabled': 'This account cannot sign in. Contact support.'
                 };
                 return map[code] || null;
+            }
+
+            /** Sign-in only: never show raw provider error strings to the user. */
+            function authSignInErrorText(err) {
+                var code = err && err.code ? String(err.code) : '';
+                var mapped = authFirebaseErrMessage(code);
+                if (mapped) return mapped;
+                if (code && code.indexOf('auth/') === 0) {
+                    return 'Incorrect email or password.';
+                }
+                return 'Sign-in failed. Please try again.';
+            }
+
+            function authSignUpErrorText(err) {
+                var code = err && err.code ? String(err.code) : '';
+                var mapped = authFirebaseErrMessage(code);
+                if (mapped) return mapped;
+                if (code && code.indexOf('auth/') === 0) {
+                    return 'Could not create an account. Please try again.';
+                }
+                return 'Could not create an account. Please try again.';
+            }
+
+            function authPasswordResetErrorText(err) {
+                var code = err && err.code ? String(err.code) : '';
+                if (code === 'auth/user-not-found') {
+                    return 'No account found for that email address.';
+                }
+                var mapped = authFirebaseErrMessage(code);
+                if (mapped) return mapped;
+                if (code && code.indexOf('auth/') === 0) {
+                    return 'Could not send reset email. Please try again.';
+                }
+                return 'Could not send reset email. Please try again.';
             }
 
             function authFirebaseNotReadyMessage() {
                 if (typeof firebase === 'undefined') {
                     return (
                         window.firebaseSkippedReason ||
-                        'Firebase SDK did not load (check Network tab / ad blocker).'
+                        'Sign-in could not load. Check your connection or ad blocker, then refresh.'
                     );
                 }
                 if (typeof window.FIREBASE_CONFIG === 'undefined') {
                     return (
                         window.firebaseSkippedReason ||
-                        'firebase-config.js did not load. Open the site via http://localhost from your project folder (not file://).'
+                        'Sign-in is not configured. Open the site from your local server (not as a file URL).'
                     );
                 }
                 if (window.firebaseInitError) {
-                    return 'Firebase failed to start: ' + window.firebaseInitError;
+                    return 'Sign-in is not available. Refresh the page or try again later.';
                 }
                 return (
                     window.firebaseSkippedReason ||
-                    'Firebase is not active. Confirm firebase-config.js has real apiKey + projectId, then hard-refresh.'
+                    'Sign-in is not available. Refresh the page or contact support.'
                 );
             }
 
@@ -913,12 +985,7 @@
                             showAuthFirebaseMsg('Password reset email sent. Check your inbox.', 'ok');
                         })
                         .catch(function (err) {
-                            showAuthFirebaseMsg(
-                                authFirebaseErrMessage(err && err.code) ||
-                                    (err && err.message) ||
-                                    'Could not send reset email.',
-                                'error'
-                            );
+                            showAuthFirebaseMsg(authPasswordResetErrorText(err), 'error');
                         });
                 });
             }
@@ -940,10 +1007,7 @@
                         afterAuthSuccessToApp();
                     })
                     .catch(function (err) {
-                        showAuthFirebaseMsg(
-                            authFirebaseErrMessage(err && err.code) || (err && err.message) || 'Sign-in failed.',
-                            'error'
-                        );
+                        showAuthFirebaseMsg(authSignInErrorText(err), 'error');
                     });
             });
 
@@ -1002,10 +1066,7 @@
                         });
                     })
                     .catch(function (err) {
-                        showAuthFirebaseMsg(
-                            authFirebaseErrMessage(err && err.code) || (err && err.message) || 'Sign-up failed.',
-                            'error'
-                        );
+                        showAuthFirebaseMsg(authSignUpErrorText(err), 'error');
                     });
             });
 
