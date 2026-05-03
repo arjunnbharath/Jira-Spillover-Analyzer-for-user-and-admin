@@ -1,0 +1,2938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jira Spillover Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            /* Match main app (index.html) — dark dashboard chrome */
+            --bg: #0d0d0d;
+            --surface: #181818;
+            --surface-2: #1c1c1c;
+            --border: #2a2a2a;
+            --border-subtle: #333;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+            --text-dim: #6b6b6b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --accent-soft: rgba(59, 130, 246, 0.12);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --panel-shadow: 0 8px 32px rgba(0, 0, 0, 0.42);
+            --panel-edge: rgba(255, 255, 255, 0.06);
+            --focus-ring: rgba(59, 130, 246, 0.35);
+            --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.35);
+            --shadow: var(--panel-shadow);
+
+            /* Aliases used across this page */
+            --ink: var(--text);
+            --ink-soft: #94a3b8;
+            --sky-50: rgba(255, 255, 255, 0.04);
+            --sky-100: var(--surface-2);
+            --sky-200: var(--border);
+            --sky-300: var(--text-muted);
+            --brand-500: #3b82f6;
+            --brand-600: #2563eb;
+            --brand-700: #1d4ed8;
+            --dark: var(--text);
+            --light: #ffffff;
+            --mid-gray: var(--text-muted);
+            --on-accent: #ffffff;
+            --row-hover: rgba(255, 255, 255, 0.06);
+
+            --sidebar-bg: #0a0a0a;
+            --sidebar-border: var(--border);
+            --sidebar-hover: rgba(255, 255, 255, 0.06);
+            --sidebar-active: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 272px;
+
+            --contrib-table-row: var(--surface);
+            --contrib-table-row-alt: #141414;
+            --contrib-table-row-hover: rgba(255, 255, 255, 0.06);
+            --contrib-table-thead: rgba(0, 0, 0, 0.35);
+            --contrib-table-complete: rgba(34, 197, 94, 0.14);
+            --contrib-table-complete-alt: rgba(34, 197, 94, 0.1);
+            --contrib-table-complete-hover: rgba(34, 197, 94, 0.22);
+            --table-header-border: var(--border);
+            --table-row-border: var(--border);
+            --contrib-table-row-gap: 0.4rem;
+            --contrib-table-corner: 6px;
+        }
+        @supports not (background: color-mix(in srgb, white, black)) {
+            :root {
+                --contrib-table-row: #181818;
+                --contrib-table-row-alt: #141414;
+                --contrib-table-row-hover: rgba(255, 255, 255, 0.06);
+                --contrib-table-thead: rgba(0, 0, 0, 0.35);
+                --contrib-table-complete: rgba(34, 197, 94, 0.14);
+                --contrib-table-complete-alt: rgba(34, 197, 94, 0.1);
+                --contrib-table-complete-hover: rgba(34, 197, 94, 0.22);
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 1.25rem 1rem 2.5rem;
+            line-height: 1.5;
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+        body.contrib-session {
+            padding: 0;
+            overflow-x: hidden;
+            background: var(--bg);
+        }
+        body.contrib-session #landingFoot {
+            display: none;
+        }
+        .wrap { max-width: 1140px; margin: 0 auto; }
+
+        /* Landing — same vocabulary as index dashboard */
+        #landingBlock .hero {
+            border-bottom-color: rgba(255, 255, 255, 0.06);
+        }
+        #landingBlock .hero h1 {
+            color: var(--text);
+        }
+        #landingBlock .hero__sub {
+            color: #94a3b8;
+        }
+        #landingBlock .hero__sub strong {
+            color: var(--text);
+        }
+        #landingBlock .hero__badge {
+            color: var(--text-muted);
+            background: var(--accent-soft);
+            border-color: var(--border);
+        }
+        #landingFoot .foot {
+            color: var(--text-muted);
+        }
+        #landingFoot .foot a {
+            color: var(--accent);
+        }
+
+        /* Session main column — index dashboard text hierarchy */
+        body.contrib-session .contrib-session-summary__title {
+            color: var(--text);
+            text-align: right;
+        }
+        body.contrib-session .contrib-session-summary__file-line {
+            color: #94a3b8;
+            text-align: right;
+        }
+        body.contrib-session .contrib-session-bar {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            justify-content: flex-end;
+        }
+        body.contrib-session .contrib-session-summary {
+            align-items: flex-end;
+        }
+        body.contrib-session .contrib-page-head__sub {
+            color: #94a3b8;
+        }
+        body.contrib-session .contrib-panel-dash__hint {
+            color: #94a3b8;
+        }
+        body.contrib-session .contrib-panel-dash__hint strong {
+            color: var(--text);
+        }
+        body.contrib-session .contrib-section-head__title {
+            color: var(--text-dim);
+        }
+        body.contrib-session .contrib-section-head:has(.contrib-section-head__badge--warn) .contrib-section-head__title {
+            color: var(--text);
+        }
+        body.contrib-session .contrib-section-head__badge--warn {
+            color: var(--text);
+        }
+        body.contrib-session .contrib-section-head__badge--ok {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        body.contrib-session .muted {
+            color: var(--text-muted);
+        }
+
+        /* —— Dashboard shell (sidebar + stage) —— */
+        .contrib-app {
+            display: flex;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: transparent;
+            position: relative;
+        }
+
+        @keyframes contrib-sidebar-in {
+            from {
+                opacity: 0;
+                transform: translateX(-14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes contrib-stage-in {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #workspaceShell.contrib-shell--enter .contrib-sidebar {
+            animation: contrib-sidebar-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        #workspaceShell.contrib-shell--enter .contrib-stage {
+            animation: contrib-stage-in 0.52s cubic-bezier(0.22, 1, 0.36, 1) 0.07s both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #workspaceShell.contrib-shell--enter .contrib-sidebar,
+            #workspaceShell.contrib-shell--enter .contrib-stage {
+                animation: none !important;
+            }
+        }
+        .contrib-sidebar {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            padding: 0 0 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow: hidden;
+        }
+        .contrib-sidebar__brand {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.55rem 1.25rem 0.55rem;
+            margin: 0 0 0.65rem;
+            background: #151515;
+            border-radius: 0 0 var(--radius) var(--radius);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .contrib-sidebar__logo {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .contrib-sidebar__logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transform: scale(1.65);
+            transform-origin: center center;
+            display: block;
+        }
+        .contrib-sidebar__app-title {
+            margin: 0;
+            flex: 1;
+            min-width: 0;
+            font-size: 0.98rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+            color: #f8fafc;
+        }
+        .contrib-sidebar__scroll {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+            padding: 0.75rem 0.75rem 0.5rem;
+        }
+        .contrib-nav-section__label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin: 1rem 0 0.5rem 0.5rem;
+        }
+        .contrib-nav-section__label:first-child {
+            margin-top: 0;
+        }
+        .contrib-sidebar__nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .contrib-sidenav__btn {
+            appearance: none;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-family: inherit;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.15s, color 0.15s;
+        }
+        .contrib-sidenav__btn:hover {
+            color: #f8fafc;
+            background: var(--sidebar-hover);
+        }
+        .contrib-sidenav__btn--active {
+            color: #f8fafc;
+            background: var(--sidebar-active);
+            font-weight: 600;
+        }
+        .contrib-sidenav__link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+        .contrib-sidenav__link:hover {
+            color: #f8fafc;
+            background: var(--sidebar-hover);
+        }
+        .contrib-sidenav__link--button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            font: inherit;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            font-family: inherit;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.15s, color 0.15s;
+        }
+        .contrib-sidenav__link--button:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.45);
+            outline-offset: 2px;
+        }
+        .contrib-sidenav__link--button:hover {
+            color: #f8fafc;
+            background: var(--sidebar-hover);
+        }
+        .contrib-sidenav__link svg,
+        .contrib-sidenav__link--button svg {
+            width: 18px;
+            height: 18px;
+            opacity: 0.75;
+            flex-shrink: 0;
+        }
+        .contrib-sidenav__btn:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.45);
+            outline-offset: 2px;
+        }
+        .contrib-sidenav__ico {
+            width: 18px;
+            height: 18px;
+            opacity: 0.75;
+            flex-shrink: 0;
+        }
+        .contrib-submitted-list {
+            list-style: none;
+            margin: 0 0 0.25rem;
+            padding: 0 0.5rem 0 0.75rem;
+            max-height: 11rem;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .contrib-submitted-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .contrib-submitted-list::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 10px;
+        }
+        .contrib-submitted-list__item {
+            font-size: 0.75rem;
+            line-height: 1.45;
+            padding: 0.2rem 0;
+            color: #cbd5e1;
+        }
+        .contrib-submitted-list__item code {
+            font-family: ui-monospace, 'Consolas', monospace;
+            font-size: 0.75rem;
+            color: #e2e8f0;
+        }
+        .contrib-submitted-list__empty {
+            font-size: 0.75rem;
+            padding: 0.15rem 0 0.35rem;
+        }
+        .contrib-sidebar__footer {
+            padding: 1rem 1.25rem 1.1rem;
+            margin-top: auto;
+            border-top: 1px solid var(--sidebar-border);
+            line-height: 1.35;
+        }
+        .contrib-sidebar__welcome {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .contrib-sidebar__welcome-label {
+            font-size: 0.625rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .contrib-sidebar__welcome-name {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #f1f5f9;
+            line-height: 1.25;
+            word-break: break-word;
+        }
+
+        .contrib-stage {
+            flex: 1;
+            min-width: 0;
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            background: var(--bg);
+        }
+        .contrib-session-bar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 0.5rem;
+        }
+        .contrib-session-summary {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.375rem;
+            min-width: 0;
+            flex: 1;
+        }
+        .contrib-session-summary__title {
+            font-family: var(--font);
+            font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+            margin: 0;
+            max-width: 56ch;
+            width: 100%;
+            color: var(--text);
+        }
+        .contrib-session-summary__file-line {
+            margin: 0;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            text-align: left;
+            align-self: flex-start;
+            max-width: 100%;
+        }
+
+        .contrib-btn-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .contrib-btn-outline:hover {
+            background: var(--surface-2);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .contrib-btn-outline--sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .contrib-main-dash {
+            flex: 1;
+            padding: 1.25rem 1.25rem 2.5rem;
+            max-width: min(1520px, 100%);
+            width: 100%;
+            margin: 0 auto;
+            background: transparent;
+        }
+        .contrib-banner {
+            margin-bottom: 1rem;
+        }
+        .contrib-banner.banner--err,
+        .contrib-banner.banner--ok {
+            margin-bottom: 0;
+        }
+        .contrib-page-head {
+            margin-bottom: 1.25rem;
+        }
+        .contrib-page-head__sub {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            max-width: 52ch;
+            line-height: 1.55;
+        }
+        .contrib-page-head__invite {
+            display: block;
+            color: var(--text);
+            font-weight: 500;
+            margin-bottom: 0.35rem;
+            max-width: 52ch;
+        }
+        .contrib-page-head__statline {
+            display: block;
+            font-size: 0.8125rem;
+        }
+        .contrib-panel-dash {
+            margin-bottom: 2rem;
+        }
+        body.contrib-session .contrib-panel-dash:not([hidden]) {
+            background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(20, 20, 20, 0.99) 100%);
+            border: 1px solid var(--panel-edge);
+            border-radius: var(--radius);
+            box-shadow: var(--panel-shadow);
+            padding: 1.1rem 1.25rem 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        body.contrib-session .contrib-panel-dash:not([hidden]) .contrib-panel-dash__title {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            margin-bottom: 0.65rem;
+            color: #a8a8a8;
+        }
+        .contrib-panel-dash__title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.375rem;
+            color: var(--text);
+        }
+        .contrib-panel-dash__hint {
+            font-size: 0.8125rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+            line-height: 1.55;
+            max-width: 56ch;
+        }
+        /* Save / validation errors: inside Spillover (or Bugs) panel, not fixed viewport */
+        .contrib-panel-alert {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 0 0.85rem;
+            padding: 0.75rem 1.1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            line-height: 1.45;
+            text-align: center;
+            transition: opacity 0.45s ease;
+            opacity: 1;
+        }
+        .contrib-panel-alert[hidden] {
+            display: none !important;
+        }
+        .contrib-panel-alert--err {
+            color: #fecaca;
+            border: 1px solid rgba(252, 165, 165, 0.35);
+            background: rgba(30, 10, 10, 0.45);
+            backdrop-filter: blur(18px) saturate(1.15);
+            -webkit-backdrop-filter: blur(18px) saturate(1.15);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+                0 8px 28px rgba(0, 0, 0, 0.35);
+        }
+        .contrib-panel-alert--err.contrib-panel-alert--hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .contrib-spill-done-cta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem 1.25rem;
+            margin-bottom: 1rem;
+            padding: 0.65rem 1rem 0.65rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.065);
+            border-left: 3px solid var(--accent);
+            background: var(--surface);
+            box-shadow: none;
+            max-width: min(100%, 56rem);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .contrib-spill-done-cta__copy {
+            flex: 1 1 22rem;
+            min-width: 0;
+        }
+        .contrib-spill-done-cta__lead {
+            margin: 0 0 0.15rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: var(--accent);
+            line-height: 1.3;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .contrib-spill-done-cta__next {
+            margin: 0;
+            font-size: 0.8125rem;
+            line-height: 1.35;
+            color: #94a3b8;
+        }
+        .contrib-spill-done-cta__btn {
+            appearance: none;
+            flex-shrink: 0;
+            padding: 0.42rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--accent);
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .contrib-spill-done-cta__btn:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+        .contrib-section-head {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.25rem 0 0.75rem;
+        }
+        .contrib-section-head:first-child {
+            margin-top: 0;
+        }
+        .contrib-section-head__title {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .contrib-section-head:has(.contrib-section-head__badge--warn) .contrib-section-head__title {
+            color: var(--text);
+        }
+        .contrib-section-head__badge {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-sm);
+        }
+        .contrib-section-head__badge--warn {
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-weight: 600;
+        }
+        .contrib-section-head__badge--ok {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .contrib-table-section {
+            margin-bottom: 1.5rem;
+        }
+        .contrib-table-section:last-child {
+            margin-bottom: 0;
+        }
+        .contrib-table-wrap {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-height: min(72vh, 720px);
+            -webkit-overflow-scrolling: touch;
+            padding: 0.2rem 0.15rem 0.4rem;
+            box-shadow: none;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+            -ms-overflow-style: auto;
+        }
+        body.contrib-session .contrib-table-wrap {
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.22);
+            padding: 0.4rem 0.5rem 0.45rem;
+        }
+        .contrib-table-wrap::-webkit-scrollbar {
+            width: 8px;
+            height: 0;
+        }
+        .contrib-table-wrap::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 6px;
+        }
+        .contrib-table-wrap::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .contrib-data-table {
+            width: 100%;
+            min-width: 0;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0 var(--contrib-table-row-gap);
+            font-size: 0.875rem;
+            font-family: var(--font);
+            color: var(--text);
+            border: none;
+            background: transparent;
+        }
+        .contrib-data-table col.contrib-col--issue { width: 12%; }
+        .contrib-data-table col.contrib-col--assignee { width: 10%; }
+        .contrib-data-table col.contrib-col--summary { width: 22%; }
+        .contrib-data-table col.contrib-col--progress { width: 15%; }
+        .contrib-data-table col.contrib-col--field-a { width: 17%; }
+        .contrib-data-table col.contrib-col--field-b { width: 16%; }
+        .contrib-data-table col.contrib-col--action { width: 8.5rem; }
+        .contrib-data-table thead th {
+            text-align: left;
+            padding: 0.85rem 1rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--contrib-table-thead);
+            border-style: solid;
+            border-color: var(--table-header-border);
+            border-width: 1px 1px 2px 0;
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+            vertical-align: middle;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+        }
+        .contrib-data-table thead th:first-child {
+            border-left-width: 1px;
+            padding-left: 1.15rem;
+            padding-right: 0.5rem;
+            border-top-left-radius: var(--contrib-table-corner);
+        }
+        .contrib-data-table thead th:last-child {
+            padding-right: 1.15rem;
+            border-top-right-radius: var(--contrib-table-corner);
+        }
+        .contrib-data-table thead th:nth-child(2) {
+            padding-left: 0.5rem;
+        }
+        .contrib-data-table thead th.contrib-th--action {
+            text-align: right;
+        }
+        .contrib-data-table tbody td {
+            padding: 0.85rem 1rem;
+            vertical-align: top;
+            border-style: solid;
+            border-color: var(--table-row-border);
+            border-width: 1px 1px 1px 0;
+            background: var(--contrib-table-row);
+            color: var(--text);
+        }
+        .contrib-data-table tbody td:first-child {
+            border-left-width: 1px;
+            padding-left: 1.15rem;
+            padding-right: 0.5rem;
+            min-width: 10rem;
+            width: 12%;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        .contrib-data-table tbody td:last-child {
+            padding-right: 1.15rem;
+        }
+        .contrib-data-table tbody tr:nth-child(even) td {
+            background: var(--contrib-table-row-alt);
+        }
+        .contrib-data-table tbody td:nth-child(2) {
+            padding-left: 0.5rem;
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete td {
+            background: var(--contrib-table-complete);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete td:first-child {
+            box-shadow: inset 3px 0 0 0 rgba(74, 222, 128, 0.45);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete:nth-child(even) td {
+            background: var(--contrib-table-complete-alt);
+        }
+        .contrib-data-table tbody tr:hover td {
+            background: var(--contrib-table-row-hover);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete:hover td {
+            background: var(--contrib-table-complete-hover);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--complete:hover td:first-child {
+            box-shadow: inset 3px 0 0 0 rgba(74, 222, 128, 0.55);
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--not-submitted td {
+            background: rgba(220, 38, 38, 0.12) !important;
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--not-submitted:hover td {
+            background: rgba(220, 38, 38, 0.18) !important;
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--not-submitted td:first-child {
+            box-shadow: inset 3px 0 0 0 #dc2626;
+        }
+        .contrib-data-table tbody tr.contrib-issue-row--not-submitted:hover td:first-child {
+            box-shadow: inset 3px 0 0 0 #b91c1c;
+        }
+        .contrib-data-table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: var(--contrib-table-corner);
+        }
+        .contrib-data-table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: var(--contrib-table-corner);
+        }
+        .contrib-data-table textarea::placeholder {
+            color: var(--text-dim);
+        }
+        .contrib-data-table textarea,
+        .contrib-data-table select {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 0.8125rem;
+            font-family: var(--font);
+            padding: 0.45rem 0.55rem;
+            line-height: 1.35;
+            min-height: 2.35rem;
+            height: 2.35rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .contrib-data-table textarea {
+            resize: vertical;
+            overflow-y: auto;
+            min-height: 2.65rem;
+            height: auto;
+            max-height: 7rem;
+        }
+        .contrib-data-table textarea:focus,
+        .contrib-data-table select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+            background: var(--surface-2);
+        }
+        .contrib-data-table select option {
+            color: var(--text);
+            background: var(--surface);
+        }
+        .contrib-data-table .contrib-code {
+            font-family: ui-monospace, 'Consolas', monospace;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text);
+            background: none;
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            word-break: break-all;
+            letter-spacing: -0.02em;
+        }
+        .contrib-data-table tbody td:first-child .contrib-code {
+            display: inline;
+            max-width: 100%;
+            white-space: nowrap;
+            word-break: normal;
+            overflow-wrap: normal;
+        }
+        .contrib-data-table td.contrib-td-summary {
+            min-width: 0;
+            vertical-align: top;
+            color: var(--text-muted);
+            font-size: 0.8125rem;
+            line-height: 1.5;
+        }
+        .contrib-td-summary__text {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+            color: inherit;
+        }
+        .contrib-data-table td.contrib-td-progress {
+            min-width: 9.5rem;
+            vertical-align: middle;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            white-space: normal;
+            word-break: break-word;
+        }
+        body.contrib-session .contrib-data-table td.contrib-td-progress {
+            color: var(--text-muted);
+        }
+        .contrib-data-table .contrib-status {
+            font-weight: 600;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+        .contrib-data-table .contrib-status--ok {
+            color: #4ade80;
+        }
+        .contrib-data-table .contrib-status--pending {
+            color: #fbbf24;
+        }
+        .contrib-data-table .contrib-status--err {
+            color: #dc2626;
+            font-weight: 700;
+        }
+        .contrib-data-table .contrib-status-sep {
+            color: var(--sky-300);
+            font-weight: 500;
+        }
+        .contrib-data-table .field-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            min-width: 0;
+            width: 100%;
+        }
+        .contrib-data-table .contrib-td-field--wide .field-stack {
+            min-width: 0;
+        }
+        .contrib-data-table td.contrib-td-field,
+        .contrib-data-table td.contrib-td-field--wide {
+            vertical-align: top;
+        }
+        .contrib-data-table .btn-save {
+            min-width: 6.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            color: #ffffff;
+            cursor: pointer;
+            font-family: var(--font);
+            box-shadow: none;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .contrib-data-table .btn-save:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            color: #ffffff;
+        }
+        .contrib-data-table .btn-save--saved,
+        .contrib-data-table .btn-save--saved:hover {
+            background: rgba(34, 197, 94, 0.18);
+            color: #86efac;
+            border: 1px solid rgba(74, 222, 128, 0.45);
+            box-shadow: none;
+        }
+        .contrib-data-table .btn-save--saved:hover {
+            background: rgba(34, 197, 94, 0.28);
+            color: #bbf7d0;
+        }
+        .contrib-data-table .btn-save:active {
+            transform: none;
+        }
+        .contrib-data-table td.contrib-td--action {
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 960px) {
+            .contrib-app {
+                flex-direction: column;
+            }
+            .contrib-sidebar {
+                position: sticky;
+                top: 0;
+                left: auto;
+                bottom: auto;
+                width: 100%;
+                height: auto;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0;
+                border-right: none;
+                border-bottom: 1px solid var(--sidebar-border);
+                z-index: 50;
+                overflow: visible;
+            }
+            .contrib-sidebar__brand {
+                padding: 0.55rem 1rem 0.55rem;
+                margin-bottom: 0.5rem;
+            }
+            .contrib-sidebar__scroll {
+                flex-direction: column;
+                overflow-x: auto;
+                overflow-y: visible;
+                padding: 0 0.65rem 0.65rem;
+            }
+            .contrib-sidebar__nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+            }
+            .contrib-sidenav__btn {
+                white-space: nowrap;
+            }
+            .contrib-sidenav__btn--active {
+                border-bottom-color: transparent;
+            }
+            .contrib-sidebar__footer {
+                display: block;
+            }
+            .contrib-stage {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+        .muted {
+            color: var(--text-muted);
+        }
+
+        .hero {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .hero__badge {
+            display: inline-block;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--accent-soft);
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.6rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 {
+            font-size: clamp(1.35rem, 2.5vw, 1.6rem);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        .hero__sub {
+            color: var(--text-muted);
+            font-size: 0.9375rem;
+            max-width: 38rem;
+            line-height: 1.6;
+        }
+
+        .card {
+            border-radius: var(--radius);
+            border: 1px solid var(--panel-edge);
+            background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(20, 20, 20, 0.99) 100%);
+            box-shadow: var(--panel-shadow);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        .card__head {
+            padding: 0.875rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.025);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .card__body { padding: 1.25rem; }
+
+        .banner {
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            margin-bottom: 1rem;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            box-shadow: var(--shadow-sm);
+        }
+        .banner--err {
+            position: fixed;
+            top: 0.75rem;
+            left: 0.75rem;
+            right: 0.75rem;
+            z-index: 20000;
+            margin: 0 auto;
+            max-width: min(1200px, calc(100vw - 1.5rem));
+            width: auto;
+            text-align: center;
+            padding: 0.85rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            line-height: 1.45;
+            color: #fecaca;
+            border: 1px solid rgba(252, 165, 165, 0.35);
+            background: rgba(30, 10, 10, 0.45);
+            backdrop-filter: blur(18px) saturate(1.15);
+            -webkit-backdrop-filter: blur(18px) saturate(1.15);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+                0 12px 40px rgba(0, 0, 0, 0.4);
+            transition: opacity 0.45s ease;
+            opacity: 1;
+        }
+        .banner--err.banner--err-hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .banner--ok {
+            position: fixed;
+            top: 0.75rem;
+            left: 50%;
+            right: auto;
+            z-index: 20000;
+            margin: 0;
+            width: max-content;
+            min-width: min(100%, 12rem);
+            max-width: min(1200px, calc(100vw - 2rem));
+            text-align: center;
+            padding: 0.55rem 1.35rem;
+            border-radius: var(--radius-sm);
+            transform: translateX(-50%);
+            color: #d1fae5;
+            border: 1px solid rgba(134, 239, 172, 0.35);
+            background: rgba(10, 30, 18, 0.45);
+            backdrop-filter: blur(18px) saturate(1.15);
+            -webkit-backdrop-filter: blur(18px) saturate(1.15);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 12px 40px rgba(0, 0, 0, 0.35);
+            transition: opacity 0.45s ease;
+            opacity: 1;
+            font-weight: 600;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        .banner--ok.banner--ok-hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+        /* Session: error / success toasts sit in main column (glass, no solid tint) */
+        body.contrib-session .banner.banner--err {
+            left: calc(var(--sidebar-width) + 0.75rem);
+            right: 0.75rem;
+            width: auto;
+            transform: none;
+            max-width: min(1200px, calc(100vw - var(--sidebar-width) - 1.5rem));
+            margin-left: 0;
+            margin-right: auto;
+        }
+        body.contrib-session .banner.banner--ok {
+            left: calc(var(--sidebar-width) + (100vw - var(--sidebar-width)) / 2);
+            right: auto;
+            width: max-content;
+            max-width: min(1200px, calc(100vw - var(--sidebar-width) - 1.5rem));
+            transform: translateX(-50%);
+        }
+        @media (max-width: 960px) {
+            body.contrib-session .banner.banner--err {
+                left: 0.75rem;
+                right: 0.75rem;
+                width: auto;
+                max-width: min(1200px, calc(100vw - 1.5rem));
+            }
+            body.contrib-session .banner.banner--ok {
+                left: 50%;
+                max-width: min(1200px, calc(100vw - 1.5rem));
+                transform: translateX(-50%);
+            }
+        }
+
+        .token-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+        .token-row input {
+            flex: 1;
+            min-width: min(100%, 220px);
+            padding: 0.6rem 0.875rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--dark);
+            font-family: ui-monospace, 'Consolas', monospace;
+            font-size: 0.8125rem;
+        }
+        .token-row input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
+        .btn-load {
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--accent);
+            color: var(--on-accent);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-load:hover {
+            background: var(--accent-hover);
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.45rem 0.6rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--dark);
+            font-family: inherit;
+            font-size: 0.8125rem;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
+        textarea { min-height: 2.75rem; resize: vertical; }
+
+        .btn-save {
+            appearance: none;
+            padding: 0.45rem 0.875rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--accent);
+            color: var(--on-accent);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .btn-save:hover {
+            background: var(--accent-hover);
+        }
+        .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .contrib-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 21000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            box-sizing: border-box;
+        }
+        .contrib-modal[hidden] {
+            display: none !important;
+        }
+        .contrib-modal__backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.42);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .contrib-modal__panel {
+            position: relative;
+            max-width: 22rem;
+            width: 100%;
+            padding: 1.35rem 1.35rem 1.15rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(22, 22, 24, 0.55);
+            backdrop-filter: blur(22px) saturate(1.2);
+            -webkit-backdrop-filter: blur(22px) saturate(1.2);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 16px 48px rgba(0, 0, 0, 0.45);
+        }
+        .contrib-modal__title {
+            margin: 0 0 0.65rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--dark);
+        }
+        .contrib-modal__text {
+            margin: 0 0 1.15rem;
+            font-size: 0.875rem;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+        .contrib-modal__actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        .contrib-modal__btn {
+            appearance: none;
+            padding: 0.5rem 1.1rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--accent);
+            color: var(--on-accent);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .contrib-modal__btn:hover {
+            background: var(--accent-hover);
+        }
+        .contrib-modal--admin .contrib-modal__panel {
+            border-color: rgba(253, 224, 71, 0.28);
+            background: rgba(28, 24, 12, 0.5);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 16px 48px rgba(0, 0, 0, 0.45);
+        }
+        .contrib-modal--admin .contrib-modal__title {
+            color: var(--text);
+        }
+
+        .contrib-panel-save-msg {
+            text-align: right;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #4ade80;
+            margin: 0.15rem 0 0.55rem;
+            padding-right: 0.05rem;
+            min-height: 1.2rem;
+            letter-spacing: -0.02em;
+        }
+        .contrib-panel-save-msg[hidden] {
+            display: none !important;
+        }
+
+        .empty-state {
+            padding: 2rem 1.25rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8125rem;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--accent-soft);
+        }
+
+        .foot {
+            margin-top: 2rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+        .foot a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .foot a:hover { text-decoration: underline; }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @media (max-width: 640px) {
+            .contrib-main-dash { padding-left: 0.85rem; padding-right: 0.85rem; }
+        }
+
+        /* Invite URLs (?token=…): avoid flashing the marketing landing before workspace loads */
+        html.contrib-invite-pending #landingBlock {
+            display: none !important;
+        }
+
+        html.contrib-invite-pending #workspaceShell[hidden] {
+            display: block !important;
+        }
+
+        html.contrib-invite-pending #landingFoot {
+            display: none !important;
+        }
+    </style>
+    <script>
+        (function () {
+            try {
+                var q = window.location.search || '';
+                var m = q.match(/[?&]token=([^&]*)/);
+                var raw = m ? decodeURIComponent(String(m[1]).replace(/\+/g, ' ')) : '';
+                if (String(raw || '').trim()) {
+                    document.documentElement.classList.add('contrib-invite-pending');
+                }
+            } catch (e) {}
+        })();
+    </script>
+</head>
+<body>
+    <div id="landingBlock" class="wrap">
+        <header class="hero">
+            <span class="hero__badge">Contributor workspace</span>
+            <h1>Your workload</h1>
+            <p class="hero__sub">
+                Open your invite link or paste a token. When your invite includes both views, use the
+                <strong>Spillover</strong> and <strong>Bugs</strong> tabs for reason, category, Yes/No, and RCA fields.
+            </p>
+        </header>
+
+        <div id="bannerLanding" class="banner" hidden></div>
+
+        <div class="card" id="tokenCard">
+            <div class="card__head">Invite access</div>
+            <div class="card__body">
+                <div class="token-row" id="tokenRow">
+                    <label for="tokenInput" class="visually-hidden">Invite token</label>
+                    <input
+                        type="text"
+                        id="tokenInput"
+                        placeholder="Paste token from your link, or open the invite URL directly"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <button type="button" class="btn-load" id="tokenLoadBtn">Load workspace</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="workspaceShell" hidden>
+        <div class="contrib-app">
+            <aside class="contrib-sidebar" aria-label="Workspace navigation">
+                <div class="contrib-sidebar__brand">
+                    <div class="contrib-sidebar__logo" aria-hidden="true">
+                        <img src="images/LOGO.gif" alt="" width="48" height="48" decoding="async" />
+                    </div>
+                    <p class="contrib-sidebar__app-title">Jira Spillover Analyzer</p>
+                </div>
+                <div class="contrib-sidebar__scroll">
+                    <p class="contrib-nav-section__label">Your tasks</p>
+                    <nav id="contribNavTabs" class="contrib-sidebar__nav" role="tablist" aria-label="Spillover and bugs"></nav>
+                    <p class="contrib-nav-section__label">Links</p>
+                    <button type="button" class="contrib-sidenav__link contrib-sidenav__link--button" id="fullAnalyzerGate">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Full analyzer
+                    </button>
+                    <p class="contrib-nav-section__label">Submitted</p>
+                    <ul id="contribSubmittedList" class="contrib-submitted-list" aria-label="Issues saved this session"></ul>
+                </div>
+                <div class="contrib-sidebar__footer">
+                    <div class="contrib-sidebar__welcome">
+                        <span class="contrib-sidebar__welcome-label">Welcome</span>
+                        <span class="contrib-sidebar__welcome-name" id="contribSidebarWelcomeName">—</span>
+                    </div>
+                </div>
+            </aside>
+            <div class="contrib-stage">
+                <main class="contrib-main-dash">
+                    <div class="contrib-session-bar">
+                        <div class="contrib-session-summary">
+                            <h1 id="pageTitle" class="contrib-session-summary__title">Loading workspace…</h1>
+                            <p id="workspaceMeta" class="contrib-session-summary__file-line muted"></p>
+                        </div>
+                    </div>
+                    <header class="contrib-page-head">
+                        <p id="pageSub" class="contrib-page-head__sub"></p>
+                    </header>
+                    <div id="banner" class="banner contrib-banner" hidden aria-hidden="true"></div>
+                    <section id="panelSpill" class="contrib-panel-dash" aria-labelledby="contribPanelSpillTitle" hidden></section>
+                    <section id="panelBug" class="contrib-panel-dash" aria-labelledby="contribPanelBugTitle" hidden></section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrap" id="landingFoot">
+        <p class="foot">Invite links fill your token automatically.</p>
+    </div>
+
+    <div id="contribThankModal" class="contrib-modal" role="dialog" aria-modal="true" aria-labelledby="contribThankTitle" hidden>
+        <div class="contrib-modal__backdrop" data-modal-close tabindex="-1" aria-hidden="true"></div>
+        <div class="contrib-modal__panel">
+            <h2 id="contribThankTitle" class="contrib-modal__title">Thanks — you're all done</h2>
+            <p id="contribThankBody" class="contrib-modal__text"></p>
+            <div class="contrib-modal__actions">
+                <button type="button" class="contrib-modal__btn" data-modal-close>OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="contribAdminModal" class="contrib-modal contrib-modal--admin" role="dialog" aria-modal="true" aria-labelledby="contribAdminTitle" hidden>
+        <div class="contrib-modal__backdrop" data-modal-close tabindex="-1" aria-hidden="true"></div>
+        <div class="contrib-modal__panel">
+            <h2 id="contribAdminTitle" class="contrib-modal__title">Full analyzer — admin access only</h2>
+            <p class="contrib-modal__text">
+                The main Spillover Analyzer app is restricted to workspace administrators. This invite page is only for updating the issues you were assigned.
+                If you need the full analyzer, ask your admin for access or the correct link.
+            </p>
+            <div class="contrib-modal__actions">
+                <button type="button" class="contrib-modal__btn" data-modal-close>Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var CATEGORY_OPTIONS = [
+            'Defect Blocker',
+            'Dependency',
+            'Scope Creep',
+            'Owner Specific',
+            'Estimation',
+            'Carryover Work'
+        ];
+
+        var PROD_OPTIONS = ['', 'Yes', 'No'];
+
+        function apiBase() {
+            try {
+                var q = new URLSearchParams(window.location.search).get('api');
+                if (q) return String(q).replace(/\/$/, '');
+                var s = localStorage.getItem('jiraSpilloverApiBase');
+                if (s) return String(s).replace(/\/$/, '');
+            } catch (e) {}
+            return '';
+        }
+
+        /** Resolves to the server that serves /api (same host as this page when possible). */
+        function apiFetchUrl(path) {
+            if (!path || path.charAt(0) !== '/') path = '/' + String(path || '');
+            var base = apiBase();
+            if (base) return base + path;
+            try {
+                if (
+                    typeof window.location !== 'undefined' &&
+                    (window.location.protocol === 'http:' ||
+                        window.location.protocol === 'https:')
+                ) {
+                    return window.location.origin.replace(/\/$/, '') + path;
+                }
+            } catch (e2) {}
+            return path;
+        }
+
+        function persistApiFromQuery() {
+            try {
+                var q = new URLSearchParams(window.location.search).get('api');
+                if (q) {
+                    localStorage.setItem('jiraSpilloverApiBase', String(q).replace(/\/$/, ''));
+                }
+            } catch (e) {}
+        }
+
+        function blockFileProtocolWithoutApi() {
+            try {
+                if (window.location.protocol !== 'file:') return false;
+                if (apiBase()) return false;
+                showBanner(
+                    'This page is open as a local file, so it cannot reach the API. Open it from the same URL as the app (for example after npm start: http://localhost:3000/user-dashboard.html?token=…), or add the server address: ?api=http://localhost:3000',
+                    'err',
+                    'landing'
+                );
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        var errToastTimers = {};
+        var panelErrToastTimers = {};
+
+        function clearContribPanelErrorTimer(elId) {
+            var T = panelErrToastTimers[elId];
+            if (!T) return;
+            if (T.fadeTimeout) clearTimeout(T.fadeTimeout);
+            if (T.removeTimeout) clearTimeout(T.removeTimeout);
+            delete panelErrToastTimers[elId];
+        }
+
+        function scheduleContribPanelAlertHide(alertEl) {
+            var elId = alertEl.id;
+            clearContribPanelErrorTimer(elId);
+            var st = {};
+            st.fadeTimeout = setTimeout(function () {
+                alertEl.classList.add('contrib-panel-alert--hiding');
+                st.removeTimeout = setTimeout(function () {
+                    alertEl.hidden = true;
+                    alertEl.classList.remove('contrib-panel-alert--hiding');
+                    delete panelErrToastTimers[elId];
+                }, 450);
+            }, 3000);
+            panelErrToastTimers[elId] = st;
+        }
+
+        /** saveKind: 'spill' | 'bug' — message goes to that panel when present (Spillover section for spill). */
+        function showContributorSaveError(text, saveKind) {
+            text = String(text || '').trim();
+            if (!text) return;
+            saveKind = saveKind === 'bug' ? 'bug' : 'spill';
+            var spillAlert = document.getElementById('contribSpillPanelAlert');
+            var bugAlert = document.getElementById('contribBugPanelAlert');
+            var panelSpill = document.getElementById('panelSpill');
+            var panelBug = document.getElementById('panelBug');
+            var target = null;
+            if (saveKind === 'spill' && spillAlert) {
+                target = spillAlert;
+            } else if (saveKind === 'bug' && bugAlert) {
+                target = bugAlert;
+            } else if (spillAlert) {
+                target = spillAlert;
+            } else if (bugAlert) {
+                target = bugAlert;
+            }
+            if (!target) {
+                showBanner(text, 'err', 'session');
+                return;
+            }
+            if (target === spillAlert && panelSpill && panelSpill.hidden && bugAlert && panelBug && !panelBug.hidden) {
+                target = bugAlert;
+            }
+            showBanner(null, '', 'session');
+            clearContribPanelErrorTimer(target.id);
+            target.classList.remove('contrib-panel-alert--hiding');
+            target.textContent = text;
+            target.className = 'contrib-panel-alert contrib-panel-alert--err';
+            target.hidden = false;
+            scheduleContribPanelAlertHide(target);
+        }
+
+        function clearErrToastTimers(bannerId) {
+            var T = errToastTimers[bannerId];
+            if (!T) return;
+            if (T.fadeTimeout) clearTimeout(T.fadeTimeout);
+            if (T.removeTimeout) clearTimeout(T.removeTimeout);
+            delete errToastTimers[bannerId];
+        }
+
+        function scheduleBannerAutoHide(bannerEl, bannerId, hidingClass) {
+            var st = {};
+            st.fadeTimeout = setTimeout(function () {
+                bannerEl.classList.add(hidingClass);
+                st.removeTimeout = setTimeout(function () {
+                    bannerEl.hidden = true;
+                    bannerEl.classList.remove(hidingClass);
+                    delete errToastTimers[bannerId];
+                }, 450);
+            }, 3000);
+            errToastTimers[bannerId] = st;
+        }
+
+        function showBanner(text, kind, which) {
+            which = which || 'session';
+            var id = which === 'landing' ? 'bannerLanding' : 'banner';
+            var b = document.getElementById(id);
+            if (!b) return;
+
+            clearErrToastTimers(id);
+
+            if (!text) {
+                b.hidden = true;
+                b.classList.remove('banner--err-hiding', 'banner--ok-hiding');
+                return;
+            }
+            b.textContent = text;
+            b.hidden = false;
+            b.classList.remove('banner--err-hiding', 'banner--ok-hiding');
+            b.className =
+                'banner contrib-banner ' +
+                (kind === 'err' ? 'banner--err' : kind === 'ok' ? 'banner--ok' : '');
+
+            if (kind === 'err') {
+                scheduleBannerAutoHide(b, id, 'banner--err-hiding');
+            } else if (kind === 'ok') {
+                scheduleBannerAutoHide(b, id, 'banner--ok-hiding');
+            }
+        }
+
+        function clearAllBanners() {
+            showBanner(null, '', 'landing');
+            showBanner(null, '', 'session');
+            ['contribSpillPanelAlert', 'contribBugPanelAlert'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    clearContribPanelErrorTimer(id);
+                    el.hidden = true;
+                    el.textContent = '';
+                    el.classList.remove('contrib-panel-alert--hiding');
+                }
+            });
+        }
+
+        function wireContribModals() {
+            ['contribThankModal', 'contribAdminModal'].forEach(function (id) {
+                var root = document.getElementById(id);
+                if (!root) return;
+                root.querySelectorAll('[data-modal-close]').forEach(function (el) {
+                    el.addEventListener('click', function () {
+                        root.hidden = true;
+                    });
+                });
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'Escape') return;
+                var t = document.getElementById('contribThankModal');
+                var a = document.getElementById('contribAdminModal');
+                if (t && !t.hidden) t.hidden = true;
+                if (a && !a.hidden) a.hidden = true;
+            });
+        }
+
+        function showThankYouModal(issueKey) {
+            var root = document.getElementById('contribThankModal');
+            var body = document.getElementById('contribThankBody');
+            var key = issueKey ? String(issueKey).trim() : '';
+            if (body) {
+                body.textContent = key
+                    ? 'Everything for this invite is submitted. Your last save was for ' +
+                      key +
+                      '. You can leave this page when you are ready, or stay if you need to change something.'
+                    : 'Everything for this invite is submitted. You can leave this page when you are ready.';
+            }
+            if (root) {
+                root.hidden = false;
+                var ok = root.querySelector('.contrib-modal__btn');
+                if (ok) try { ok.focus(); } catch (e) {}
+            }
+        }
+
+        function showAdminOnlyModal() {
+            var root = document.getElementById('contribAdminModal');
+            if (root) {
+                root.hidden = false;
+                var ok = root.querySelector('.contrib-modal__btn');
+                if (ok) try { ok.focus(); } catch (e) {}
+            }
+        }
+
+        function normalizeIssueKeyLookup(ik) {
+            return String(ik || '')
+                .trim()
+                .replace(/\s+/g, ' ')
+                .replace(/[\u2010-\u2015\u2212]/g, '-')
+                .toUpperCase();
+        }
+
+        function editMapFromRows(rows) {
+            var m = {};
+            if (!rows) return m;
+            for (var i = 0; i < rows.length; i++) {
+                var r = rows[i];
+                m[normalizeIssueKeyLookup(r.issue_key)] = r;
+            }
+            return m;
+        }
+
+        function issueNeedsSpilloverFields(iss) {
+            var legacy =
+                iss.needsSpilloverFields === undefined && iss.needsBugFields === undefined;
+            return legacy || iss.needsSpilloverFields === true;
+        }
+
+        function issueNeedsBugFields(iss) {
+            var legacy =
+                iss.needsSpilloverFields === undefined && iss.needsBugFields === undefined;
+            return legacy || iss.needsBugFields === true;
+        }
+
+        /** Set by renderContributorWorkspace for mixed invites — drives header when switching Spillover / Bugs tabs. */
+        var contribChromeCtx = null;
+
+        /** Todo counts from last render — used to detect “last save” (all work complete). */
+        var contribLastWorkspaceStats = { spillTodo: 0, bugTodo: 0 };
+
+        var contribSaveInlineTimer = null;
+
+        function getWorkspaceCompletionState(data) {
+            data = data || {};
+            var issues = data.issues || [];
+            var editsByKey = editMapFromRows(data.edits);
+            var spillIssues = [];
+            var bugIssues = [];
+            for (var i = 0; i < issues.length; i++) {
+                var iss = issues[i];
+                if (issueNeedsSpilloverFields(iss)) spillIssues.push(iss);
+                if (issueNeedsBugFields(iss)) bugIssues.push(iss);
+            }
+            var showSpill = spillIssues.length > 0;
+            var showBug = bugIssues.length > 0;
+            var spillPart = partitionIssuesByEdits(spillIssues, editsByKey, 'spill');
+            var bugPart = partitionIssuesByEdits(bugIssues, editsByKey, 'bug');
+            var spillTodo = spillPart.todo.length;
+            var bugTodo = bugPart.todo.length;
+            var allComplete = true;
+            if (showSpill && spillTodo > 0) allComplete = false;
+            if (showBug && bugTodo > 0) allComplete = false;
+            if (!showSpill && !showBug) allComplete = false;
+            return {
+                allComplete: allComplete,
+                spillTodo: spillTodo,
+                bugTodo: bugTodo,
+                spillDone: spillPart.done.length,
+                bugDone: bugPart.done.length,
+                showSpill: showSpill,
+                showBug: showBug
+            };
+        }
+
+        function todoDoneStatPhrase(todo, done) {
+            return (
+                todo +
+                (todo === 1 ? ' row needs input · ' : ' rows need input · ') +
+                done +
+                ' complete'
+            );
+        }
+
+        /** Green line above the table (right-aligned, Action column side). kind: 'spill' | 'bug'. */
+        function showInlineSaveMessage(issueKey, kind) {
+            kind = kind === 'bug' ? 'bug' : 'spill';
+            var k = issueKey ? String(issueKey).trim() : '';
+            var text = k ? k + ' · Saved' : 'Saved';
+            var spillEl = document.getElementById('contribSpillSaveMsg');
+            var bugEl = document.getElementById('contribBugSaveMsg');
+            if (contribSaveInlineTimer) {
+                clearTimeout(contribSaveInlineTimer);
+                contribSaveInlineTimer = null;
+            }
+            if (kind === 'bug') {
+                if (spillEl) {
+                    spillEl.hidden = true;
+                    spillEl.textContent = '';
+                }
+                if (bugEl) {
+                    bugEl.textContent = text;
+                    bugEl.hidden = false;
+                }
+            } else {
+                if (bugEl) {
+                    bugEl.hidden = true;
+                    bugEl.textContent = '';
+                }
+                if (spillEl) {
+                    spillEl.textContent = text;
+                    spillEl.hidden = false;
+                }
+            }
+            contribSaveInlineTimer = setTimeout(function () {
+                if (kind === 'bug' && bugEl) {
+                    bugEl.hidden = true;
+                    bugEl.textContent = '';
+                } else if (spillEl) {
+                    spillEl.hidden = true;
+                    spillEl.textContent = '';
+                }
+                contribSaveInlineTimer = null;
+            }, 3200);
+        }
+
+        function refreshMixedInviteHeader() {
+            if (!contribChromeCtx || !contribChromeCtx.hints || !contribChromeCtx.hints.mixed) return;
+            var panel = getActiveContribPanel();
+            var pt = document.getElementById('pageTitle');
+            var ps = document.getElementById('pageSub');
+            if (!pt || !ps) return;
+            var data = contribChromeCtx.data || {};
+            var ss = contribChromeCtx.spillStats || { todo: 0, done: 0 };
+            var bs = contribChromeCtx.bugStats || { todo: 0, done: 0 };
+            var invite = contributorRequestHeading({ mixed: true });
+            var statsLine;
+            if (panel === 'bug') {
+                pt.textContent = contributorDisplayName(data);
+                statsLine =
+                    bs.todo +
+                    (bs.todo === 1 ? ' row needs input · ' : ' rows need input · ') +
+                    bs.done +
+                    ' complete';
+            } else {
+                pt.textContent = contributorDisplayName(data);
+                statsLine =
+                    ss.todo +
+                    (ss.todo === 1 ? ' row needs input · ' : ' rows need input · ') +
+                    ss.done +
+                    ' complete';
+            }
+            ps.innerHTML =
+                '<span class="contrib-page-head__invite">' +
+                escapeHtml(invite) +
+                '</span><br /><span class="contrib-page-head__statline muted">' +
+                escapeHtml(statsLine) +
+                '</span>';
+        }
+
+        function spillEditsComplete(ed) {
+            if (!ed) return false;
+            var sr = ed.spillover_reason != null && String(ed.spillover_reason).trim() !== '';
+            var sc = ed.spillover_category != null && String(ed.spillover_category).trim() !== '';
+            return sr && sc;
+        }
+
+        function bugEditsComplete(ed) {
+            if (!ed) return false;
+            var pr = ed.prod != null && String(ed.prod).trim() !== '';
+            var rc = ed.rca != null && String(ed.rca).trim() !== '';
+            return pr && rc;
+        }
+
+        /** spill / bug: ok = submitted (green), pending = partial (yellow), err = not submitted (red). */
+        function spillProgressTier(ed) {
+            ed = ed || {};
+            var sr = ed.spillover_reason != null && String(ed.spillover_reason).trim() !== '';
+            var sc = ed.spillover_category != null && String(ed.spillover_category).trim() !== '';
+            if (sr && sc) return 'ok';
+            if (sr || sc) return 'pending';
+            return 'err';
+        }
+
+        function bugProgressTier(ed) {
+            ed = ed || {};
+            var pr = ed.prod != null && String(ed.prod).trim() !== '';
+            var rc = ed.rca != null && String(ed.rca).trim() !== '';
+            if (pr && rc) return 'ok';
+            if (pr || rc) return 'pending';
+            return 'err';
+        }
+
+        function progressTierClass(tier) {
+            if (tier === 'ok') return 'contrib-status contrib-status--ok';
+            if (tier === 'pending') return 'contrib-status contrib-status--pending';
+            return 'contrib-status contrib-status--err';
+        }
+
+        /** HTML for Progress column (escaped labels inside spans). */
+        function contributorProgressHtml(iss, ed) {
+            ed = ed || {};
+            var needSpill = issueNeedsSpilloverFields(iss);
+            var needBug = issueNeedsBugFields(iss);
+            var chunks = [];
+            if (needSpill) {
+                var st = spillProgressTier(ed);
+                var spillLabel =
+                    st === 'ok'
+                        ? 'Spillover submitted'
+                        : st === 'pending'
+                          ? 'Spillover pending'
+                          : 'Spillover not submitted';
+                chunks.push(
+                    '<span class="' +
+                        progressTierClass(st) +
+                        '">' +
+                        escapeHtml(spillLabel) +
+                        '</span>'
+                );
+            }
+            if (needBug) {
+                var bt = bugProgressTier(ed);
+                var bugLabel =
+                    bt === 'ok'
+                        ? 'Bug submitted'
+                        : bt === 'pending'
+                          ? 'Bug pending'
+                          : 'Bug not submitted';
+                chunks.push(
+                    '<span class="' +
+                        progressTierClass(bt) +
+                        '">' +
+                        escapeHtml(bugLabel) +
+                        '</span>'
+                );
+            }
+            if (!chunks.length) return '—';
+            return chunks.join('<span class="contrib-status-sep"> · </span>');
+        }
+
+        function partitionIssuesByEdits(issues, editsByKey, kind) {
+            var todo = [];
+            var done = [];
+            for (var i = 0; i < issues.length; i++) {
+                var iss = issues[i];
+                var ed = editsByKey[normalizeIssueKeyLookup(iss.issueKey)] || {};
+                var complete = kind === 'bug' ? bugEditsComplete(ed) : spillEditsComplete(ed);
+                if (complete) done.push(iss);
+                else todo.push(iss);
+            }
+            return { todo: todo, done: done };
+        }
+
+        function spillTableHeader() {
+            return (
+                '<colgroup>' +
+                '<col class="contrib-col contrib-col--issue" />' +
+                '<col class="contrib-col contrib-col--assignee" />' +
+                '<col class="contrib-col contrib-col--summary" />' +
+                '<col class="contrib-col contrib-col--progress" />' +
+                '<col class="contrib-col contrib-col--field-a" />' +
+                '<col class="contrib-col contrib-col--field-b" />' +
+                '<col class="contrib-col contrib-col--action" />' +
+                '</colgroup>' +
+                '<thead><tr>' +
+                '<th scope="col">Issue</th>' +
+                '<th scope="col">Assignee</th>' +
+                '<th scope="col">Summary</th>' +
+                '<th scope="col">Progress</th>' +
+                '<th scope="col">Reason</th>' +
+                '<th scope="col">Category</th>' +
+                '<th scope="col" class="contrib-th--action">Action</th>' +
+                '</tr></thead>'
+            );
+        }
+
+        function bugTableHeader() {
+            return (
+                '<colgroup>' +
+                '<col class="contrib-col contrib-col--issue" />' +
+                '<col class="contrib-col contrib-col--assignee" />' +
+                '<col class="contrib-col contrib-col--summary" />' +
+                '<col class="contrib-col contrib-col--progress" />' +
+                '<col class="contrib-col contrib-col--field-a" />' +
+                '<col class="contrib-col contrib-col--field-b" />' +
+                '<col class="contrib-col contrib-col--action" />' +
+                '</colgroup>' +
+                '<thead><tr>' +
+                '<th scope="col">Issue</th>' +
+                '<th scope="col">Assignee</th>' +
+                '<th scope="col">Summary</th>' +
+                '<th scope="col">Progress</th>' +
+                '<th scope="col">Yes / No</th>' +
+                '<th scope="col">RCA</th>' +
+                '<th scope="col" class="contrib-th--action">Action</th>' +
+                '</tr></thead>'
+            );
+        }
+
+        function buildOneSpillRow(iss, editsByKey, token, index, doneSection) {
+            var k = iss.issueKey;
+            var ed = editsByKey[normalizeIssueKeyLookup(k)] || {};
+            var rid = 'cspill-' + index;
+            var sr =
+                ed.spillover_reason != null && ed.spillover_reason !== ''
+                    ? String(ed.spillover_reason)
+                    : '';
+            var sc =
+                ed.spillover_category != null && ed.spillover_category !== ''
+                    ? String(ed.spillover_category)
+                    : '';
+            var complete = spillEditsComplete(ed);
+            var rowClass = 'contrib-issue-row';
+            if (doneSection || complete) rowClass += ' contrib-issue-row--complete';
+            if (spillProgressTier(ed) === 'err') rowClass += ' contrib-issue-row--not-submitted';
+            var html = '';
+            html += '<tr class="' + rowClass + '" data-issue-key="' + escapeAttr(k) + '">';
+            html += '<td><code class="contrib-code">' + escapeHtml(k) + '</code></td>';
+            html +=
+                '<td>' +
+                escapeHtml(iss.assignee && String(iss.assignee).trim() ? iss.assignee : '—') +
+                '</td>';
+            html +=
+                '<td class="contrib-td-summary" title="' +
+                escapeAttr(iss.summary || '') +
+                '"><span class="contrib-td-summary__text">' +
+                escapeHtml(iss.summary || '—') +
+                '</span></td>';
+            html += '<td class="contrib-td-progress">' + contributorProgressHtml(iss, ed) + '</td>';
+            html += '<td class="contrib-td-field contrib-td-field--wide"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-sr">Reason</label>';
+            html +=
+                '<textarea id="' +
+                rid +
+                '-sr" rows="1" placeholder="Reason">' +
+                escapeHtml(sr) +
+                '</textarea>';
+            html += '</div></td>';
+            html += '<td class="contrib-td-field"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-sc">Category</label>';
+            html += '<select id="' + rid + '-sc">' + categoryOptionsHtml(sc) + '</select>';
+            html += '</div></td>';
+            html += '<td class="contrib-td--action">';
+            html +=
+                '<button type="button" class="btn-save' +
+                (complete ? ' btn-save--saved' : '') +
+                '" data-token="' +
+                escapeAttr(token) +
+                '" data-row="' +
+                rid +
+                '" data-kind="spill">' +
+                (complete ? 'Saved' : 'Save') +
+                '</button>';
+            html += '</td></tr>';
+            return html;
+        }
+
+        function buildSpillIssueCardsHTML(issues, editsByKey, token) {
+            var part = partitionIssuesByEdits(issues, editsByKey, 'spill');
+            var html = '';
+            var idx = 0;
+            if (part.todo.length) {
+                html +=
+                    '<div class="contrib-table-section"><h3 class="contrib-section-head"><span class="contrib-section-head__title">Needs input</span><span class="contrib-section-head__badge contrib-section-head__badge--warn">' +
+                    part.todo.length +
+                    '</span></h3>';
+                html +=
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    spillTableHeader() +
+                    '<tbody>';
+                for (var i = 0; i < part.todo.length; i++) {
+                    html += buildOneSpillRow(part.todo[i], editsByKey, token, idx++, false);
+                }
+                html += '</tbody></table></div></div>';
+            }
+            if (part.done.length) {
+                html +=
+                    '<div class="contrib-table-section"><h3 class="contrib-section-head"><span class="contrib-section-head__title">Complete</span><span class="contrib-section-head__badge contrib-section-head__badge--ok">' +
+                    part.done.length +
+                    '</span></h3>';
+                html +=
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    spillTableHeader() +
+                    '<tbody>';
+                for (var j = 0; j < part.done.length; j++) {
+                    html += buildOneSpillRow(part.done[j], editsByKey, token, idx++, true);
+                }
+                html += '</tbody></table></div></div>';
+            }
+            return html;
+        }
+
+        function buildOneBugRow(iss, editsByKey, token, index, doneSection) {
+            var k = iss.issueKey;
+            var ed = editsByKey[normalizeIssueKeyLookup(k)] || {};
+            var rid = 'cbug-' + index;
+            var pv = ed.prod != null && ed.prod !== '' ? String(ed.prod) : '';
+            var rc = ed.rca != null && ed.rca !== '' ? String(ed.rca) : '';
+            var complete = bugEditsComplete(ed);
+            var rowClass = 'contrib-issue-row';
+            if (doneSection || complete) rowClass += ' contrib-issue-row--complete';
+            if (bugProgressTier(ed) === 'err') rowClass += ' contrib-issue-row--not-submitted';
+            var html = '';
+            html += '<tr class="' + rowClass + '" data-issue-key="' + escapeAttr(k) + '">';
+            html += '<td><code class="contrib-code">' + escapeHtml(k) + '</code></td>';
+            html +=
+                '<td>' +
+                escapeHtml(iss.assignee && String(iss.assignee).trim() ? iss.assignee : '—') +
+                '</td>';
+            html +=
+                '<td class="contrib-td-summary" title="' +
+                escapeAttr(iss.summary || '') +
+                '"><span class="contrib-td-summary__text">' +
+                escapeHtml(iss.summary || '—') +
+                '</span></td>';
+            html += '<td class="contrib-td-progress">' + contributorProgressHtml(iss, ed) + '</td>';
+            html += '<td class="contrib-td-field"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-prod">Yes or No</label>';
+            html += '<select id="' + rid + '-prod">' + prodOptionsHtml(pv) + '</select>';
+            html += '</div></td>';
+            html += '<td class="contrib-td-field contrib-td-field--wide"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-rca">RCA</label>';
+            html +=
+                '<textarea id="' +
+                rid +
+                '-rca" rows="1" placeholder="RCA">' +
+                escapeHtml(rc) +
+                '</textarea>';
+            html += '</div></td>';
+            html += '<td class="contrib-td--action">';
+            html +=
+                '<button type="button" class="btn-save' +
+                (complete ? ' btn-save--saved' : '') +
+                '" data-token="' +
+                escapeAttr(token) +
+                '" data-row="' +
+                rid +
+                '" data-kind="bug">' +
+                (complete ? 'Saved' : 'Save') +
+                '</button>';
+            html += '</td></tr>';
+            return html;
+        }
+
+        function buildBugIssueCardsHTML(issues, editsByKey, token) {
+            var part = partitionIssuesByEdits(issues, editsByKey, 'bug');
+            var html = '';
+            var idx = 0;
+            if (part.todo.length) {
+                html +=
+                    '<div class="contrib-table-section"><h3 class="contrib-section-head"><span class="contrib-section-head__title">Needs input</span><span class="contrib-section-head__badge contrib-section-head__badge--warn">' +
+                    part.todo.length +
+                    '</span></h3>';
+                html +=
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    bugTableHeader() +
+                    '<tbody>';
+                for (var i = 0; i < part.todo.length; i++) {
+                    html += buildOneBugRow(part.todo[i], editsByKey, token, idx++, false);
+                }
+                html += '</tbody></table></div></div>';
+            }
+            if (part.done.length) {
+                html +=
+                    '<div class="contrib-table-section"><h3 class="contrib-section-head"><span class="contrib-section-head__title">Complete</span><span class="contrib-section-head__badge contrib-section-head__badge--ok">' +
+                    part.done.length +
+                    '</span></h3>';
+                html +=
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    bugTableHeader() +
+                    '<tbody>';
+                for (var j = 0; j < part.done.length; j++) {
+                    html += buildOneBugRow(part.done[j], editsByKey, token, idx++, true);
+                }
+                html += '</tbody></table></div></div>';
+            }
+            return html;
+        }
+
+        /** Read spill + bug fields from whichever panel(s) contain this issue (mixed invites). */
+        function collectAllFieldsForIssue(issueKey) {
+            var sr = '';
+            var sc = '';
+            var prod = '';
+            var rca = '';
+            var spillRows = document.querySelectorAll('#panelSpill tbody tr[data-issue-key]');
+            var bugRows = document.querySelectorAll('#panelBug tbody tr[data-issue-key]');
+            var i;
+            for (i = 0; i < spillRows.length; i++) {
+                if (spillRows[i].getAttribute('data-issue-key') === issueKey) {
+                    var ta = spillRows[i].querySelector('textarea[id$="-sr"]');
+                    var sel = spillRows[i].querySelector('select[id$="-sc"]');
+                    if (ta) sr = ta.value;
+                    if (sel) sc = sel.value;
+                    break;
+                }
+            }
+            for (i = 0; i < bugRows.length; i++) {
+                if (bugRows[i].getAttribute('data-issue-key') === issueKey) {
+                    var pe = bugRows[i].querySelector('select[id$="-prod"]');
+                    var rtx = bugRows[i].querySelector('textarea[id$="-rca"]');
+                    if (pe) prod = pe.value;
+                    if (rtx) rca = rtx.value;
+                    break;
+                }
+            }
+            return { sr: sr, sc: sc, prod: prod, rca: rca };
+        }
+
+        function wireSaveButtons(root, token) {
+            if (!root) return;
+            root.querySelectorAll('.btn-save').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var t = btn.getAttribute('data-token') || token;
+                    var kind = btn.getAttribute('data-kind') || 'spill';
+                    var row = btn.closest('[data-issue-key]');
+                    var issueKey = row ? row.getAttribute('data-issue-key') : '';
+                    if (!issueKey) return;
+                    btn.classList.remove('btn-save--saved');
+                    btn.textContent = 'Save';
+                    var all = collectAllFieldsForIssue(issueKey);
+                    var sr = all.sr;
+                    var sc = all.sc;
+                    var prod = all.prod;
+                    var rca = all.rca;
+                    btn.disabled = true;
+                    fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(t) + '/issue'), {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            issueKey: issueKey,
+                            kind: kind,
+                            spilloverReason: sr,
+                            spilloverCategory: sc,
+                            prod: prod,
+                            rca: rca
+                        })
+                    })
+                        .then(function (r) {
+                            return r.json().then(function (j) {
+                                return { ok: r.ok, body: j };
+                            });
+                        })
+                        .then(function (out) {
+                            if (!out.ok) {
+                                showContributorSaveError((out.body && out.body.error) || 'Save failed', kind);
+                                btn.classList.remove('btn-save--saved');
+                                btn.textContent = 'Save';
+                            } else {
+                                btn.textContent = 'Saved';
+                                btn.classList.add('btn-save--saved');
+                                recordSubmittedIssueKey(issueKey, t);
+                                refreshContributorWorkspace(t, {
+                                    afterSaveIssueKey: issueKey,
+                                    saveKind: kind
+                                });
+                            }
+                        })
+                        .catch(function () {
+                            showContributorSaveError('Network error', kind);
+                            btn.classList.remove('btn-save--saved');
+                            btn.textContent = 'Save';
+                        })
+                        .finally(function () {
+                            btn.disabled = false;
+                        });
+                });
+            });
+        }
+
+        /** Single delegated handler — avoids stacking duplicate listeners on each refresh. */
+        function setupContribNavTabsDelegation() {
+            var nav = document.getElementById('contribNavTabs');
+            if (!nav || nav.dataset.contribNavWired === '1') return;
+            nav.dataset.contribNavWired = '1';
+            nav.addEventListener('click', function (ev) {
+                var tab = ev.target.closest('.contrib-sidenav__btn[data-panel]');
+                if (!tab) return;
+                var panel = tab.getAttribute('data-panel');
+                var tabs = nav.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                var panelSpill = document.getElementById('panelSpill');
+                var panelBug = document.getElementById('panelBug');
+                var i;
+                for (i = 0; i < tabs.length; i++) {
+                    var t = tabs[i];
+                    var on = t === tab;
+                    t.classList.toggle('contrib-sidenav__btn--active', on);
+                    t.setAttribute('aria-selected', on ? 'true' : 'false');
+                }
+                if (panelSpill) panelSpill.hidden = panel !== 'spill';
+                if (panelBug) panelBug.hidden = panel !== 'bug';
+                refreshMixedInviteHeader();
+            });
+        }
+
+        function getActiveContribPanel() {
+            var bugBtn = document.querySelector(
+                '#contribNavTabs .contrib-sidenav__btn.contrib-sidenav__btn--active[data-panel="bug"]'
+            );
+            return bugBtn ? 'bug' : 'spill';
+        }
+
+        function setContribPanelVisibility(panelSpill, panelBug, showSpill, showBug, opts) {
+            opts = opts || {};
+            var both = showSpill && showBug;
+            var wantBug = both && opts.activePanel === 'bug';
+            if (panelSpill) {
+                if (!showSpill) panelSpill.hidden = true;
+                else if (both) panelSpill.hidden = wantBug;
+                else panelSpill.hidden = false;
+            }
+            if (panelBug) {
+                if (!showBug) panelBug.hidden = true;
+                else if (both) panelBug.hidden = !wantBug;
+                else panelBug.hidden = false;
+            }
+        }
+
+        function refreshContributorWorkspace(token, opts) {
+            opts = opts || {};
+            token = String(token || '').trim();
+            if (!token) return;
+            var activePanel = getActiveContribPanel();
+            var saveKey = opts.afterSaveIssueKey;
+            var saveKind = opts.saveKind === 'bug' ? 'bug' : 'spill';
+            var prevSpillTodo = contribLastWorkspaceStats.spillTodo;
+            var prevBugTodo = contribLastWorkspaceStats.bugTodo;
+            fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
+                .then(function (r) {
+                    return r.json().then(function (j) {
+                        return { ok: r.ok, status: r.status, body: j };
+                    });
+                })
+                .then(function (res) {
+                    if (res.status === 410 || !res.ok || !res.body || !res.body.ok) return;
+                    renderContributorWorkspace(res.body, token, { activePanel: activePanel });
+                    if (!saveKey) return;
+                    var st = getWorkspaceCompletionState(res.body);
+                    var hadIncompleteBefore = prevSpillTodo > 0 || prevBugTodo > 0;
+                    if (st.allComplete && hadIncompleteBefore) {
+                        showThankYouModal(saveKey);
+                    } else {
+                        showInlineSaveMessage(saveKey, saveKind);
+                    }
+                })
+                .catch(function () {});
+        }
+
+        function renderContributorWorkspace(data, token, opts) {
+            opts = opts || {};
+            var issues = data.issues || [];
+            var editsByKey = editMapFromRows(data.edits);
+            var spillIssues = [];
+            var bugIssues = [];
+            for (var i = 0; i < issues.length; i++) {
+                var iss = issues[i];
+                if (issueNeedsSpilloverFields(iss)) spillIssues.push(iss);
+                if (issueNeedsBugFields(iss)) bugIssues.push(iss);
+            }
+            var showSpill = spillIssues.length > 0;
+            var showBug = bugIssues.length > 0;
+
+            var hints = {
+                onlySpillover: showSpill && !showBug,
+                onlyBugs: showBug && !showSpill,
+                mixed: showSpill && showBug
+            };
+
+            var spillPart = partitionIssuesByEdits(spillIssues, editsByKey, 'spill');
+            var bugPart = partitionIssuesByEdits(bugIssues, editsByKey, 'bug');
+            contribLastWorkspaceStats.spillTodo = spillPart.todo.length;
+            contribLastWorkspaceStats.bugTodo = bugPart.todo.length;
+            if (hints.mixed) {
+                contribChromeCtx = {
+                    hints: hints,
+                    spillStats: { todo: spillPart.todo.length, done: spillPart.done.length },
+                    bugStats: { todo: bugPart.todo.length, done: bugPart.done.length },
+                    data: data
+                };
+            } else {
+                contribChromeCtx = null;
+            }
+
+            var tabsEl = document.getElementById('contribNavTabs');
+            var panelSpill = document.getElementById('panelSpill');
+            var panelBug = document.getElementById('panelBug');
+
+            if (!issues.length) {
+                contribLastWorkspaceStats.spillTodo = 0;
+                contribLastWorkspaceStats.bugTodo = 0;
+                if (tabsEl) tabsEl.innerHTML = '';
+                if (panelSpill) {
+                    panelSpill.hidden = false;
+                    panelSpill.innerHTML =
+                        '<div class="empty-state">No issues match this invite (check assignee filter or upload).</div>';
+                }
+                if (panelBug) {
+                    panelBug.hidden = true;
+                    panelBug.innerHTML = '';
+                }
+                updateWorkspaceChrome(data, hints);
+                initSubmittedStoreForToken(token);
+                return;
+            }
+
+            if (tabsEl) {
+                tabsEl.innerHTML = '';
+                var icoSpill =
+                    '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>';
+                var icoBug =
+                    '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+                if (showSpill) {
+                    tabsEl.innerHTML +=
+                        '<button type="button" role="tab" class="contrib-sidenav__btn contrib-sidenav__btn--active" data-panel="spill" aria-selected="true">' +
+                        icoSpill +
+                        'Spillover</button>';
+                }
+                if (showBug) {
+                    tabsEl.innerHTML +=
+                        '<button type="button" role="tab" class="contrib-sidenav__btn' +
+                        (!showSpill ? ' contrib-sidenav__btn--active' : '') +
+                        '" data-panel="bug" aria-selected="' +
+                        (!showSpill ? 'true' : 'false') +
+                        '">' +
+                        icoBug +
+                        'Bugs</button>';
+                }
+                if (
+                    showSpill &&
+                    showBug &&
+                    opts.activePanel === 'bug' &&
+                    tabsEl.querySelector('[data-panel="spill"]') &&
+                    tabsEl.querySelector('[data-panel="bug"]')
+                ) {
+                    var bSpill = tabsEl.querySelector('[data-panel="spill"]');
+                    var bBug = tabsEl.querySelector('[data-panel="bug"]');
+                    bSpill.classList.remove('contrib-sidenav__btn--active');
+                    bSpill.setAttribute('aria-selected', 'false');
+                    bBug.classList.add('contrib-sidenav__btn--active');
+                    bBug.setAttribute('aria-selected', 'true');
+                }
+            }
+
+            if (panelSpill) {
+                if (showSpill) {
+                    var spillDoneBugRemaining =
+                        hints.mixed && spillPart.todo.length === 0 && bugPart.todo.length > 0;
+                    var spillHintBlock = spillDoneBugRemaining
+                        ? '<div class="contrib-spill-done-cta" role="status">' +
+                          '<div class="contrib-spill-done-cta__copy">' +
+                          '<p class="contrib-spill-done-cta__lead">Spillover is complete for every issue in this invite.</p>' +
+                          '<p class="contrib-spill-done-cta__next"><strong>Now you need to fill bug data</strong> — open the <strong>Bugs</strong> tab and choose <strong>Yes or No</strong> and enter <strong>RCA</strong> for each row.</p>' +
+                          '</div>' +
+                          '<button type="button" class="contrib-spill-done-cta__btn" id="contribGoToBugsFromSpill">Open Bugs tab</button>' +
+                          '</div>'
+                        : '<p class="contrib-panel-dash__hint">Enter spillover <strong>reason</strong> and <strong>category</strong> for each row below.</p>';
+                    panelSpill.innerHTML =
+                        '<h2 id="contribPanelSpillTitle" class="contrib-panel-dash__title">Spillover</h2>' +
+                        '<div id="contribSpillPanelAlert" class="contrib-panel-alert contrib-panel-alert--err" role="alert" hidden></div>' +
+                        spillHintBlock +
+                        '<div id="contribSpillSaveMsg" class="contrib-panel-save-msg" role="status" aria-live="polite" hidden></div>' +
+                        buildSpillIssueCardsHTML(spillIssues, editsByKey, token);
+                    wireSaveButtons(panelSpill, token);
+                } else {
+                    panelSpill.innerHTML = '';
+                    panelSpill.hidden = true;
+                }
+            }
+
+            if (panelBug) {
+                if (showBug) {
+                    var bugDoneSpillRemaining =
+                        hints.mixed && bugPart.todo.length === 0 && spillPart.todo.length > 0;
+                    var bugHintBlock = bugDoneSpillRemaining
+                        ? '<div class="contrib-spill-done-cta" role="status">' +
+                          '<div class="contrib-spill-done-cta__copy">' +
+                          '<p class="contrib-spill-done-cta__lead">Bugs are complete for every issue in this invite.</p>' +
+                          '<p class="contrib-spill-done-cta__next"><strong>Spillover is still missing</strong> — open the <strong>Spillover</strong> tab and enter <strong>reason</strong> and <strong>category</strong> for each row.</p>' +
+                          '</div>' +
+                          '<button type="button" class="contrib-spill-done-cta__btn" id="contribGoToSpillFromBug">Open Spillover tab</button>' +
+                          '</div>'
+                        : '<p class="contrib-panel-dash__hint">For each bug row, choose <strong>Yes or No</strong> and enter <strong>RCA</strong>.</p>';
+                    panelBug.innerHTML =
+                        '<h2 id="contribPanelBugTitle" class="contrib-panel-dash__title">Bugs</h2>' +
+                        '<div id="contribBugPanelAlert" class="contrib-panel-alert contrib-panel-alert--err" role="alert" hidden></div>' +
+                        bugHintBlock +
+                        '<div id="contribBugSaveMsg" class="contrib-panel-save-msg" role="status" aria-live="polite" hidden></div>' +
+                        buildBugIssueCardsHTML(bugIssues, editsByKey, token);
+                    wireSaveButtons(panelBug, token);
+                } else {
+                    panelBug.innerHTML = '';
+                    panelBug.hidden = true;
+                }
+            }
+
+            setContribPanelVisibility(panelSpill, panelBug, showSpill, showBug, opts);
+
+            updateWorkspaceChrome(data, hints);
+            if (hints.mixed) {
+                refreshMixedInviteHeader();
+            }
+            setupContribNavTabsDelegation();
+            initSubmittedStoreForToken(token);
+        }
+
+        function escapeHtml(s) {
+            if (s == null) return '';
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function escapeAttr(s) {
+            return escapeHtml(s).replace(/'/g, '&#39;');
+        }
+
+        var contribSubmittedStore = { token: '', keys: [] };
+
+        function submittedStorageKey(token) {
+            return 'jiraSpilloverSubmitted:' + String(token || '').trim();
+        }
+
+        function loadSubmittedFromStorage(token) {
+            try {
+                var raw = sessionStorage.getItem(submittedStorageKey(token));
+                if (!raw) return [];
+                var arr = JSON.parse(raw);
+                return Array.isArray(arr) ? arr : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveSubmittedToStorage(token, keys) {
+            try {
+                sessionStorage.setItem(submittedStorageKey(token), JSON.stringify(keys));
+            } catch (e) {}
+        }
+
+        function renderSubmittedNavList() {
+            var ul = document.getElementById('contribSubmittedList');
+            if (!ul) return;
+            var keys = contribSubmittedStore.keys.slice().sort();
+            if (!keys.length) {
+                ul.innerHTML =
+                    '<li class="contrib-submitted-list__empty muted" role="presentation">None yet</li>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < keys.length; i++) {
+                html +=
+                    '<li class="contrib-submitted-list__item"><code>' +
+                    escapeHtml(keys[i]) +
+                    '</code></li>';
+            }
+            ul.innerHTML = html;
+        }
+
+        function initSubmittedStoreForToken(token) {
+            token = String(token || '').trim();
+            if (!token) return;
+            contribSubmittedStore.token = token;
+            contribSubmittedStore.keys = loadSubmittedFromStorage(token);
+            renderSubmittedNavList();
+        }
+
+        function recordSubmittedIssueKey(issueKey, token) {
+            token = String(token || '').trim();
+            var k = normalizeIssueKeyLookup(issueKey);
+            if (!token || !k) return;
+            if (contribSubmittedStore.token !== token) {
+                contribSubmittedStore.token = token;
+                contribSubmittedStore.keys = loadSubmittedFromStorage(token);
+            }
+            if (contribSubmittedStore.keys.indexOf(k) === -1) {
+                contribSubmittedStore.keys.push(k);
+                saveSubmittedToStorage(token, contribSubmittedStore.keys);
+            }
+            renderSubmittedNavList();
+        }
+
+        function categoryOptionsHtml(selected) {
+            var o = '<option value="">Category</option>';
+            for (var i = 0; i < CATEGORY_OPTIONS.length; i++) {
+                var c = CATEGORY_OPTIONS[i];
+                o +=
+                    '<option value="' +
+                    escapeHtml(c) +
+                    '"' +
+                    (c === selected ? ' selected' : '') +
+                    '>' +
+                    escapeHtml(c) +
+                    '</option>';
+            }
+            return o;
+        }
+
+        function prodOptionsHtml(selected) {
+            var o = '';
+            for (var i = 0; i < PROD_OPTIONS.length; i++) {
+                var c = PROD_OPTIONS[i];
+                o +=
+                    '<option value="' +
+                    escapeHtml(c) +
+                    '"' +
+                    (c === selected ? ' selected' : '') +
+                    '>' +
+                    (c ? escapeHtml(c) : '(yes/no)') +
+                    '</option>';
+            }
+            return o;
+        }
+
+        /** Title-case a contributor name from the email local-part (e.g. alex.smith → Alex Smith). */
+        function formatNameFromInviteEmail(email) {
+            email = String(email || '').trim();
+            var at = email.indexOf('@');
+            if (at <= 0) return '';
+            var local = email.slice(0, at);
+            var plus = local.indexOf('+');
+            if (plus >= 0) local = local.slice(0, plus);
+            var parts = local.split(/[._-]+/).filter(function (p) {
+                return p.length > 0;
+            });
+            if (!parts.length) return '';
+            return parts
+                .map(function (p) {
+                    return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+                })
+                .join(' ');
+        }
+
+        /** Short name for sidebar welcome: assignee, derived from email, or Contributor. */
+        function contributorSidebarWelcomeName(data) {
+            data = data || {};
+            var scope = data.assigneeScope != null ? String(data.assigneeScope).trim() : '';
+            if (scope) return scope;
+            var fromEmail = formatNameFromInviteEmail(data.inviteeEmail);
+            if (fromEmail) return fromEmail;
+            return 'Contributor';
+        }
+
+        /** Main headline when the workspace loads. */
+        function contributorDisplayName(data) {
+            data = data || {};
+            var scope = data.assigneeScope != null ? String(data.assigneeScope).trim() : '';
+            if (scope) return scope;
+            var fromEmail = formatNameFromInviteEmail(data.inviteeEmail);
+            if (fromEmail) return fromEmail;
+            return 'Your workspace';
+        }
+
+        function contributorRequestHeading(hints) {
+            hints = hints || {};
+            if (hints.onlySpillover) {
+                return 'Use the Spillover tab for your assigned issues.';
+            }
+            if (hints.onlyBugs) {
+                return 'Use the Bugs tab for your assigned issues.';
+            }
+            if (hints.mixed) {
+                return 'Use Spillover and Bugs tabs for your assigned issues.';
+            }
+            return 'Use the tabs below for your assigned issues.';
+        }
+
+        function updateWorkspaceChrome(data, hints) {
+            hints = hints || {};
+            var fileLabel = data.originalName ? String(data.originalName) : 'Upload';
+            var shortName = fileLabel.replace(/\.[^.]+$/, '');
+            if (shortName.length > 36) shortName = shortName.slice(0, 34) + '…';
+            var assignee = data.assigneeScope ? String(data.assigneeScope).trim() : '';
+            var wm = document.getElementById('workspaceMeta');
+            if (wm) {
+                var n = data.issues ? data.issues.length : 0;
+                var issueWord = n === 1 ? 'issue' : 'issues';
+                var metaParts = [(shortName || 'Workspace') + ' · ' + n + ' ' + issueWord];
+                if (!assignee && data.inviteeEmail) metaParts.push(String(data.inviteeEmail));
+                wm.textContent = metaParts.join(' · ');
+            }
+            var pt = document.getElementById('pageTitle');
+            var ps = document.getElementById('pageSub');
+            var displayName = contributorDisplayName(data);
+            if (pt) pt.textContent = displayName;
+            var wn = document.getElementById('contribSidebarWelcomeName');
+            if (wn) wn.textContent = contributorSidebarWelcomeName(data);
+            if (!ps) return;
+
+            if (hints.mixed) {
+                ps.textContent = '';
+                return;
+            }
+
+            var st = getWorkspaceCompletionState(data);
+            var invite = contributorRequestHeading(hints);
+            var statsLine = '';
+            if (hints.onlySpillover && st.showSpill) {
+                statsLine = todoDoneStatPhrase(st.spillTodo, st.spillDone);
+            } else if (hints.onlyBugs && st.showBug) {
+                statsLine = todoDoneStatPhrase(st.bugTodo, st.bugDone);
+            } else {
+                var parts = [];
+                if (st.showSpill) parts.push(todoDoneStatPhrase(st.spillTodo, st.spillDone));
+                if (st.showBug) parts.push(todoDoneStatPhrase(st.bugTodo, st.bugDone));
+                statsLine = parts.join(' · ');
+            }
+
+            ps.innerHTML =
+                '<span class="contrib-page-head__invite">' +
+                escapeHtml(invite) +
+                '</span>' +
+                (statsLine
+                    ? '<br /><span class="contrib-page-head__statline muted">' +
+                      escapeHtml(statsLine) +
+                      '</span>'
+                    : '');
+        }
+
+        function restoreContributorLandingView() {
+            document.body.classList.remove('contrib-session');
+            document.documentElement.classList.remove('contrib-invite-pending');
+            var shell = document.getElementById('workspaceShell');
+            var landing = document.getElementById('landingBlock');
+            var foot = document.getElementById('landingFoot');
+            if (shell) {
+                shell.hidden = true;
+                shell.classList.remove('contrib-shell--enter');
+            }
+            if (landing) landing.hidden = false;
+            if (foot) foot.hidden = false;
+            var wn = document.getElementById('contribSidebarWelcomeName');
+            if (wn) wn.textContent = '—';
+        }
+
+        function triggerWorkspaceEnterAnimation() {
+            var shell = document.getElementById('workspaceShell');
+            if (!shell || shell.hidden) return;
+            shell.classList.remove('contrib-shell--enter');
+            void shell.offsetWidth;
+            shell.classList.add('contrib-shell--enter');
+        }
+
+        function showContributorWorkspaceLoading() {
+            document.body.classList.add('contrib-session');
+            document.documentElement.classList.add('contrib-invite-pending');
+            var shell = document.getElementById('workspaceShell');
+            var landing = document.getElementById('landingBlock');
+            var foot = document.getElementById('landingFoot');
+            if (landing) landing.hidden = true;
+            if (foot) foot.hidden = true;
+            if (shell) shell.hidden = false;
+            var pt = document.getElementById('pageTitle');
+            var wm = document.getElementById('workspaceMeta');
+            var ps = document.getElementById('pageSub');
+            if (pt) pt.textContent = 'Loading workspace…';
+            if (wm) wm.textContent = '';
+            if (ps) ps.textContent = '';
+            var wn = document.getElementById('contribSidebarWelcomeName');
+            if (wn) wn.textContent = '—';
+        }
+
+        function loadSession(token) {
+            token = String(token || '').trim();
+            if (!token) {
+                showBanner('Enter an invite token.', 'err', 'landing');
+                return;
+            }
+
+            persistApiFromQuery();
+            if (blockFileProtocolWithoutApi()) return;
+
+            clearAllBanners();
+            showContributorWorkspaceLoading();
+
+            fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
+                .then(function (r) {
+                    return r.json().then(function (j) {
+                        return { ok: r.ok, status: r.status, body: j };
+                    });
+                })
+                .then(function (res) {
+                    if (res.status === 410) {
+                        restoreContributorLandingView();
+                        showBanner(
+                            (res.body && res.body.error) || 'This invite has expired.',
+                            'err',
+                            'landing'
+                        );
+                        return;
+                    }
+                    if (!res.ok || !res.body.ok) {
+                        restoreContributorLandingView();
+                        showBanner((res.body && res.body.error) || 'Could not load invite.', 'err', 'landing');
+                        return;
+                    }
+
+                    document.documentElement.classList.remove('contrib-invite-pending');
+
+                    var data = res.body;
+                    renderContributorWorkspace(data, token);
+                    requestAnimationFrame(function () {
+                        triggerWorkspaceEnterAnimation();
+                    });
+                })
+                .catch(function () {
+                    restoreContributorLandingView();
+                    showBanner(
+                        'Could not reach the server. Start the app (npm start) and open this page from that address. If the port is not 3000, add ?api=http://localhost:YOUR_PORT to the URL. Re-create the invite from the analyzer if your link is old (new links include the API address).',
+                        'err',
+                        'landing'
+                    );
+                });
+        }
+
+        function initTokenFromQuery() {
+            try {
+                var p = new URLSearchParams(window.location.search);
+                var t = p.get('token');
+                if (t) {
+                    document.getElementById('tokenInput').value = t;
+                    document.getElementById('tokenRow').style.display = 'none';
+                    document.getElementById('tokenCard').querySelector('.card__head').textContent =
+                        'Invite access · loaded from link';
+                    loadSession(t);
+                }
+            } catch (e) {}
+        }
+
+        document.getElementById('tokenLoadBtn').addEventListener('click', function () {
+            loadSession(document.getElementById('tokenInput').value);
+        });
+
+        var fullAnalyzerBtn = document.getElementById('fullAnalyzerGate');
+        if (fullAnalyzerBtn) {
+            fullAnalyzerBtn.addEventListener('click', function () {
+                showAdminOnlyModal();
+            });
+        }
+
+        wireContribModals();
+        (function wireCrossTabCta() {
+            var shell = document.getElementById('workspaceShell');
+            if (!shell || shell.dataset.crossTabCtaWired === '1') return;
+            shell.dataset.crossTabCtaWired = '1';
+            shell.addEventListener('click', function (ev) {
+                if (ev.target && ev.target.closest('#contribGoToBugsFromSpill')) {
+                    var bugTab = document.querySelector(
+                        '#contribNavTabs .contrib-sidenav__btn[data-panel="bug"]'
+                    );
+                    if (bugTab) bugTab.click();
+                    return;
+                }
+                if (ev.target && ev.target.closest('#contribGoToSpillFromBug')) {
+                    var spillTab = document.querySelector(
+                        '#contribNavTabs .contrib-sidenav__btn[data-panel="spill"]'
+                    );
+                    if (spillTab) spillTab.click();
+                }
+            });
+        })();
+        initTokenFromQuery();
+    </script>
+</body>
+</html>

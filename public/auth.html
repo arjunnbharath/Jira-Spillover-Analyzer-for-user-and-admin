@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in · Jira Spillover Analyzer</title>
+    <script>
+        (function () {
+            try {
+                if (window.location.search.indexOf('embed=1') !== -1 || window.self !== window.top) {
+                    document.documentElement.classList.add('auth--embed');
+                }
+            } catch (err) {}
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --auth-bg: #000000;
+            --font: 'Inter', system-ui, sans-serif;
+            --form-col: 40%;
+            --visual-col: 60%;
+            --auth-form-bg: #000000;
+            --auth-btn: #525252;
+            --auth-btn-hover: #6b6b6b;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100%;
+            height: 100%;
+            font-family: var(--font);
+            background: var(--auth-bg);
+            color: #f5f5f5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html.auth--embed body {
+            min-height: 100%;
+            overflow: hidden;
+        }
+
+        .auth-page {
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        html.auth--embed .auth-page {
+            min-height: 100%;
+            height: 100%;
+        }
+
+        .auth-root {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        html.auth--embed .auth-root {
+            min-height: 100%;
+        }
+
+        .auth-panel {
+            position: relative;
+            flex-shrink: 0;
+            transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .auth-panel--form {
+            flex: 0 0 var(--form-col);
+            width: var(--form-col);
+            max-width: var(--form-col);
+            --auth-text: #f0f0f0;
+            --auth-muted: #a3a3a3;
+            --auth-border: rgba(255, 255, 255, 0.14);
+            --auth-input-bg: #0a0a0a;
+            background: var(--auth-form-bg);
+            color: var(--auth-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(1.5rem, 4vw, 3rem);
+            z-index: 2;
+            overflow-y: auto;
+        }
+
+        .auth-panel--form .auth-title {
+            color: #ffffff;
+        }
+
+        .auth-panel--form .auth-input-shell .auth-input-icon--accent {
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .auth-panel--visual {
+            position: relative;
+            flex: 0 0 var(--visual-col);
+            width: var(--visual-col);
+            max-width: var(--visual-col);
+            min-height: 100%;
+            background: #111;
+            overflow: hidden;
+            z-index: 1;
+            border-top: 20px solid #000000;
+            border-bottom: 20px solid #000000;
+            border-inline-end: 20px solid #000000;
+        }
+
+        .auth-root.is-signup .auth-panel--visual {
+            border-inline-start: 20px solid #000000;
+            border-inline-end: 20px solid #000000;
+            transform: translateX(-66.666667%);
+        }
+
+        /* Swap: image moves left, forms move right */
+        .auth-root.is-signup .auth-panel--form {
+            transform: translateX(150%);
+        }
+
+        .auth-form-inner {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .auth-title {
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+        }
+
+        .auth-block {
+            display: none;
+        }
+
+        .auth-block.is-active {
+            display: block;
+            animation: authIn 0.35s ease;
+        }
+
+        @keyframes authIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .auth-panel {
+                transition: none;
+            }
+
+            .auth-block.is-active {
+                animation: none;
+            }
+        }
+
+        .auth-field {
+            margin-bottom: 1.25rem;
+        }
+
+        .auth-field label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--auth-muted);
+            margin-bottom: 0.45rem;
+        }
+
+        .auth-input-shell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--auth-border);
+            border-radius: 4px;
+            background: var(--auth-input-bg);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .auth-input-shell:focus-within {
+            border-color: rgba(255, 255, 255, 0.38);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-input-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 2.75rem;
+            color: var(--auth-muted);
+        }
+
+        .auth-input-shell input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            background: transparent;
+            color: var(--auth-text);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            padding: 0.85rem 0.85rem 0.85rem 0;
+            outline: none;
+        }
+
+        .auth-input-shell input::placeholder {
+            color: #737373;
+        }
+
+        .auth-forgot {
+            display: inline-block;
+            margin-top: -0.35rem;
+            margin-bottom: 1.5rem;
+            padding: 0;
+            border: none;
+            font-family: inherit;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: var(--auth-muted);
+            background: none;
+            cursor: pointer;
+            text-align: left;
+            text-transform: uppercase;
+            transition: color 0.15s;
+        }
+
+        .auth-forgot:hover {
+            color: var(--auth-text);
+        }
+
+        .auth-btn-primary {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background: var(--auth-btn);
+            color: #f5f5f5;
+            font-family: inherit;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .auth-btn-primary:hover {
+            background: var(--auth-btn-hover);
+        }
+
+        .auth-btn-primary[type='submit']:hover {
+            background: #22c55e;
+            color: #052e16;
+        }
+
+        .auth-btn-primary[type='submit']:active {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .auth-footer-link {
+            margin-top: 2rem;
+            font-size: 0.8125rem;
+            color: var(--auth-muted);
+        }
+
+        .auth-footer-link button {
+            border: none;
+            background: none;
+            color: var(--auth-text);
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            padding: 0;
+        }
+
+        .auth-footer-link button:hover {
+            color: #ffffff;
+        }
+
+        .auth-hint {
+            font-size: 0.6875rem;
+            color: var(--auth-muted);
+            margin-top: 0.35rem;
+            line-height: 1.4;
+        }
+
+        .auth-banner {
+            font-size: 0.8125rem;
+            line-height: 1.45;
+            padding: 0.65rem 0.85rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .auth-banner--error {
+            border-color: rgba(239, 68, 68, 0.45);
+            color: #fca5a5;
+        }
+
+        .auth-banner--ok {
+            border-color: rgba(34, 197, 94, 0.45);
+            color: #86efac;
+        }
+
+        .auth-signed-in-wrap {
+            text-align: center;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .auth-signed-in-wrap__text {
+            margin-bottom: 0.85rem;
+            font-size: 0.9375rem;
+            color: var(--auth-muted);
+        }
+
+        .auth-signed-in-wrap__text strong {
+            color: var(--auth-text);
+            font-weight: 600;
+        }
+
+        .auth-signed-in-wrap__label {
+            display: block;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--auth-muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .auth-signed-in-wrap__sub {
+            margin-bottom: 1.1rem;
+            font-size: 0.875rem;
+            color: var(--auth-muted);
+            text-align: center;
+        }
+
+        .auth-signed-in-wrap__sub strong {
+            color: var(--auth-text);
+            font-weight: 600;
+            font-size: 0.9375rem;
+            word-break: break-word;
+        }
+
+        .auth-signed-in-wrap .auth-btn-primary {
+            margin-bottom: 0.75rem;
+        }
+
+        .auth-secondary-btn {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            border: 1px solid var(--auth-border);
+            border-radius: 4px;
+            background: transparent;
+            color: var(--auth-muted);
+            font-family: inherit;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        .auth-secondary-btn:hover {
+            color: var(--auth-text);
+            border-color: rgba(255, 255, 255, 0.28);
+        }
+
+        .auth-visual-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            z-index: 0;
+            transform: scale(1.03);
+        }
+
+        .auth-visual-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.45) 0%,
+                rgba(0, 0, 0, 0.2) 40%,
+                rgba(0, 0, 0, 0.65) 100%
+            );
+            pointer-events: none;
+        }
+
+        .auth-visual-copy {
+            position: absolute;
+            left: clamp(1.5rem, 4vw, 3rem);
+            right: clamp(1.5rem, 4vw, 3rem);
+            bottom: clamp(2rem, 5vw, 4rem);
+            z-index: 2;
+            max-width: 28rem;
+        }
+
+        .auth-visual-copy h2 {
+            font-size: clamp(1.15rem, 2.5vw, 1.65rem);
+            font-weight: 600;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+            margin-bottom: 0;
+            text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6);
+        }
+
+        .auth-close {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            right: auto;
+            z-index: 100;
+            width: 2.25rem;
+            height: 2.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.35);
+            color: #fff;
+            font-size: 1.25rem;
+            line-height: 1;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .auth-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        html.auth--embed .auth-close {
+            display: flex;
+        }
+
+        .auth-page:has(.auth-root.is-signup) .auth-close {
+            left: auto;
+            right: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            :root {
+                --form-col: 100%;
+                --visual-col: 100%;
+            }
+
+            .auth-page {
+                overflow-x: hidden;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            html.auth--embed .auth-page {
+                overflow-y: auto;
+            }
+
+            .auth-root {
+                flex-direction: column;
+                min-height: min(100vh, 100dvh);
+                height: auto;
+            }
+
+            html.auth--embed .auth-root {
+                min-height: min(100%, 100dvh);
+            }
+
+            .auth-panel--form {
+                flex: 1 1 auto;
+                width: 100%;
+                max-width: none;
+                min-height: 0;
+                order: 2;
+                align-items: stretch;
+                justify-content: flex-start;
+                padding:
+                    1.25rem
+                    max(1.25rem, env(safe-area-inset-right))
+                    max(1.75rem, env(safe-area-inset-bottom))
+                    max(1.25rem, env(safe-area-inset-left));
+            }
+
+            .auth-form-inner {
+                max-width: none;
+            }
+
+            .auth-title {
+                font-size: 1.625rem;
+                margin-bottom: 1.35rem;
+            }
+
+            .auth-field {
+                margin-bottom: 1.1rem;
+            }
+
+            .auth-input-shell {
+                min-height: 48px;
+                border-radius: 6px;
+            }
+
+            .auth-input-shell input {
+                font-size: 1rem;
+                padding: 0.75rem 0.85rem 0.75rem 0;
+            }
+
+            .auth-btn-primary {
+                min-height: 48px;
+                padding: 1rem 1rem;
+                border-radius: 6px;
+                font-size: 0.8125rem;
+            }
+
+            .auth-footer-link {
+                margin-top: 1.5rem;
+                line-height: 1.45;
+            }
+
+            .auth-panel--visual {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: none;
+                order: 1;
+                min-height: clamp(11rem, 34vh, 17.5rem);
+                max-height: 42vh;
+                border-top: none;
+                border-bottom: 10px solid #000000;
+                border-inline-start: 6px solid #000000;
+                border-inline-end: 6px solid #000000;
+            }
+
+            .auth-visual-img {
+                transform: scale(1.01);
+            }
+
+            .auth-visual-copy {
+                left: max(1rem, env(safe-area-inset-left));
+                right: max(1rem, env(safe-area-inset-right));
+                bottom: max(1rem, env(safe-area-inset-bottom));
+            }
+
+            .auth-visual-copy h2 {
+                font-size: clamp(0.98rem, 3.8vw, 1.28rem);
+                line-height: 1.32;
+            }
+
+            .auth-close {
+                top: max(0.75rem, env(safe-area-inset-top));
+                left: max(0.75rem, env(safe-area-inset-left));
+                right: auto;
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 1.35rem;
+            }
+
+            .auth-page:has(.auth-root.is-signup) .auth-close {
+                left: auto;
+                right: max(0.75rem, env(safe-area-inset-right));
+            }
+
+            .auth-root.is-signup .auth-panel--form,
+            .auth-root.is-signup .auth-panel--visual {
+                transform: none !important;
+            }
+
+            .auth-root.is-signup .auth-panel--visual {
+                order: 1;
+                border-inline-start: 6px solid #000000;
+                border-inline-end: 6px solid #000000;
+            }
+
+            .auth-root.is-signup .auth-panel--form {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page">
+        <button type="button" class="auth-close" id="authCloseBtn" aria-label="Close">&times;</button>
+        <div class="auth-root" id="authRoot" aria-live="polite">
+            <section class="auth-panel auth-panel--form">
+                <div class="auth-form-inner">
+                    <p id="authFirebaseMsg" class="auth-banner auth-banner--error" hidden role="alert"></p>
+                    <div id="authSignedInWrap" class="auth-signed-in-wrap" hidden>
+                        <p class="auth-signed-in-wrap__text">
+                            <span class="auth-signed-in-wrap__label">Email</span>
+                            <strong id="authSignedInEmail"></strong>
+                        </p>
+                        <p id="authSignedInNameLine" class="auth-signed-in-wrap__sub" hidden>
+                            <span class="auth-signed-in-wrap__label">Name</span>
+                            <strong id="authSignedInNameText"></strong>
+                        </p>
+                        <p id="authSignedInCompanyLine" class="auth-signed-in-wrap__sub" hidden>
+                            <span class="auth-signed-in-wrap__label">Company</span>
+                            <strong id="authSignedInCompanyText"></strong>
+                        </p>
+                        <button type="button" class="auth-btn-primary" id="authContinueBtn">Continue to app</button>
+                        <button type="button" class="auth-secondary-btn" id="authSignOutBtn">Sign out</button>
+                    </div>
+                    <div id="authFormsWrap">
+                    <div class="auth-block is-active" id="blockLogin">
+                        <h1 class="auth-title">Sign In</h1>
+                        <form id="formLogin" novalidate>
+                            <div class="auth-field">
+                                <label for="loginEmail">Email</label>
+                                <div class="auth-input-shell">
+                                    <span class="auth-input-icon auth-input-icon--accent" aria-hidden="true">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    </span>
+                                    <input type="email" id="loginEmail" name="email" autocomplete="username" placeholder="you@company.com" required />
+                                </div>
+                            </div>
+                            <div class="auth-field">
+                                <label for="loginPassword">Password</label>
+                                <div class="auth-input-shell">
+                                    <span class="auth-input-icon" aria-hidden="true">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                    </span>
+                                    <input type="password" id="loginPassword" name="password" autocomplete="current-password" placeholder="Enter password" required />
+                                </div>
+                            </div>
+                            <button type="button" class="auth-forgot" id="authForgotPw">Forgot password?</button>
+                            <button type="submit" class="auth-btn-primary">Sign in</button>
+                        </form>
+                        <p class="auth-footer-link">
+                            Don&apos;t have an account?
+                            <button type="button" id="goSignup">Sign up</button>
+                        </p>
+                    </div>
+
+                    <div class="auth-block" id="blockSignup">
+                        <h1 class="auth-title">Sign Up</h1>
+                        <form id="formSignup" novalidate>
+                            <div class="auth-field">
+                                <label for="signupName">Full name</label>
+                                <div class="auth-input-shell">
+                                    <span class="auth-input-icon auth-input-icon--accent" aria-hidden="true">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    </span>
+                                    <input type="text" id="signupName" name="name" autocomplete="name" placeholder="Jane Doe" required />
+                                </div>
+                            </div>
+                            <div class="auth-field">
+                                <label for="signupCompany">Company name</label>
+                                <div class="auth-input-shell">
+                                    <span class="auth-input-icon" aria-hidden="true">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    </span>
+                                    <input type="text" id="signupCompany" name="company" autocomplete="organization" placeholder="Acme Inc." required />
+                                </div>
+                            </div>
+                            <div class="auth-field">
+                                <label for="signupEmail">Email</label>
+                                <div class="auth-input-shell">
+                                    <span class="auth-input-icon auth-input-icon--accent" aria-hidden="true">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    </span>
+                                    <input type="email" id="signupEmail" name="email" autocomplete="email" placeholder="you@company.com" required />
+                                </div>
+                            </div>
+                            <div class="auth-field">
+                                <label for="signupPassword">Password</label>
+                                <div class="auth-input-shell">
+                                    <span class="auth-input-icon" aria-hidden="true">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                    </span>
+                                    <input type="password" id="signupPassword" name="password" autocomplete="new-password" placeholder="Create password" required minlength="8" />
+                                </div>
+                                <p class="auth-hint">At least 8 characters, with a number and a special character.</p>
+                            </div>
+                            <button type="submit" class="auth-btn-primary">Create account</button>
+                        </form>
+                        <p class="auth-footer-link">
+                            Already have an account?
+                            <button type="button" id="goLogin">Sign in</button>
+                        </p>
+                    </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="auth-panel auth-panel--visual" aria-label="Brand">
+                <img
+                    class="auth-visual-img"
+                    src="images/newimg.png"
+                    alt=""
+                    width="1600"
+                    height="1200"
+                    decoding="async"
+                    fetchpriority="high"
+                />
+                <div class="auth-visual-bg"></div>
+                <div class="auth-visual-copy">
+                    <h2>A clearer view of spillover risk across every sprint.</h2>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js?v=5"></script>
+    <script src="js/firebase-bootstrap.js"></script>
+
+    <script>
+        (function () {
+            function safeAuthNextParam() {
+                try {
+                    var raw = new URLSearchParams(window.location.search).get('next');
+                    if (!raw) return null;
+                    var s = decodeURIComponent(raw).trim();
+                    if (s.indexOf('..') >= 0 || s.indexOf('://') >= 0 || s.indexOf('//') === 0) return null;
+                    if (!/^index\.html($|[?#])/i.test(s)) return null;
+                    return s;
+                } catch (err) {
+                    return null;
+                }
+            }
+
+            function authAppTargetUrl() {
+                return safeAuthNextParam() || 'index.html';
+            }
+
+            function authCloseToApp() {
+                try {
+                    if (window.self !== window.top && typeof window.parent.closeAuthFramePopup === 'function') {
+                        window.parent.closeAuthFramePopup();
+                        return;
+                    }
+                } catch (err) {}
+                window.location.href = authAppTargetUrl();
+            }
+
+            var closeBtn = document.getElementById('authCloseBtn');
+            if (closeBtn) closeBtn.addEventListener('click', authCloseToApp);
+
+            if (document.documentElement.classList.contains('auth--embed')) {
+                document.addEventListener('keydown', function (e) {
+                    if (e.key !== 'Escape') return;
+                    e.preventDefault();
+                    authCloseToApp();
+                });
+            }
+
+            function authFirebaseErrMessage(code) {
+                var map = {
+                    'auth/email-already-in-use': 'That email is already registered. Sign in instead.',
+                    'auth/invalid-email': 'Enter a valid email address.',
+                    'auth/wrong-password': 'Incorrect email or password.',
+                    'auth/user-not-found': 'Incorrect email or password.',
+                    'auth/invalid-credential': 'Incorrect email or password.',
+                    'auth/weak-password': 'Password is too weak.',
+                    'auth/too-many-requests': 'Too many attempts. Wait a bit and try again.',
+                    'auth/network-request-failed': 'Network error. Check your connection.',
+                    'auth/operation-not-allowed': 'Email/password sign-in is not enabled for this app.',
+                    'auth/user-disabled': 'This account cannot sign in. Contact support.'
+                };
+                return map[code] || null;
+            }
+
+            /** Sign-in only: never show raw provider error strings to the user. */
+            function authSignInErrorText(err) {
+                var code = err && err.code ? String(err.code) : '';
+                var mapped = authFirebaseErrMessage(code);
+                if (mapped) return mapped;
+                if (code && code.indexOf('auth/') === 0) {
+                    return 'Incorrect email or password.';
+                }
+                return 'Sign-in failed. Please try again.';
+            }
+
+            function authSignUpErrorText(err) {
+                var code = err && err.code ? String(err.code) : '';
+                var mapped = authFirebaseErrMessage(code);
+                if (mapped) return mapped;
+                if (code && code.indexOf('auth/') === 0) {
+                    return 'Could not create an account. Please try again.';
+                }
+                return 'Could not create an account. Please try again.';
+            }
+
+            function authPasswordResetErrorText(err) {
+                var code = err && err.code ? String(err.code) : '';
+                if (code === 'auth/user-not-found') {
+                    return 'No account found for that email address.';
+                }
+                var mapped = authFirebaseErrMessage(code);
+                if (mapped) return mapped;
+                if (code && code.indexOf('auth/') === 0) {
+                    return 'Could not send reset email. Please try again.';
+                }
+                return 'Could not send reset email. Please try again.';
+            }
+
+            function authFirebaseNotReadyMessage() {
+                if (typeof firebase === 'undefined') {
+                    return (
+                        window.firebaseSkippedReason ||
+                        'Sign-in could not load. Check your connection or ad blocker, then refresh.'
+                    );
+                }
+                if (typeof window.FIREBASE_CONFIG === 'undefined') {
+                    return (
+                        window.firebaseSkippedReason ||
+                        'Sign-in is not configured. Open the site from your local server (not as a file URL).'
+                    );
+                }
+                if (window.firebaseInitError) {
+                    return 'Sign-in is not available. Refresh the page or try again later.';
+                }
+                return (
+                    window.firebaseSkippedReason ||
+                    'Sign-in is not available. Refresh the page or contact support.'
+                );
+            }
+
+            function showAuthFirebaseMsg(text, variant) {
+                var el = document.getElementById('authFirebaseMsg');
+                if (!el) return;
+                el.classList.remove('auth-banner--error', 'auth-banner--ok');
+                if (!text) {
+                    el.hidden = true;
+                    el.textContent = '';
+                    return;
+                }
+                el.hidden = false;
+                el.textContent = text;
+                el.classList.add(variant === 'ok' ? 'auth-banner--ok' : 'auth-banner--error');
+            }
+
+            function loadAuthSignedInProfile(user) {
+                var nameLine = document.getElementById('authSignedInNameLine');
+                var nameText = document.getElementById('authSignedInNameText');
+                var coLine = document.getElementById('authSignedInCompanyLine');
+                var coText = document.getElementById('authSignedInCompanyText');
+                if (!nameLine || !nameText || !coLine || !coText) return;
+                nameLine.hidden = true;
+                coLine.hidden = true;
+                nameText.textContent = '';
+                coText.textContent = '';
+                if (!user) return;
+
+                function applyName(dn) {
+                    var n = dn ? String(dn).trim() : '';
+                    if (n) {
+                        nameText.textContent = n;
+                        nameLine.hidden = false;
+                    }
+                }
+
+                var authDn = user.displayName ? String(user.displayName).trim() : '';
+                applyName(authDn);
+
+                if (!window.firebaseDb || !user.uid) {
+                    return;
+                }
+                window.firebaseDb
+                    .collection('users')
+                    .doc(user.uid)
+                    .get()
+                    .then(function (snap) {
+                        var d = snap.exists ? snap.data() : null;
+                        if (d) {
+                            var fsName = d.displayName ? String(d.displayName).trim() : '';
+                            if (fsName) {
+                                applyName(fsName);
+                            }
+                            var co = d.company ? String(d.company).trim() : '';
+                            if (co) {
+                                coText.textContent = co;
+                                coLine.hidden = false;
+                            }
+                        }
+                    })
+                    .catch(function () {});
+            }
+
+            function refreshAuthSignedInUi() {
+                var wrap = document.getElementById('authSignedInWrap');
+                var forms = document.getElementById('authFormsWrap');
+                var emailEl = document.getElementById('authSignedInEmail');
+                if (!wrap || !forms) return;
+                var ready = window.firebaseReady && typeof firebase !== 'undefined' && firebase.auth;
+                var user = ready ? firebase.auth().currentUser : null;
+                if (user && emailEl) {
+                    emailEl.textContent = user.email || user.uid;
+                    wrap.hidden = false;
+                    forms.hidden = true;
+                    showAuthFirebaseMsg('');
+                    loadAuthSignedInProfile(user);
+                } else {
+                    wrap.hidden = true;
+                    forms.hidden = false;
+                    loadAuthSignedInProfile(null);
+                }
+            }
+
+            function afterAuthSuccessToApp() {
+                try {
+                    if (window.self !== window.top && typeof window.parent.closeAuthFramePopup === 'function') {
+                        window.parent.closeAuthFramePopup();
+                        return;
+                    }
+                } catch (err) {}
+                window.location.href = authAppTargetUrl();
+            }
+
+            var root = document.getElementById('authRoot');
+            var blockLogin = document.getElementById('blockLogin');
+            var blockSignup = document.getElementById('blockSignup');
+            var goSignup = document.getElementById('goSignup');
+            var goLogin = document.getElementById('goLogin');
+
+            function setSignupMode(on) {
+                root.classList.toggle('is-signup', on);
+                blockLogin.classList.toggle('is-active', !on);
+                blockSignup.classList.toggle('is-active', on);
+                var focusEl = on ? document.getElementById('signupName') : document.getElementById('loginEmail');
+                if (focusEl) setTimeout(function () { focusEl.focus(); }, 480);
+            }
+
+            goSignup.addEventListener('click', function () {
+                setSignupMode(true);
+            });
+
+            goLogin.addEventListener('click', function () {
+                setSignupMode(false);
+            });
+
+            var forgot = document.getElementById('authForgotPw');
+            if (forgot) {
+                forgot.addEventListener('click', function () {
+                    if (!window.firebaseReady || typeof firebase === 'undefined') {
+                        showAuthFirebaseMsg(authFirebaseNotReadyMessage(), 'error');
+                        return;
+                    }
+                    var emailEl = document.getElementById('loginEmail');
+                    var email = emailEl ? String(emailEl.value || '').trim() : '';
+                    if (!email) {
+                        showAuthFirebaseMsg('Enter your email above, then click Forgot password again.', 'error');
+                        return;
+                    }
+                    firebase
+                        .auth()
+                        .sendPasswordResetEmail(email)
+                        .then(function () {
+                            showAuthFirebaseMsg('Password reset email sent. Check your inbox.', 'ok');
+                        })
+                        .catch(function (err) {
+                            showAuthFirebaseMsg(authPasswordResetErrorText(err), 'error');
+                        });
+                });
+            }
+
+            document.getElementById('formLogin').addEventListener('submit', function (e) {
+                e.preventDefault();
+                showAuthFirebaseMsg('');
+                if (!window.firebaseReady || typeof firebase === 'undefined') {
+                    showAuthFirebaseMsg(authFirebaseNotReadyMessage(), 'error');
+                    return;
+                }
+                var fd = new FormData(e.target);
+                var email = String(fd.get('email') || '').trim();
+                var password = String(fd.get('password') || '');
+                firebase
+                    .auth()
+                    .signInWithEmailAndPassword(email, password)
+                    .then(function () {
+                        afterAuthSuccessToApp();
+                    })
+                    .catch(function (err) {
+                        showAuthFirebaseMsg(authSignInErrorText(err), 'error');
+                    });
+            });
+
+            document.getElementById('formSignup').addEventListener('submit', function (e) {
+                e.preventDefault();
+                showAuthFirebaseMsg('');
+                if (!window.firebaseReady || typeof firebase === 'undefined') {
+                    showAuthFirebaseMsg(authFirebaseNotReadyMessage(), 'error');
+                    return;
+                }
+                var companyEl = document.getElementById('signupCompany');
+                var co = companyEl ? String(companyEl.value).trim() : '';
+                if (!co) {
+                    showAuthFirebaseMsg('Please enter your company name.', 'error');
+                    return;
+                }
+                var pw = document.getElementById('signupPassword').value;
+                if (pw.length < 8 || !/\d/.test(pw) || !/[^A-Za-z0-9]/.test(pw)) {
+                    showAuthFirebaseMsg(
+                        'Password must be at least 8 characters and include a number and a special character.',
+                        'error'
+                    );
+                    return;
+                }
+                var fd = new FormData(e.target);
+                var email = String(fd.get('email') || '').trim();
+                var name = String(fd.get('name') || '').trim();
+                firebase
+                    .auth()
+                    .createUserWithEmailAndPassword(email, pw)
+                    .then(function (cred) {
+                        var u = cred.user;
+                        var p =
+                            name && u.updateProfile
+                                ? u.updateProfile({ displayName: name })
+                                : Promise.resolve();
+                        return p.then(function () {
+                            if (!window.firebaseDb) return Promise.resolve();
+                            return window.firebaseDb
+                                .collection('users')
+                                .doc(u.uid)
+                                .set(
+                                    {
+                                        email: email,
+                                        displayName: name || '',
+                                        company: co,
+                                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                                    },
+                                    { merge: true }
+                                )
+                                .catch(function (fsErr) {
+                                    console.warn('[auth] Could not save users/' + u.uid + ':', fsErr);
+                                });
+                        }).then(function () {
+                            afterAuthSuccessToApp();
+                        });
+                    })
+                    .catch(function (err) {
+                        showAuthFirebaseMsg(authSignUpErrorText(err), 'error');
+                    });
+            });
+
+            var continueBtn = document.getElementById('authContinueBtn');
+            if (continueBtn) {
+                continueBtn.addEventListener('click', function () {
+                    afterAuthSuccessToApp();
+                });
+            }
+            var signOutBtn = document.getElementById('authSignOutBtn');
+            if (signOutBtn) {
+                signOutBtn.addEventListener('click', function () {
+                    if (!window.firebaseReady || !firebase.auth) return;
+                    firebase
+                        .auth()
+                        .signOut()
+                        .then(function () {
+                            refreshAuthSignedInUi();
+                        })
+                        .catch(function () {
+                            refreshAuthSignedInUi();
+                        });
+                });
+            }
+
+            if (window.firebaseReady && typeof firebase !== 'undefined' && firebase.auth) {
+                firebase.auth().onAuthStateChanged(function () {
+                    refreshAuthSignedInUi();
+                });
+            } else {
+                refreshAuthSignedInUi();
+            }
+        })();
+    </script>
+</body>
+</html>
