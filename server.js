@@ -751,12 +751,41 @@ app.set('trust proxy', true);
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/health', (req, res) => {
-  const p = getPool();
-  res.json({
+app.get('/api/health', async (req, res) => {
+  const configured = Boolean((process.env.DATABASE_URL || '').trim());
+  const body = {
     ok: true,
-    databaseConfigured: Boolean(p),
-  });
+    databaseConfigured: configured,
+    databaseReachable: false,
+  };
+  if (!configured) {
+    body.hint =
+      'Set DATABASE_URL in Vercel → Project → Settings → Environment Variables (enable for Production and Preview), then Redeploy.';
+    return res.json(body);
+  }
+  const p = getPool();
+  if (!p) {
+    body.ok = false;
+    return res.json(body);
+  }
+  try {
+    const c = await p.connect();
+    try {
+      await c.query('SELECT 1');
+    } finally {
+      c.release();
+    }
+    body.databaseReachable = true;
+  } catch (e) {
+    body.ok = false;
+    body.databaseReachable = false;
+    const prod = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+    body.databaseError = prod
+      ? 'Connection failed. Check DATABASE_URL on Vercel, Aiven PostgreSQL “IP filter” / authorized networks (allow 0.0.0.0/0 for serverless), then Redeploy.'
+      : String((e && e.message) || e);
+    if (e && e.code) body.databaseErrorCode = String(e.code);
+  }
+  res.json(body);
 });
 
 /** Deletes every upload; cascades to rows, invites, issue_field_edits. Requires explicit confirmation. */
