@@ -748,7 +748,8 @@
                     if (!raw) return null;
                     var s = decodeURIComponent(raw).trim();
                     if (s.indexOf('..') >= 0 || s.indexOf('://') >= 0 || s.indexOf('//') === 0) return null;
-                    if (!/^index\.html($|[?#])/i.test(s)) return null;
+                    if (/^\/($|[?#])/i.test(s)) return s;
+                    if (!/^(index|analyzer)\.html($|[?#])/i.test(s)) return null;
                     return s;
                 } catch (err) {
                     return null;
@@ -756,7 +757,7 @@
             }
 
             function authAppTargetUrl() {
-                return safeAuthNextParam() || 'index.html';
+                return safeAuthNextParam() || '/';
             }
 
             function authCloseToApp() {

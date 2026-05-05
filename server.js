@@ -1744,6 +1744,16 @@ app.put('/api/invite/:token/issue', async (req, res) => {
   }
 });
 
+app.get('/index.html', (req, res) => {
+  const i = req.url.indexOf('?');
+  res.redirect(301, '/' + (i >= 0 ? req.url.slice(i) : ''));
+});
+
+/** Root HTML (not named index.html) so Vercel does not serve it as static before rewrites to this app. */
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(ROOT, 'analyzer.html'));
+});
+
 app.use(express.static(ROOT));
 
 module.exports = app;

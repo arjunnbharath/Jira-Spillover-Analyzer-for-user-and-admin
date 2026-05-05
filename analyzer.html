@@ -5330,11 +5330,11 @@
                     var parts = path.split('/');
                     var file = parts[parts.length - 1] || '';
                     if (!file || file.indexOf('.html') === -1) {
-                        file = 'index.html';
+                        return '/' + (window.location.search || '') + (window.location.hash || '');
                     }
                     return file + (window.location.search || '') + (window.location.hash || '');
                 } catch (err) {
-                    return 'index.html';
+                    return '/';
                 }
             }
 
