@@ -682,6 +682,7 @@ const upload = multer({
 });
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
 
@@ -1745,9 +1746,13 @@ app.put('/api/invite/:token/issue', async (req, res) => {
 
 app.use(express.static(ROOT));
 
-app.listen(PORT, () => {
-  console.log(`http://localhost:${PORT}`);
-  if (!process.env.DATABASE_URL) {
-    console.warn('Warning: DATABASE_URL not set — /api/upload will return 503.');
-  }
-});
+module.exports = app;
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`http://localhost:${PORT}`);
+    if (!process.env.DATABASE_URL) {
+      console.warn('Warning: DATABASE_URL not set — /api/upload will return 503.');
+    }
+  });
+}
