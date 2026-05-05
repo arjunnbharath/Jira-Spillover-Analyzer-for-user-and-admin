@@ -14,7 +14,21 @@ const nodemailer = require('nodemailer');
 dotenv.config({ path: path.join(__dirname, '.env'), override: true });
 
 const PORT = process.env.PORT || 3000;
-const ROOT = __dirname;
+
+/** Vercel bundles the function under `api/`; included assets may sit next to that file or at `process.cwd()`. */
+function detectProjectRoot() {
+  const candidates = [path.resolve(__dirname), path.resolve(process.cwd())];
+  for (const dir of candidates) {
+    try {
+      if (fs.existsSync(path.join(dir, 'analyzer.html'))) return dir;
+    } catch (err) {
+      /* ignore */
+    }
+  }
+  return path.resolve(__dirname);
+}
+
+const ROOT = detectProjectRoot();
 const MAX_BYTES = Number(process.env.UPLOAD_MAX_BYTES) || 52 * 1024 * 1024;
 
 /** HTTPS + correct host for invite links and ?api= (Vercel sets x-forwarded-* and VERCEL_URL). */

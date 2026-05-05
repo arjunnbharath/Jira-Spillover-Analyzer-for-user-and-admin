@@ -1,4 +1,12 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+  "framework": null,
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "{analyzer.html,auth.html,user-dashboard.html,firebase-config.js,images/**,js/**,templates/**}",
+      "maxDuration": 60
+    }
+  }
 }
