@@ -676,6 +676,35 @@ async function assigneeInviteSubmissionStatuses(client, uploadId, thresholdStr, 
   return out;
 }
 
+/**
+ * Vercel's Express integration does not apply `express.static()` to the project tree (only `public/**`
+ * is CDN-served). This middleware serves safe root files (HTML, JS, images) from disk so routes like
+ * `/user-dashboard.html` work in production as they do locally.
+ */
+function rootStaticFromDisk(root) {
+  const resolvedRoot = path.resolve(root);
+  const allowedExt = /\.(html|js|mjs|css|gif|png|jpe?g|webp|svg|ico|woff2?|map|json)$/i;
+  const blockedPrefix = /^(templates|node_modules|\.git|\.agents|\.cursor|\.firebase)(\/|$)/i;
+
+  return function rootStaticFromDiskMiddleware(req, res, next) {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    const pathname = req.path || '';
+    if (pathname === '/' || pathname.startsWith('/api')) return next();
+    if (!allowedExt.test(pathname)) return next();
+    const rel = pathname.slice(1);
+    if (!rel || rel.includes('..')) return next();
+    if (blockedPrefix.test(rel)) return next();
+    if (/^(server\.js|package\.json|package-lock\.json)$/i.test(rel)) return next();
+
+    const absFile = path.resolve(resolvedRoot, rel);
+    if (absFile !== resolvedRoot && !absFile.startsWith(resolvedRoot + path.sep)) return next();
+    fs.stat(absFile, (err, st) => {
+      if (err || !st.isFile()) return next();
+      res.sendFile(absFile);
+    });
+  };
+}
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: MAX_BYTES },
@@ -1754,6 +1783,7 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(ROOT, 'analyzer.html'));
 });
 
+app.use(rootStaticFromDisk(ROOT));
 app.use(express.static(ROOT));
 
 module.exports = app;
