@@ -134,6 +134,9 @@ function pgSslOption(connectionString) {
   const lower = connectionString.toLowerCase();
   const managed =
     lower.includes('aivencloud.com') ||
+    lower.includes('neon.tech') ||
+    lower.includes('supabase.co') ||
+    lower.includes('pooler.supabase.com') ||
     lower.includes('amazonaws.com');
   const sslMode =
     /[?&]sslmode=(require|verify-ca|verify-full)(?:&|$)/i.test(connectionString);
