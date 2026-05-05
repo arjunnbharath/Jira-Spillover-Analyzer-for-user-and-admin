@@ -4061,22 +4061,44 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
+        .export-filename-panel__head-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.35rem 0.75rem;
+            margin-bottom: 0.35rem;
+        }
+
         .export-filename-panel__label {
             display: block;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
             letter-spacing: -0.02em;
             text-transform: none;
             color: var(--text);
-            margin-bottom: 0.25rem;
+            margin: 0;
+        }
+
+        .export-filename-panel__format-tag {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            padding: 0.2rem 0.45rem;
+            border-radius: 4px;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
         }
 
         .export-filename-panel__sub {
             margin: 0;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            line-height: 1.45;
-            max-width: 42rem;
+            line-height: 1.5;
+            max-width: 44rem;
         }
 
         .export-filename-panel__body {
@@ -4159,6 +4181,11 @@
             .export-filename-panel__btn {
                 width: 100%;
             }
+
+            .export-filename-panel__use-suggested {
+                width: 100%;
+                justify-content: center;
+            }
         }
 
         .export-filename-panel__suggestion {
@@ -4167,6 +4194,16 @@
             border-radius: var(--radius-sm);
             background: rgba(234, 179, 8, 0.08);
             border: 1px solid rgba(234, 179, 8, 0.22);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.55rem 0.75rem;
+        }
+
+        .export-filename-panel__suggestion-main {
+            flex: 1 1 14rem;
+            min-width: 0;
             display: flex;
             flex-wrap: wrap;
             align-items: baseline;
@@ -4179,6 +4216,41 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: #fcd34d;
+        }
+
+        .export-filename-panel__use-suggested {
+            flex-shrink: 0;
+            margin: 0;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #fde68a;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(234, 179, 8, 0.35);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-filename-panel__use-suggested:hover {
+            background: rgba(234, 179, 8, 0.12);
+            border-color: rgba(234, 179, 8, 0.5);
+            color: #fffbeb;
+        }
+
+        .export-filename-panel__use-suggested:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.45);
+        }
+
+        .export-filename-panel__use-suggested:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
         }
 
         .export-filename-panel__hint {
@@ -4196,6 +4268,11 @@
             font-weight: 500;
             flex: 1 1 12rem;
             min-width: 0;
+        }
+
+        .export-filename-panel__suggestion-main .export-filename-panel__code {
+            flex: 1 1 100%;
+            width: 100%;
         }
 
         .export-hero-filename {
@@ -4876,10 +4953,24 @@
                             <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Main dashboard</button>
                         </div>
                     </header>
-                    <div id="exportFilenamePanel" class="export-filename-panel" hidden>
+                    <div
+                        id="exportFilenamePanel"
+                        class="export-filename-panel"
+                        hidden
+                        role="region"
+                        aria-labelledby="exportFilenameHeading"
+                    >
                         <div class="export-filename-panel__header">
-                            <label class="export-filename-panel__label" for="exportFileNameInput">Excel download name</label>
-                            <p class="export-filename-panel__sub">Choose the file name for your workbook. It should end in <strong>.xlsx</strong> so Excel opens it correctly.</p>
+                            <div class="export-filename-panel__head-row">
+                                <label class="export-filename-panel__label" for="exportFileNameInput" id="exportFilenameHeading"
+                                    >Workbook file name</label
+                                >
+                                <span class="export-filename-panel__format-tag" title="Saved as an Excel workbook">.xlsx</span>
+                            </div>
+                            <p class="export-filename-panel__sub">
+                                Your browser saves the export under this name. Use the <strong>.xlsx</strong> extension (it is added or fixed if
+                                needed). Characters that are not allowed in Windows file names are replaced with underscores automatically.
+                            </p>
                         </div>
                         <div class="export-filename-panel__body">
                             <div class="export-filename-panel__row">
@@ -4889,7 +4980,7 @@
                                     class="export-filename-panel__input"
                                     autocomplete="off"
                                     spellcheck="false"
-                                    placeholder="e.g. SFMC_JiraSpilloverAnalyzer_14.0&14.1.xlsx"
+                                    placeholder="e.g. SFMC_JiraSpilloverAnalyzer_14.0&amp;14.1.xlsx"
                                 />
                                 <button
                                     type="button"
@@ -4905,8 +4996,20 @@
                                 </button>
                             </div>
                             <div class="export-filename-panel__suggestion">
-                                <span class="export-filename-panel__suggestion-label">Suggested</span>
-                                <code id="exportFileNameSuggestion" class="export-filename-panel__code"></code>
+                                <div class="export-filename-panel__suggestion-main">
+                                    <span class="export-filename-panel__suggestion-label">Suggested name</span>
+                                    <code id="exportFileNameSuggestion" class="export-filename-panel__code"></code>
+                                </div>
+                                <button
+                                    type="button"
+                                    id="exportUseSuggestedBtn"
+                                    class="export-filename-panel__use-suggested"
+                                    onclick="applySuggestedExportFileName()"
+                                    title="Copy suggested file name into the field above"
+                                    disabled
+                                >
+                                    Use suggested
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -8496,17 +8599,37 @@
             );
         }
 
+        function applySuggestedExportFileName() {
+            var input = document.getElementById('exportFileNameInput');
+            var sug = document.getElementById('exportFileNameSuggestion');
+            if (!input || !sug) return;
+            var t = String(sug.textContent || '').trim();
+            if (!t) return;
+            input.value = t;
+            input.focus();
+            try {
+                input.setSelectionRange(0, t.length);
+            } catch (eSel) {
+                try {
+                    input.select();
+                } catch (e2) {}
+            }
+        }
+
         function syncExportFilenamePanel(plan) {
             var panel = document.getElementById('exportFilenamePanel');
             var input = document.getElementById('exportFileNameInput');
             var sug = document.getElementById('exportFileNameSuggestion');
+            var useBtn = document.getElementById('exportUseSuggestedBtn');
             if (!panel || !input || !sug) return;
             if (!plan) {
                 panel.hidden = true;
+                if (useBtn) useBtn.disabled = true;
                 return;
             }
             panel.hidden = false;
             sug.textContent = plan.fileName;
+            if (useBtn) useBtn.disabled = !String(plan.fileName || '').trim();
             if (!String(input.value || '').trim()) {
                 input.value = plan.fileName;
             }
@@ -9220,9 +9343,11 @@
                 var fnPanel = document.getElementById('exportFilenamePanel');
                 var fnInput = document.getElementById('exportFileNameInput');
                 var fnSug = document.getElementById('exportFileNameSuggestion');
+                var fnUse = document.getElementById('exportUseSuggestedBtn');
                 if (fnPanel) fnPanel.hidden = true;
                 if (fnInput) fnInput.value = '';
                 if (fnSug) fnSug.textContent = '';
+                if (fnUse) fnUse.disabled = true;
 
                 document.getElementById('fileDetails').classList.add('show');
 
@@ -10150,9 +10275,11 @@
             var fnPanel = document.getElementById('exportFilenamePanel');
             var fnInput = document.getElementById('exportFileNameInput');
             var fnSug = document.getElementById('exportFileNameSuggestion');
+            var fnUse = document.getElementById('exportUseSuggestedBtn');
             if (fnPanel) fnPanel.hidden = true;
             if (fnInput) fnInput.value = '';
             if (fnSug) fnSug.textContent = '';
+            if (fnUse) fnUse.disabled = true;
             setPreviewPlaceholder('welcome');
             clearDashboardMetrics();
             renderChartPlaceholder();
