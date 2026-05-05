@@ -1,6 +1,9 @@
 /**
  * Paste your web app config from Firebase Console → Project settings → Your apps (Web).
  * Until apiKey and projectId are real values, the app runs without requiring sign-in (local use).
+ *
+ * For hosted URLs (e.g. Vercel): Firebase Console → Authentication → Settings → Authorized domains —
+ * add your deployment host (e.g. your-app.vercel.app and any custom domain).
  */
 window.FIREBASE_CONFIG = {
     apiKey: "AIzaSyDJ8Twqz5y7SZYUNgjnPERGmwCN5AFXASY",

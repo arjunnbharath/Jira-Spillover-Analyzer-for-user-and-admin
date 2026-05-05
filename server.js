@@ -17,6 +17,27 @@ const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 const MAX_BYTES = Number(process.env.UPLOAD_MAX_BYTES) || 52 * 1024 * 1024;
 
+/** HTTPS + correct host for invite links and ?api= (Vercel sets x-forwarded-* and VERCEL_URL). */
+function publicAppBaseUrl(req) {
+  const fromEnv = process.env.PUBLIC_APP_URL;
+  if (fromEnv && String(fromEnv).trim()) {
+    return String(fromEnv).trim().replace(/\/$/, '');
+  }
+  const xfProto = (req.headers['x-forwarded-proto'] || '').split(',')[0].trim();
+  const xfHost = (req.headers['x-forwarded-host'] || '').split(',')[0].trim();
+  const host = xfHost || (typeof req.get === 'function' ? req.get('host') : '') || '';
+  let proto = xfProto || req.protocol || 'https';
+  if (proto !== 'http' && proto !== 'https') proto = 'https';
+  if (host) {
+    return `${proto}://${host}`.replace(/\/$/, '');
+  }
+  const vu = process.env.VERCEL_URL;
+  if (vu && String(vu).trim()) {
+    return `https://${String(vu).trim().replace(/\/$/, '')}`;
+  }
+  return '';
+}
+
 function buildHeaderNames(headerRow) {
   const count = {};
   const names = [];
@@ -711,7 +732,7 @@ const upload = multer({
 });
 
 const app = express();
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 app.use(cors());
 app.use(express.json());
 
@@ -1177,8 +1198,7 @@ app.post('/api/invites', async (req, res) => {
       ]
     );
 
-    const base = process.env.PUBLIC_APP_URL || `${req.protocol}://${req.get('host')}`;
-    const baseClean = base.replace(/\/$/, '');
+    const baseClean = publicAppBaseUrl(req);
     const inviteUrl = `${baseClean}/user-dashboard.html?token=${encodeURIComponent(token)}&api=${encodeURIComponent(baseClean)}`;
 
     res.json({
@@ -1242,8 +1262,7 @@ app.post('/api/invites/bulk', async (req, res) => {
       ? body.assigneeEmails
       : {};
 
-  const base = process.env.PUBLIC_APP_URL || `${req.protocol}://${req.get('host')}`;
-  const baseClean = base.replace(/\/$/, '');
+  const baseClean = publicAppBaseUrl(req);
 
   const client = await p.connect();
   try {
@@ -1519,8 +1538,7 @@ app.post('/api/invites/send-by-tokens', async (req, res) => {
   }
   const from =
     process.env.SMTP_FROM || process.env.MAIL_FROM || process.env.SMTP_USER || 'noreply@localhost';
-  const base = process.env.PUBLIC_APP_URL || `${req.protocol}://${req.get('host')}`;
-  const baseClean = base.replace(/\/$/, '');
+  const baseClean = publicAppBaseUrl(req);
 
   const client = await p.connect();
   const results = [];
