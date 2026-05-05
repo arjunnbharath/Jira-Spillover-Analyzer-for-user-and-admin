@@ -718,7 +718,8 @@ function rootStaticFromDisk(root) {
     if (/^(server\.js|package\.json|package-lock\.json)$/i.test(rel)) return next();
 
     const absFile = path.resolve(resolvedRoot, rel);
-    if (absFile !== resolvedRoot && !absFile.startsWith(resolvedRoot + path.sep)) return next();
+    const relFromRoot = path.relative(resolvedRoot, absFile);
+    if (relFromRoot.startsWith('..') || path.isAbsolute(relFromRoot)) return next();
     fs.stat(absFile, (err, st) => {
       if (err || !st.isFile()) return next();
       res.sendFile(absFile);
@@ -1796,9 +1797,23 @@ app.get('/index.html', (req, res) => {
   res.redirect(301, '/' + (i >= 0 ? req.url.slice(i) : ''));
 });
 
+const resolvedRoot = path.resolve(ROOT);
+
 /** Root HTML (not named index.html) so Vercel does not serve it as static before rewrites to this app. */
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(ROOT, 'analyzer.html'));
+  res.sendFile('analyzer.html', { root: resolvedRoot });
+});
+
+app.get('/analyzer.html', (_req, res) => {
+  res.sendFile('analyzer.html', { root: resolvedRoot });
+});
+
+app.get('/auth.html', (_req, res) => {
+  res.sendFile('auth.html', { root: resolvedRoot });
+});
+
+app.get('/user-dashboard.html', (_req, res) => {
+  res.sendFile('user-dashboard.html', { root: resolvedRoot });
 });
 
 app.use(rootStaticFromDisk(ROOT));
