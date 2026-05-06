@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jira Spillover Analyzer — Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    @page { margin: 18mm; }
+    body { font-family: Segoe UI, system-ui, sans-serif; color: #111; line-height: 1.45; max-width: 900px; margin: 0 auto; padding: 1.5rem; }
+    h1 { font-size: 1.75rem; border-bottom: 2px solid #2563eb; padding-bottom: 0.35rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; color: #1e3a5f; page-break-after: avoid; }
+    p, li { font-size: 0.95rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; page-break-inside: avoid; }
+    th, td { border: 1px solid #ccc; padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; }
+    .mermaid { margin: 1.25rem 0; page-break-inside: avoid; background: #fafafa; padding: 0.75rem; border-radius: 8px; overflow: auto; }
+    .meta { color: #64748b; font-size: 0.85rem; margin-bottom: 2rem; }
+    @media print {
+      body { padding: 0; max-width: none; }
+      a { color: #000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Jira Spillover Analyzer — Architecture</h1>
+  <p class="meta">Generated for technical overview. Diagrams use Mermaid. Open this file in Chrome and use <strong>Print → Save as PDF</strong> if automated PDF export is unavailable.</p>
+
+  <h2>1. System context</h2>
+  <pre class="mermaid">flowchart TB
+  subgraph Clients["Browsers"]
+    A["Admin / analyst UI - analyzer.html"]
+    U["Contributor UI - user-dashboard.html"]
+    L["Sign-in UI - auth.html"]
+  end
+  subgraph Firebase["Google Firebase"]
+    FA["Firebase Auth"]
+    FS["Firestore"]
+  end
+  subgraph Backend["Node.js - server.js"]
+    EX["Express - REST plus static assets"]
+  end
+  subgraph Data["PostgreSQL"]
+    PG["Neon / Vercel Postgres or any Postgres"]
+  end
+  subgraph External["Optional outbound"]
+    EM["SMTP or MailerSend"]
+  end
+  A -->|"HTTPS same origin fetch /api"| EX
+  U -->|"HTTPS plus api query param"| EX
+  L --> FA
+  A --> FA
+  A --> FS
+  L --> FS
+  EX <-->|"pg Pool DATABASE_URL"| PG
+  EX --> EM</pre>
+
+  <h2>2. Deployment: local vs Vercel</h2>
+  <pre class="mermaid">flowchart LR
+  subgraph Local["Local development"]
+    N1["npm start runs node server.js"]
+    P1["PORT default 3000"]
+    E1[".env loads DATABASE_URL SMTP etc"]
+  end
+  subgraph Vercel["Vercel production"]
+    R["vercel.json rewrites to /api"]
+    F["api/index.js loads server.js"]
+    B["includeFiles bundles HTML db schema images js templates"]
+    VE["Vercel environment variables"]
+  end
+  N1 --> P1
+  N1 --> E1
+  R --> F
+  F --> B
+  F --> VE</pre>
+
+  <h2>3. Backend API surface</h2>
+  <pre class="mermaid">flowchart TB
+  H["GET /api/health"]
+  UP["POST /api/upload"]
+  GL["GET /api/uploads"]
+  GD["GET /api/uploads/:id/data"]
+  PE["GET uploads/:id/people-insights"]
+  IS["POST uploads/:id/invite-submit-status"]
+  CI["POST /api/invites"]
+  CB["POST /api/invites/bulk"]
+  CE["PATCH /api/invites/email"]
+  CS["POST /api/invites/send-by-tokens"]
+  SE["GET /api/invite/:token/session"]
+  PU["PUT /api/invite/:token/issue"]
+  IE["GET uploads/:id/issue-edits"]
+  IR["GET uploads/:id/issue-edits/recent"]
+  CA["POST /api/database/clear-all"]
+  DB[(Postgres)]
+  H --> DB
+  UP --> DB
+  GL --> DB
+  GD --> DB
+  PE --> DB
+  IS --> DB
+  CI --> DB
+  CB --> DB
+  CE --> DB
+  CS --> DB
+  SE --> DB
+  PU --> DB
+  IE --> DB
+  IR --> DB
+  CA --> DB</pre>
+
+  <h2>4. Data model (Postgres)</h2>
+  <pre class="mermaid">erDiagram
+  file_uploads ||--o{ file_upload_rows : upload_id
+  file_uploads ||--o{ invites : upload_id
+  file_uploads ||--o{ issue_field_edits : upload_id
+  file_uploads {
+    bigint id PK
+    text original_name
+    timestamptz created_at
+    int row_count
+  }
+  file_upload_rows {
+    bigint id PK
+    bigint upload_id FK
+    int row_index
+    jsonb cells
+  }
+  invites {
+    bigint id PK
+    uuid token UK
+    bigint upload_id FK
+    text invitee_email
+    timestamptz expires_at
+  }
+  issue_field_edits {
+    bigint upload_id PK_FK
+    text issue_key PK
+    text spillover_reason
+    text spillover_category
+  }</pre>
+
+  <h2>5. Sequence: admin upload</h2>
+  <pre class="mermaid">sequenceDiagram
+  participant B as Browser analyzer.html
+  participant S as Express
+  participant D as Postgres
+  B->>S: POST /api/upload file
+  S->>S: XLSX parse rows
+  S->>D: INSERT file_uploads and rows
+  B->>S: GET /api/uploads
+  S->>D: SELECT uploads
+  B->>S: GET /api/uploads/id/data
+  S->>D: SELECT rows</pre>
+
+  <h2>6. Sequence: contributor invite</h2>
+  <pre class="mermaid">sequenceDiagram
+  participant S as Express
+  participant M as MailerSend or SMTP
+  participant C as Contributor browser
+  S->>M: send invite email
+  M->>C: Link user-dashboard with token and api base
+  C->>S: GET /api/invite/token/session
+  S->>C: JSON session
+  C->>S: PUT /api/invite/token/issue
+  S->>C: OK</pre>
+
+  <h2>7. Key frontend files</h2>
+  <table>
+    <thead><tr><th>File</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>analyzer.html</td><td>Main app: uploads, analysis, invites; Firebase shell</td></tr>
+      <tr><td>auth.html</td><td>Firebase Auth sign-in; redirect via next param</td></tr>
+      <tr><td>user-dashboard.html</td><td>Token-based contributor UI; optional api query param</td></tr>
+      <tr><td>firebase-config.js</td><td>Firebase web client configuration</td></tr>
+      <tr><td>js/firebase-bootstrap.js</td><td>initializeApp and Firestore</td></tr>
+      <tr><td>templates/contributor-invite-email.html</td><td>HTML template for invite emails</td></tr>
+    </tbody>
+  </table>
+
+  <h2>8. Environment variables</h2>
+  <table>
+    <thead><tr><th>Variable</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>DATABASE_URL</td><td>PostgreSQL connection (Neon on Vercel)</td></tr>
+      <tr><td>PUBLIC_APP_URL</td><td>Optional canonical URL for invite links and api param</td></tr>
+      <tr><td>SMTP_* / MAILERSEND_*</td><td>Optional outbound email for invites</td></tr>
+      <tr><td>UPLOAD_MAX_BYTES</td><td>Optional upload size cap</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      flowchart: { htmlLabels: true, curve: 'basis' }
+    });
+    mermaid.run({ querySelector: '.mermaid' }).then(function () {
+      document.documentElement.classList.add('mermaid-ready');
+    }).catch(function () {
+      document.documentElement.classList.add('mermaid-error');
+    });
+  </script>
+</body>
+</html>

@@ -438,6 +438,50 @@
             flex-direction: column;
             background: var(--bg);
         }
+        .contrib-stage > .contrib-main-dash {
+            flex: 1;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        /* Mobile menu — toggled via body.contrib-nav-open (see @media max-width 900px) */
+        .contrib-mobile-bar {
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+        .contrib-nav-menu-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            padding: 0;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .contrib-nav-menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .contrib-nav-menu-toggle:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+        .contrib-nav-menu-toggle__icon {
+            width: 1.35rem;
+            height: 1.35rem;
+            flex-shrink: 0;
+        }
+        .contrib-nav-backdrop {
+            display: none;
+        }
         .contrib-session-bar {
             display: flex;
             align-items: flex-start;
@@ -648,6 +692,49 @@
             font-family: inherit;
         }
         .contrib-spill-done-cta__btn:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+        /* Inline tip above Spillover — category definitions */
+        .contrib-category-callout {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 0.65rem 1rem;
+            margin: 0 0 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(59, 130, 246, 0.22);
+            background: rgba(59, 130, 246, 0.08);
+            max-width: min(100%, 56rem);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .contrib-category-callout__text {
+            flex: 1 1 18rem;
+            margin: 0;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: #94a3b8;
+        }
+        .contrib-category-callout__text strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        .contrib-category-callout__btn {
+            appearance: none;
+            flex-shrink: 0;
+            padding: 0.42rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--accent);
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .contrib-category-callout__btn:hover {
             background: var(--accent-hover);
             border-color: var(--accent-hover);
         }
@@ -963,65 +1050,132 @@
         .contrib-data-table td.contrib-td-field--wide {
             vertical-align: top;
         }
-        .contrib-data-table .btn-save {
-            min-width: 6.5rem;
-            padding: 0.4rem 1rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            white-space: nowrap;
-            background: var(--accent);
-            border: 1px solid var(--accent);
-            color: #ffffff;
-            cursor: pointer;
-            font-family: var(--font);
-            box-shadow: none;
-            transition: background 0.15s, border-color 0.15s;
-        }
-        .contrib-data-table .btn-save:hover {
-            background: var(--accent-hover);
-            border-color: var(--accent-hover);
-            color: #ffffff;
-        }
-        .contrib-data-table .btn-save--saved,
-        .contrib-data-table .btn-save--saved:hover {
-            background: rgba(34, 197, 94, 0.18);
-            color: #86efac;
-            border: 1px solid rgba(74, 222, 128, 0.45);
-            box-shadow: none;
-        }
-        .contrib-data-table .btn-save--saved:hover {
-            background: rgba(34, 197, 94, 0.28);
-            color: #bbf7d0;
-        }
-        .contrib-data-table .btn-save:active {
-            transform: none;
-        }
         .contrib-data-table td.contrib-td--action {
             text-align: right;
             vertical-align: middle;
         }
 
-        @media (max-width: 960px) {
+        /* Save button — Uiverse bookmark-style (vinodjangid07), scoped to contributor tables */
+        .contrib-data-table .bookmarkBtn {
+            position: relative;
+            width: 100px;
+            height: 40px;
+            padding: 0;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.349);
+            background-color: rgb(12, 12, 12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition-duration: 0.3s;
+            overflow: hidden;
+            margin-left: auto;
+            box-sizing: border-box;
+            font: inherit;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .contrib-data-table .bookmarkBtn .IconContainer {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+            background: linear-gradient(to bottom, rgb(147, 197, 253), rgb(59, 130, 246));
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 2;
+            transition-duration: 0.3s;
+        }
+        .contrib-data-table .btn-save--saved.bookmarkBtn .IconContainer {
+            background: linear-gradient(to bottom, rgb(74, 222, 128), rgb(22, 163, 74));
+        }
+        .contrib-data-table .bookmarkBtn .icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 1px;
+            display: block;
+            color: #ffffff;
+        }
+        .contrib-data-table .bookmarkBtn .text {
+            height: 100%;
+            width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 1;
+            transition-duration: 0.3s;
+            font-size: 1.04em;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .contrib-data-table .bookmarkBtn:hover:not(:disabled) .IconContainer {
+            width: 90px;
+            transition-duration: 0.3s;
+        }
+        .contrib-data-table .bookmarkBtn:hover:not(:disabled) .text {
+            transform: translate(10px);
+            width: 0;
+            font-size: 0;
+            transition-duration: 0.3s;
+        }
+        .contrib-data-table .bookmarkBtn:active:not(:disabled) {
+            transform: scale(0.95);
+            transition-duration: 0.3s;
+        }
+        .contrib-data-table .bookmarkBtn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .contrib-data-table .bookmarkBtn:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+        /* Beat generic `.btn-save:hover` from landing styles */
+        .contrib-data-table .bookmarkBtn:hover:not(:disabled) {
+            background-color: rgb(12, 12, 12);
+            border-color: rgba(255, 255, 255, 0.349);
+        }
+
+        @media (max-width: 900px) {
             .contrib-app {
                 flex-direction: column;
+                position: relative;
+            }
+            .contrib-mobile-bar {
+                display: flex;
+                padding: 0.35rem 0 0.85rem;
+                margin: 0 0 0.15rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             }
             .contrib-sidebar {
-                position: sticky;
+                position: fixed;
                 top: 0;
-                left: auto;
-                bottom: auto;
-                width: 100%;
-                height: auto;
+                left: 0;
+                bottom: 0;
+                width: min(300px, 88vw);
+                max-width: var(--sidebar-width);
+                height: 100%;
+                min-height: 0;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+                z-index: 260;
                 flex-direction: column;
-                align-items: stretch;
-                padding: 0;
-                border-right: none;
-                border-bottom: 1px solid var(--sidebar-border);
-                z-index: 50;
-                overflow: visible;
+                border-right: 1px solid var(--sidebar-border);
+                border-bottom: none;
+                padding: 0 0 1rem;
+                overflow: hidden;
+                box-shadow: 8px 0 36px rgba(0, 0, 0, 0.5);
+            }
+            body.contrib-session.contrib-nav-open .contrib-sidebar {
+                transform: translateX(0);
             }
             .contrib-sidebar__brand {
                 padding: 0.55rem 1rem 0.55rem;
@@ -1029,27 +1183,55 @@
             }
             .contrib-sidebar__scroll {
                 flex-direction: column;
-                overflow-x: auto;
-                overflow-y: visible;
-                padding: 0 0.65rem 0.65rem;
+                overflow-x: hidden;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 0.75rem 0.75rem 0.5rem;
             }
             .contrib-sidebar__nav {
-                flex-direction: row;
-                flex-wrap: wrap;
+                flex-direction: column;
+                flex-wrap: nowrap;
                 gap: 0.35rem;
             }
             .contrib-sidenav__btn {
-                white-space: nowrap;
-            }
-            .contrib-sidenav__btn--active {
-                border-bottom-color: transparent;
+                white-space: normal;
+                width: 100%;
+                justify-content: flex-start;
+                text-align: left;
             }
             .contrib-sidebar__footer {
                 display: block;
             }
+            .contrib-nav-backdrop {
+                display: block;
+                position: fixed;
+                inset: 0;
+                z-index: 250;
+                background: rgba(0, 0, 0, 0.55);
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: opacity 0.25s ease, visibility 0.25s ease;
+            }
+            body.contrib-session.contrib-nav-open .contrib-nav-backdrop {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+            body.contrib-session.contrib-nav-open {
+                overflow: hidden;
+            }
             .contrib-stage {
-                margin-left: 0;
-                width: 100%;
+                margin-left: 0 !important;
+                width: 100% !important;
+                min-height: 100vh;
+                min-height: 100dvh;
+            }
+            body.contrib-session .contrib-table-wrap {
+                overflow-x: auto;
+                overflow-y: visible;
+                max-height: none;
+                -webkit-overflow-scrolling: touch;
             }
         }
         .muted {
@@ -1406,6 +1588,178 @@
             border: 0;
         }
 
+        /* Spillover category reference — table (full width, simple grid) */
+        .contrib-category-guide {
+            width: 100%;
+            max-width: 100%;
+        }
+        .contrib-category-guide__intro {
+            font-size: 0.9375rem;
+            color: #94a3b8;
+            margin-bottom: 1.25rem;
+            line-height: 1.55;
+            max-width: none;
+        }
+        .contrib-ref-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--surface-2);
+        }
+        .contrib-ref-table {
+            width: 100%;
+            min-width: 52rem;
+            border-collapse: collapse;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            table-layout: fixed;
+        }
+        .contrib-ref-table col.col-cat {
+            width: 16%;
+        }
+        .contrib-ref-table col.col-def {
+            width: 34%;
+        }
+        .contrib-ref-table col.col-sub {
+            width: 50%;
+        }
+        .contrib-ref-table thead th {
+            padding: 0.65rem 0.85rem;
+            text-align: left;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-dim);
+            background: rgba(0, 0, 0, 0.35);
+            border-bottom: 1px solid var(--border);
+        }
+        .contrib-ref-table tbody td,
+        .contrib-ref-table tbody th {
+            padding: 0.75rem 0.85rem;
+            vertical-align: top;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: #94a3b8;
+            word-wrap: break-word;
+        }
+        .contrib-ref-table tbody tr:last-child td,
+        .contrib-ref-table tbody tr:last-child th {
+            border-bottom: none;
+        }
+        .contrib-ref-table tbody tr:nth-child(even) td,
+        .contrib-ref-table tbody tr:nth-child(even) th {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .contrib-ref-table .contrib-ref-name {
+            font-weight: 600;
+            color: #fde047;
+            font-size: 0.8125rem;
+        }
+        .contrib-ref-table th[scope='row'] {
+            text-align: left;
+        }
+        .contrib-ref-table .contrib-ref-defcell {
+            margin: 0;
+            color: #94a3b8;
+        }
+        .contrib-ref-table td ul {
+            margin: 0;
+            padding-left: 1.15rem;
+        }
+        .contrib-ref-table td li {
+            margin: 0.25rem 0;
+        }
+        .contrib-ref-table td li strong {
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+        .contrib-ref-table .contrib-ref-note {
+            margin: 0;
+            color: #94a3b8;
+        }
+        .contrib-ref-table .contrib-ref-note strong {
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+        .contrib-ref-table .contrib-ref-dash {
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        /* Category guide: stack rows as cards on narrow phones */
+        @media (max-width: 700px) {
+            .contrib-ref-wrap {
+                overflow-x: visible;
+                border: none;
+                background: transparent;
+            }
+            .contrib-ref-table {
+                min-width: 0;
+                display: block;
+                table-layout: auto;
+            }
+            .contrib-ref-table colgroup {
+                display: none;
+            }
+            .contrib-ref-table thead {
+                display: none;
+            }
+            .contrib-ref-table tbody {
+                display: block;
+            }
+            .contrib-ref-table tbody tr {
+                display: block;
+                border: 1px solid var(--border);
+                border-radius: var(--radius-sm);
+                background: var(--surface-2);
+                margin-bottom: 0.75rem;
+                padding: 0.75rem 0.95rem;
+            }
+            .contrib-ref-table tbody tr:last-child {
+                margin-bottom: 0;
+            }
+            .contrib-ref-table tbody th,
+            .contrib-ref-table tbody td {
+                display: block;
+                width: 100%;
+                border: none;
+                padding: 0.45rem 0;
+                background: transparent !important;
+            }
+            .contrib-ref-table tbody tr:nth-child(even) th,
+            .contrib-ref-table tbody tr:nth-child(even) td {
+                background: transparent !important;
+            }
+            .contrib-ref-table tbody th.contrib-ref-name {
+                padding-top: 0;
+                padding-bottom: 0.6rem;
+                margin-bottom: 0.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                font-size: 0.9375rem;
+            }
+            .contrib-ref-table tbody td[data-label]:before,
+            .contrib-ref-table tbody th.contrib-ref-name:before {
+                display: block;
+                font-size: 0.65rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: var(--text-dim);
+                margin-bottom: 0.35rem;
+            }
+            .contrib-ref-table tbody th.contrib-ref-name:before {
+                content: 'Category';
+            }
+            .contrib-ref-table tbody td[data-label]:before {
+                content: attr(data-label);
+            }
+            .contrib-ref-table td ul {
+                padding-left: 1rem;
+            }
+        }
+
         @media (max-width: 640px) {
             .contrib-main-dash { padding-left: 0.85rem; padding-right: 0.85rem; }
         }
@@ -1469,7 +1823,7 @@
 
     <div id="workspaceShell" hidden>
         <div class="contrib-app">
-            <aside class="contrib-sidebar" aria-label="Workspace navigation">
+            <aside class="contrib-sidebar" id="contribSidebar" aria-label="Workspace navigation">
                 <div class="contrib-sidebar__brand">
                     <div class="contrib-sidebar__logo" aria-hidden="true">
                         <img src="images/LOGO.gif" alt="" width="48" height="48" decoding="async" />
@@ -1478,7 +1832,7 @@
                 </div>
                 <div class="contrib-sidebar__scroll">
                     <p class="contrib-nav-section__label">Your tasks</p>
-                    <nav id="contribNavTabs" class="contrib-sidebar__nav" role="tablist" aria-label="Spillover and bugs"></nav>
+                    <nav id="contribNavTabs" class="contrib-sidebar__nav" role="tablist" aria-label="Spillover, bugs, and category guide"></nav>
                     <p class="contrib-nav-section__label">Links</p>
                     <button type="button" class="contrib-sidenav__link contrib-sidenav__link--button" id="fullAnalyzerGate">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -1494,7 +1848,22 @@
                     </div>
                 </div>
             </aside>
+            <div id="contribNavBackdrop" class="contrib-nav-backdrop" aria-hidden="true"></div>
             <div class="contrib-stage">
+                <div class="contrib-mobile-bar">
+                    <button
+                        type="button"
+                        id="contribNavMenuToggle"
+                        class="contrib-nav-menu-toggle"
+                        aria-expanded="false"
+                        aria-controls="contribSidebar"
+                        aria-label="Open menu"
+                    >
+                        <svg class="contrib-nav-menu-toggle__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+                        </svg>
+                    </button>
+                </div>
                 <main class="contrib-main-dash">
                     <div class="contrib-session-bar">
                         <div class="contrib-session-summary">
@@ -1508,6 +1877,137 @@
                     <div id="banner" class="banner contrib-banner" hidden aria-hidden="true"></div>
                     <section id="panelSpill" class="contrib-panel-dash" aria-labelledby="contribPanelSpillTitle" hidden></section>
                     <section id="panelBug" class="contrib-panel-dash" aria-labelledby="contribPanelBugTitle" hidden></section>
+                    <section
+                        id="panelCategoryGuide"
+                        class="contrib-panel-dash"
+                        aria-labelledby="contribPanelCategoryTitle"
+                        hidden
+                    >
+                        <h2 id="contribPanelCategoryTitle" class="contrib-panel-dash__title">Spillover categories</h2>
+                        <p class="contrib-category-guide__intro">
+                            Use these definitions to choose the closest <strong>category</strong> when you fill in spillover
+                            on the Spillover tab. Pick one primary category per issue; use the reason field for specifics.
+                        </p>
+                        <div class="contrib-category-guide">
+                            <div class="contrib-ref-wrap" role="region" aria-label="Category definitions">
+                                <table class="contrib-ref-table">
+                                    <colgroup>
+                                        <col class="col-cat" />
+                                        <col class="col-def" />
+                                        <col class="col-sub" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Definition</th>
+                                            <th scope="col">Sub-types / examples</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Defect Blocker</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Items delayed because open bugs or defects needed investigation or resolution before
+                                                    the team could proceed.
+                                                </p>
+                                            </td>
+                                            <td data-label="Sub-types / examples"><span class="contrib-ref-dash">—</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Dependency</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Tickets blocked by dependencies — internal (team availability, cross-team work) or
+                                                    external (stakeholders, vendors such as Salesforce).
+                                                </p>
+                                            </td>
+                                            <td data-label="Sub-types / examples">
+                                                <ul>
+                                                    <li>
+                                                        <strong>Dependency / external blockers</strong> — reliance on other teams,
+                                                        tickets, or inputs outside the team&apos;s control.
+                                                    </li>
+                                                    <li>
+                                                        <strong>Business / stakeholder delays</strong> — pending clarification,
+                                                        approvals, or responses from business stakeholders.
+                                                    </li>
+                                                    <li>
+                                                        <strong>Scoped tickets</strong> — scoped for part of the functionality or
+                                                        QA-only validation, often depending on related work finishing first.
+                                                    </li>
+                                                    <li>
+                                                        <strong>Late QA handoff</strong> — dev delivered to QA too close to sprint end,
+                                                        leaving insufficient test time.
+                                                    </li>
+                                                    <li>
+                                                        <strong>Dependencies</strong> — blocked by other in-flight tickets or work that had
+                                                        to complete first.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Scope Creep</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Requirements changed mid-sprint so the ticket could not be finished within the
+                                                    original sprint boundaries.
+                                                </p>
+                                            </td>
+                                            <td data-label="Sub-types / examples">
+                                                <ul>
+                                                    <li><strong>Requirement change</strong> — scope altered mid-sprint; rework or re-planning.</li>
+                                                    <li><strong>Analysis</strong> — still under exploration; not yet ready for development.</li>
+                                                    <li><strong>Mid-sprint assigned</strong> — story added after sprint start, reducing time to complete.</li>
+                                                    <li><strong>Reprioritised spillover</strong> — deprioritised in favour of higher-priority work.</li>
+                                                    <li>
+                                                        <strong>Product limitation</strong> — technical product constraints required workarounds
+                                                        or investigation, adding unplanned effort.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Owner Specific</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Ownership or expertise sat outside the usual G10X assignee pattern, creating a
+                                                    bottleneck around availability or domain knowledge.
+                                                </p>
+                                            </td>
+                                            <td data-label="Sub-types / examples"><span class="contrib-ref-dash">—</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Estimation</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Work was under-estimated (effort or complexity), so it did not finish in the sprint
+                                                    — including hidden dependencies, scope expansion during development, or ad-hoc /
+                                                    operational work added mid-sprint.
+                                                </p>
+                                            </td>
+                                            <td data-label="Sub-types / examples">
+                                                <p class="contrib-ref-note">
+                                                    <strong>Dev/QA spillover</strong> — dev or QA work was in progress but could not be
+                                                    completed within the sprint window.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Carryover Work</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Items expected to carry over, including spikes and other planned carryover.
+                                                </p>
+                                            </td>
+                                            <td data-label="Sub-types / examples"><span class="contrib-ref-dash">—</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
                 </main>
             </div>
         </div>
@@ -1812,6 +2312,9 @@
 
         var contribSaveInlineTimer = null;
 
+        /** Set each render — nav click handler uses this to show the right panel. */
+        var contribNavVisibility = { showSpill: false, showBug: false };
+
         function getWorkspaceCompletionState(data) {
             data = data || {};
             var issues = data.issues || [];
@@ -2069,6 +2572,37 @@
             );
         }
 
+        var BOOKMARK_SAVE_SVG =
+            '<svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+            '<path d="M17 3H7a2 2 0 00-2 2v16l7-4 7 4V5a2 2 0 00-2-2z" fill="currentColor"/>' +
+            '</svg>';
+
+        function contributorBookmarkSaveBtnHtml(token, rid, kind, complete) {
+            return (
+                '<button type="button" class="btn-save bookmarkBtn' +
+                (complete ? ' btn-save--saved' : '') +
+                '" data-token="' +
+                escapeAttr(token) +
+                '" data-row="' +
+                escapeAttr(rid) +
+                '" data-kind="' +
+                escapeAttr(kind) +
+                '">' +
+                '<span class="IconContainer">' +
+                BOOKMARK_SAVE_SVG +
+                '</span>' +
+                '<span class="text">' +
+                (complete ? 'Saved' : 'Save') +
+                '</span></button>'
+            );
+        }
+
+        function setContributorSaveButtonLabel(btn, label) {
+            var span = btn.querySelector('.text');
+            if (span) span.textContent = label;
+            else btn.textContent = label;
+        }
+
         function buildOneSpillRow(iss, editsByKey, token, index, doneSection) {
             var k = iss.issueKey;
             var ed = editsByKey[normalizeIssueKeyLookup(k)] || {};
@@ -2113,16 +2647,7 @@
             html += '<select id="' + rid + '-sc">' + categoryOptionsHtml(sc) + '</select>';
             html += '</div></td>';
             html += '<td class="contrib-td--action">';
-            html +=
-                '<button type="button" class="btn-save' +
-                (complete ? ' btn-save--saved' : '') +
-                '" data-token="' +
-                escapeAttr(token) +
-                '" data-row="' +
-                rid +
-                '" data-kind="spill">' +
-                (complete ? 'Saved' : 'Save') +
-                '</button>';
+            html += contributorBookmarkSaveBtnHtml(token, rid, 'spill', complete);
             html += '</td></tr>';
             return html;
         }
@@ -2200,16 +2725,7 @@
                 '</textarea>';
             html += '</div></td>';
             html += '<td class="contrib-td--action">';
-            html +=
-                '<button type="button" class="btn-save' +
-                (complete ? ' btn-save--saved' : '') +
-                '" data-token="' +
-                escapeAttr(token) +
-                '" data-row="' +
-                rid +
-                '" data-kind="bug">' +
-                (complete ? 'Saved' : 'Save') +
-                '</button>';
+            html += contributorBookmarkSaveBtnHtml(token, rid, 'bug', complete);
             html += '</td></tr>';
             return html;
         }
@@ -2289,7 +2805,7 @@
                     var issueKey = row ? row.getAttribute('data-issue-key') : '';
                     if (!issueKey) return;
                     btn.classList.remove('btn-save--saved');
-                    btn.textContent = 'Save';
+                    setContributorSaveButtonLabel(btn, 'Save');
                     var all = collectAllFieldsForIssue(issueKey);
                     var sr = all.sr;
                     var sc = all.sc;
@@ -2317,9 +2833,9 @@
                             if (!out.ok) {
                                 showContributorSaveError((out.body && out.body.error) || 'Save failed', kind);
                                 btn.classList.remove('btn-save--saved');
-                                btn.textContent = 'Save';
+                                setContributorSaveButtonLabel(btn, 'Save');
                             } else {
-                                btn.textContent = 'Saved';
+                                setContributorSaveButtonLabel(btn, 'Saved');
                                 btn.classList.add('btn-save--saved');
                                 recordSubmittedIssueKey(issueKey, t);
                                 refreshContributorWorkspace(t, {
@@ -2331,7 +2847,7 @@
                         .catch(function () {
                             showContributorSaveError('Network error', kind);
                             btn.classList.remove('btn-save--saved');
-                            btn.textContent = 'Save';
+                            setContributorSaveButtonLabel(btn, 'Save');
                         })
                         .finally(function () {
                             btn.disabled = false;
@@ -2348,10 +2864,11 @@
             nav.addEventListener('click', function (ev) {
                 var tab = ev.target.closest('.contrib-sidenav__btn[data-panel]');
                 if (!tab) return;
-                var panel = tab.getAttribute('data-panel');
+                var panel = tab.getAttribute('data-panel') || 'spill';
                 var tabs = nav.querySelectorAll('.contrib-sidenav__btn[data-panel]');
                 var panelSpill = document.getElementById('panelSpill');
                 var panelBug = document.getElementById('panelBug');
+                var panelCat = document.getElementById('panelCategoryGuide');
                 var i;
                 for (i = 0; i < tabs.length; i++) {
                     var t = tabs[i];
@@ -2359,31 +2876,47 @@
                     t.classList.toggle('contrib-sidenav__btn--active', on);
                     t.setAttribute('aria-selected', on ? 'true' : 'false');
                 }
-                if (panelSpill) panelSpill.hidden = panel !== 'spill';
-                if (panelBug) panelBug.hidden = panel !== 'bug';
+                setContribPanelVisibility(
+                    panelSpill,
+                    panelBug,
+                    panelCat,
+                    contribNavVisibility.showSpill,
+                    contribNavVisibility.showBug,
+                    { activePanel: panel }
+                );
                 refreshMixedInviteHeader();
             });
         }
 
         function getActiveContribPanel() {
-            var bugBtn = document.querySelector(
-                '#contribNavTabs .contrib-sidenav__btn.contrib-sidenav__btn--active[data-panel="bug"]'
+            var active = document.querySelector(
+                '#contribNavTabs .contrib-sidenav__btn.contrib-sidenav__btn--active[data-panel]'
             );
-            return bugBtn ? 'bug' : 'spill';
+            if (!active) return 'spill';
+            var p = active.getAttribute('data-panel') || 'spill';
+            if (p === 'bug' || p === 'categories') return p;
+            return 'spill';
         }
 
-        function setContribPanelVisibility(panelSpill, panelBug, showSpill, showBug, opts) {
+        function setContribPanelVisibility(panelSpill, panelBug, panelCat, showSpill, showBug, opts) {
             opts = opts || {};
+            var active = opts.activePanel || 'spill';
+            if (active === 'categories' && !showSpill) active = 'spill';
             var both = showSpill && showBug;
-            var wantBug = both && opts.activePanel === 'bug';
+
+            if (panelCat) {
+                panelCat.hidden = !(showSpill && active === 'categories');
+            }
             if (panelSpill) {
                 if (!showSpill) panelSpill.hidden = true;
-                else if (both) panelSpill.hidden = wantBug;
+                else if (active === 'categories') panelSpill.hidden = true;
+                else if (both && active === 'bug') panelSpill.hidden = true;
                 else panelSpill.hidden = false;
             }
             if (panelBug) {
                 if (!showBug) panelBug.hidden = true;
-                else if (both) panelBug.hidden = !wantBug;
+                else if (active === 'categories') panelBug.hidden = true;
+                else if (both && active === 'spill') panelBug.hidden = true;
                 else panelBug.hidden = false;
             }
         }
@@ -2432,6 +2965,9 @@
             var showSpill = spillIssues.length > 0;
             var showBug = bugIssues.length > 0;
 
+            contribNavVisibility.showSpill = showSpill;
+            contribNavVisibility.showBug = showBug;
+
             var hints = {
                 onlySpillover: showSpill && !showBug,
                 onlyBugs: showBug && !showSpill,
@@ -2460,7 +2996,11 @@
             if (!issues.length) {
                 contribLastWorkspaceStats.spillTodo = 0;
                 contribLastWorkspaceStats.bugTodo = 0;
+                contribNavVisibility.showSpill = false;
+                contribNavVisibility.showBug = false;
                 if (tabsEl) tabsEl.innerHTML = '';
+                var panelCatEmpty = document.getElementById('panelCategoryGuide');
+                if (panelCatEmpty) panelCatEmpty.hidden = true;
                 if (panelSpill) {
                     panelSpill.hidden = false;
                     panelSpill.innerHTML =
@@ -2481,6 +3021,8 @@
                     '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>';
                 var icoBug =
                     '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+                var icoCat =
+                    '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>';
                 if (showSpill) {
                     tabsEl.innerHTML +=
                         '<button type="button" role="tab" class="contrib-sidenav__btn contrib-sidenav__btn--active" data-panel="spill" aria-selected="true">' +
@@ -2497,6 +3039,12 @@
                         icoBug +
                         'Bugs</button>';
                 }
+                if (showSpill) {
+                    tabsEl.innerHTML +=
+                        '<button type="button" role="tab" class="contrib-sidenav__btn" data-panel="categories" aria-selected="false">' +
+                        icoCat +
+                        'Category guide</button>';
+                }
                 if (
                     showSpill &&
                     showBug &&
@@ -2510,6 +3058,18 @@
                     bSpill.setAttribute('aria-selected', 'false');
                     bBug.classList.add('contrib-sidenav__btn--active');
                     bBug.setAttribute('aria-selected', 'true');
+                }
+                if (showSpill && opts.activePanel === 'categories') {
+                    var catBtn = tabsEl.querySelector('[data-panel="categories"]');
+                    if (catBtn) {
+                        var navBtns = tabsEl.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                        for (var nb = 0; nb < navBtns.length; nb++) {
+                            var btn = navBtns[nb];
+                            var on = btn.getAttribute('data-panel') === 'categories';
+                            btn.classList.toggle('contrib-sidenav__btn--active', on);
+                            btn.setAttribute('aria-selected', on ? 'true' : 'false');
+                        }
+                    }
                 }
             }
 
@@ -2526,7 +3086,16 @@
                           '<button type="button" class="contrib-spill-done-cta__btn" id="contribGoToBugsFromSpill">Open Bugs tab</button>' +
                           '</div>'
                         : '<p class="contrib-panel-dash__hint">Enter spillover <strong>reason</strong> and <strong>category</strong> for each row below.</p>';
+                    var categoryGuideCallout = spillDoneBugRemaining
+                        ? ''
+                        : '<div class="contrib-category-callout" role="region" aria-label="Category guide">' +
+                          '<p class="contrib-category-callout__text">' +
+                          'If you are not sure which <strong>category</strong> fits, open the <strong>Category guide</strong> tab in the sidebar for definitions and examples. Then pick the closest match in the category column.' +
+                          '</p>' +
+                          '<button type="button" class="contrib-category-callout__btn" id="contribSpillOpenCategoryGuide">Open Category guide</button>' +
+                          '</div>';
                     panelSpill.innerHTML =
+                        categoryGuideCallout +
                         '<h2 id="contribPanelSpillTitle" class="contrib-panel-dash__title">Spillover</h2>' +
                         '<div id="contribSpillPanelAlert" class="contrib-panel-alert contrib-panel-alert--err" role="alert" hidden></div>' +
                         spillHintBlock +
@@ -2565,7 +3134,8 @@
                 }
             }
 
-            setContribPanelVisibility(panelSpill, panelBug, showSpill, showBug, opts);
+            var panelCat = document.getElementById('panelCategoryGuide');
+            setContribPanelVisibility(panelSpill, panelBug, panelCat, showSpill, showBug, opts);
 
             updateWorkspaceChrome(data, hints);
             if (hints.mixed) {
@@ -2792,6 +3362,7 @@
 
         function restoreContributorLandingView() {
             document.body.classList.remove('contrib-session');
+            document.body.classList.remove('contrib-nav-open');
             document.documentElement.classList.remove('contrib-invite-pending');
             var shell = document.getElementById('workspaceShell');
             var landing = document.getElementById('landingBlock');
@@ -2912,6 +3483,59 @@
         }
 
         wireContribModals();
+        (function wireMobileContributorNav() {
+            var toggle = document.getElementById('contribNavMenuToggle');
+            var backdrop = document.getElementById('contribNavBackdrop');
+            if (!toggle || !backdrop) return;
+
+            function modalBlocksEscape() {
+                var thank = document.getElementById('contribThankModal');
+                var admin = document.getElementById('contribAdminModal');
+                return (thank && !thank.hidden) || (admin && !admin.hidden);
+            }
+
+            function setNavOpen(open) {
+                if (!document.body.classList.contains('contrib-session')) return;
+                document.body.classList.toggle('contrib-nav-open', !!open);
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+                backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+            }
+
+            toggle.addEventListener('click', function () {
+                setNavOpen(!document.body.classList.contains('contrib-nav-open'));
+            });
+            backdrop.addEventListener('click', function () {
+                setNavOpen(false);
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'Escape') return;
+                if (modalBlocksEscape()) return;
+                if (document.body.classList.contains('contrib-nav-open')) setNavOpen(false);
+            });
+
+            var navTabs = document.getElementById('contribNavTabs');
+            if (navTabs) {
+                navTabs.addEventListener('click', function (ev) {
+                    if (ev.target.closest('.contrib-sidenav__btn[data-panel]')) setNavOpen(false);
+                });
+            }
+            var faBtn = document.getElementById('fullAnalyzerGate');
+            if (faBtn) {
+                faBtn.addEventListener('click', function () {
+                    setNavOpen(false);
+                });
+            }
+            window.addEventListener(
+                'resize',
+                function () {
+                    try {
+                        if (window.matchMedia('(min-width: 901px)').matches) setNavOpen(false);
+                    } catch (err2) {}
+                },
+                { passive: true }
+            );
+        })();
         (function wireCrossTabCta() {
             var shell = document.getElementById('workspaceShell');
             if (!shell || shell.dataset.crossTabCtaWired === '1') return;
@@ -2929,6 +3553,13 @@
                         '#contribNavTabs .contrib-sidenav__btn[data-panel="spill"]'
                     );
                     if (spillTab) spillTab.click();
+                    return;
+                }
+                if (ev.target && ev.target.closest('#contribSpillOpenCategoryGuide')) {
+                    var catTab = document.querySelector(
+                        '#contribNavTabs .contrib-sidenav__btn[data-panel="categories"]'
+                    );
+                    if (catTab) catTab.click();
                 }
             });
         })();
