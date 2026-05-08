@@ -463,9 +463,10 @@ function contributorEditKindsFromRow(row) {
   const sc = String(row.spillover_category || '').trim();
   const pr = String(row.prod || '').trim();
   const rc = String(row.rca || '').trim();
+  const bc = String(row.bug_category || '').trim();
   const kinds = [];
   if (sr !== '' || sc !== '') kinds.push('spillover');
-  if (pr !== '' || rc !== '') kinds.push('bug');
+  if (pr !== '' || rc !== '' || bc !== '') kinds.push('bug');
   return kinds;
 }
 
@@ -637,7 +638,8 @@ function bugFieldsComplete(edit) {
   if (!edit) return false;
   const pr = String(edit.prod || '').trim();
   const rc = String(edit.rca || '').trim();
-  return pr !== '' && rc !== '';
+  const bc = String(edit.bug_category || '').trim();
+  return pr !== '' && rc !== '' && bc !== '';
 }
 
 /**
@@ -645,7 +647,7 @@ function bugFieldsComplete(edit) {
  */
 async function assigneeInviteSubmissionStatuses(client, uploadId, thresholdStr, assigneeNames) {
   const editsRes = await client.query(
-    `SELECT issue_key, spillover_reason, spillover_category, prod, rca FROM issue_field_edits WHERE upload_id = $1`,
+    `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category FROM issue_field_edits WHERE upload_id = $1`,
     [uploadId]
   );
   const editsByIk = new Map();
@@ -1010,12 +1012,16 @@ app.get('/api/uploads/:id/issue-edits', async (req, res) => {
   try {
     await ensureSchema(client);
     const r = await client.query(
-      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, updated_at
+      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category, updated_at
        FROM issue_field_edits WHERE upload_id = $1
        ORDER BY issue_key ASC`,
       [id]
     );
-    res.json({ ok: true, edits: r.rows });
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.json({
+      ok: true,
+      edits: mergeIssueEditRowsForInvite(r.rows).map(coerceInviteEditRowForJson),
+    });
   } catch (e) {
     console.error(e);
     res.status(500).json({
@@ -1051,7 +1057,7 @@ app.get('/api/uploads/:id/issue-edits/recent', async (req, res) => {
     }
 
     const r = await client.query(
-      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, updated_at
+      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category, updated_at
        FROM issue_field_edits WHERE upload_id = $1
        ORDER BY updated_at DESC NULLS LAST
        LIMIT $2`,
@@ -1663,6 +1669,24 @@ app.post('/api/invites/send-by-tokens', async (req, res) => {
 });
 
 /**
+ * JSON.stringify omits properties whose value is `undefined`; clients must always receive
+ * `bug_category` (even as "") so contributor dropdowns can bind after reload.
+ */
+function coerceInviteEditRowForJson(row) {
+  const r = row || {};
+  const t = (v) => (v == null ? '' : String(v));
+  return {
+    issue_key: t(r.issue_key),
+    spillover_reason: t(r.spillover_reason),
+    spillover_category: t(r.spillover_category),
+    prod: t(r.prod),
+    rca: t(r.rca),
+    bug_category: t(r.bug_category),
+    updated_at: r.updated_at,
+  };
+}
+
+/**
  * Merge duplicate issue_field_edits rows that share the same normalized issue key
  * (e.g. legacy casing variants), taking non-empty values from each.
  */
@@ -1678,7 +1702,16 @@ function mergeIssueEditRowsForInvite(rows) {
     const n = normalizeIssueKeyDedupe(row.issue_key);
     const prev = byNorm.get(n);
     if (!prev) {
-      byNorm.set(n, { ...row });
+      // Explicit fields — spread alone can miss some pg row enumerable props in edge environments.
+      byNorm.set(n, {
+        issue_key: n,
+        spillover_reason: row.spillover_reason,
+        spillover_category: row.spillover_category,
+        prod: row.prod,
+        rca: row.rca,
+        bug_category: row.bug_category,
+        updated_at: row.updated_at,
+      });
       continue;
     }
     byNorm.set(n, {
@@ -1687,6 +1720,7 @@ function mergeIssueEditRowsForInvite(rows) {
       spillover_category: pickField(prev, row, 'spillover_category'),
       prod: pickField(prev, row, 'prod'),
       rca: pickField(prev, row, 'rca'),
+      bug_category: pickField(prev, row, 'bug_category'),
       updated_at:
         new Date(prev.updated_at || 0) > new Date(row.updated_at || 0)
           ? prev.updated_at
@@ -1723,7 +1757,7 @@ app.get('/api/invite/:token/session', async (req, res) => {
     const { issues, headers } = await buildIssuesForInvite(client, inv);
 
     const edits = await client.query(
-      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, updated_at
+      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category, updated_at
        FROM issue_field_edits WHERE upload_id = $1`,
       [inv.upload_id]
     );
@@ -1740,7 +1774,7 @@ app.get('/api/invite/:token/session', async (req, res) => {
       sprintThreshold: inv.sprint_threshold || null,
       headers,
       issues,
-      edits: mergeIssueEditRowsForInvite(edits.rows),
+      edits: mergeIssueEditRowsForInvite(edits.rows).map(coerceInviteEditRowForJson),
     });
   } catch (e) {
     console.error(e);
@@ -1751,6 +1785,27 @@ app.get('/api/invite/:token/session', async (req, res) => {
     client.release();
   }
 });
+
+/** Primary: bugCategory. Accepts bug_category / "Bug category" / any key matching /^bug[\s_-]*category$/i. */
+function pickBugCategoryFromBody(body) {
+  if (!body || typeof body !== 'object') return '';
+  const keys = ['bugCategory', 'bug_category', 'Bug category', 'BugCategory', 'BUG_CATEGORY'];
+  for (const k of keys) {
+    if (!Object.prototype.hasOwnProperty.call(body, k)) continue;
+    const v = body[k];
+    if (v === undefined || v === null) continue;
+    const s = String(v).trim();
+    if (s !== '') return s;
+  }
+  const loose = Object.keys(body).filter((k) => /^bug[\s_-]*category$/i.test(k));
+  for (let i = 0; i < loose.length; i++) {
+    const v = body[loose[i]];
+    if (v === undefined || v === null) continue;
+    const s = String(v).trim();
+    if (s !== '') return s;
+  }
+  return '';
+}
 
 app.put('/api/invite/:token/issue', async (req, res) => {
   const p = getPool();
@@ -1783,51 +1838,112 @@ app.put('/api/invite/:token/issue', async (req, res) => {
     let sc = String(body.spilloverCategory ?? '');
     let prod = String(body.prod ?? '');
     let rca = String(body.rca ?? '');
+    let bugCategory = pickBugCategoryFromBody(body);
     const kind = String(body.kind || '').trim();
 
     const existingRes = await client.query(
-      `SELECT issue_key, spillover_reason, spillover_category, prod, rca
+      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category
        FROM issue_field_edits WHERE upload_id = $1`,
       [uploadId]
     );
-    let ex = null;
-    for (const row of existingRes.rows) {
-      if (normalizeIssueKeyDedupe(row.issue_key) === ikNorm) {
-        ex = row;
-        break;
+    const rowsSameKey = existingRes.rows.filter(
+      (r) => normalizeIssueKeyDedupe(r.issue_key) === ikNorm
+    );
+    let ex = rowsSameKey.find((r) => r.issue_key === ikNorm) || rowsSameKey[0] || null;
+
+    if (rowsSameKey.length > 1) {
+      if (!String(bugCategory ?? '').trim()) {
+        for (const r of rowsSameKey) {
+          const b = String(r.bug_category ?? '').trim();
+          if (b) {
+            bugCategory = b;
+            break;
+          }
+        }
       }
+      const canonical = rowsSameKey.find((r) => r.issue_key === ikNorm) || rowsSameKey[0];
+      const orphanKeys = rowsSameKey
+        .filter((r) => r.issue_key !== canonical.issue_key)
+        .map((r) => r.issue_key);
+      if (orphanKeys.length) {
+        await client.query(
+          `DELETE FROM issue_field_edits WHERE upload_id = $1 AND issue_key = ANY($2::text[])`,
+          [uploadId, orphanKeys]
+        );
+      }
+      ex = canonical;
     }
+
     if (ex) {
       if (kind === 'spill') {
         if (!String(prod ?? '').trim()) prod = String(ex.prod ?? '');
         if (!String(rca ?? '').trim()) rca = String(ex.rca ?? '');
+        // Keep bug fields from the client when provided; only fall back to DB when missing (do not wipe bug saves).
+        if (!String(bugCategory ?? '').trim()) bugCategory = String(ex.bug_category ?? '');
       } else if (kind === 'bug') {
         if (!String(sr ?? '').trim()) sr = String(ex.spillover_reason ?? '');
         if (!String(sc ?? '').trim()) sc = String(ex.spillover_category ?? '');
+        // Avoid wiping bug_category when the client omits it (same idea as spill saves merging rows).
+        if (!String(bugCategory ?? '').trim()) bugCategory = String(ex.bug_category ?? '');
       }
     }
 
     if (ex) {
-      await client.query(
+      let upd = await client.query(
         `UPDATE issue_field_edits SET
            spillover_reason = $1,
            spillover_category = $2,
            prod = $3,
            rca = $4,
+           bug_category = COALESCE(NULLIF(BTRIM(COALESCE($5::text, '')), ''), bug_category),
            updated_at = NOW()
-         WHERE upload_id = $5 AND issue_key = $6`,
-        [sr, sc, prod, rca, uploadId, ex.issue_key]
+         WHERE upload_id = $6 AND issue_key = $7
+         RETURNING bug_category`,
+        [sr, sc, prod, rca, bugCategory, uploadId, ex.issue_key]
       );
+      if (upd.rowCount === 0) {
+        const alt = await client.query(
+          `SELECT issue_key FROM issue_field_edits WHERE upload_id = $1`,
+          [uploadId]
+        );
+        const hit = alt.rows.find((r) => normalizeIssueKeyDedupe(r.issue_key) === ikNorm);
+        if (hit) {
+          upd = await client.query(
+            `UPDATE issue_field_edits SET
+               spillover_reason = $1,
+               spillover_category = $2,
+               prod = $3,
+               rca = $4,
+               bug_category = COALESCE(NULLIF(BTRIM(COALESCE($5::text, '')), ''), bug_category),
+               updated_at = NOW()
+             WHERE upload_id = $6 AND issue_key = $7
+             RETURNING bug_category`,
+            [sr, sc, prod, rca, bugCategory, uploadId, hit.issue_key]
+          );
+        }
+      }
+      if (upd.rowCount === 0) {
+        return res.status(500).json({
+          error:
+            process.env.NODE_ENV === 'development'
+              ? 'UPDATE issue_field_edits matched no rows (issue_key / upload mismatch)'
+              : 'Could not save issue fields',
+        });
+      }
+      const persisted =
+        upd.rows[0] != null ? String(upd.rows[0].bug_category ?? '').trim() : '';
+      res.json({ ok: true, bug_category: persisted });
     } else {
-      await client.query(
+      const ins = await client.query(
         `INSERT INTO issue_field_edits
-          (upload_id, issue_key, spillover_reason, spillover_category, prod, rca, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
-        [uploadId, ikNorm, sr, sc, prod, rca]
+          (upload_id, issue_key, spillover_reason, spillover_category, prod, rca, bug_category, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+         RETURNING bug_category`,
+        [uploadId, ikNorm, sr, sc, prod, rca, bugCategory]
       );
+      const persisted = ins.rows[0] ? String(ins.rows[0].bug_category ?? '') : '';
+      res.json({ ok: true, bug_category: persisted });
     }
-
-    res.json({ ok: true });
   } catch (e) {
     console.error(e);
     res.status(500).json({
@@ -1844,6 +1960,11 @@ app.get('/index.html', (req, res) => {
 });
 
 const resolvedRoot = path.resolve(ROOT);
+
+/** Default browser request; HTML prefers `/images/favicon-zoom.svg` (zoomed crop of favicon.png). */
+app.get('/favicon.ico', (_req, res) => {
+  res.redirect(302, '/images/favicon-zoom.svg');
+});
 
 /** Root HTML (not named index.html) so Vercel does not serve it as static before rewrites to this app. */
 app.get('/', (_req, res) => {

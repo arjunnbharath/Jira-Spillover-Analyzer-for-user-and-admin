@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jira Spillover Analyzer</title>
+    <link rel="icon" href="images/favicon-zoom.svg" type="image/svg+xml" sizes="any" />
+    <link rel="icon" href="images/favicon.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="images/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -55,7 +58,7 @@
             --contrib-table-row: var(--surface);
             --contrib-table-row-alt: #141414;
             --contrib-table-row-hover: rgba(255, 255, 255, 0.06);
-            --contrib-table-thead: rgba(0, 0, 0, 0.35);
+            --contrib-table-thead: var(--bg);
             --contrib-table-complete: rgba(34, 197, 94, 0.14);
             --contrib-table-complete-alt: rgba(34, 197, 94, 0.1);
             --contrib-table-complete-hover: rgba(34, 197, 94, 0.22);
@@ -69,7 +72,7 @@
                 --contrib-table-row: #181818;
                 --contrib-table-row-alt: #141414;
                 --contrib-table-row-hover: rgba(255, 255, 255, 0.06);
-                --contrib-table-thead: rgba(0, 0, 0, 0.35);
+                --contrib-table-thead: var(--bg);
                 --contrib-table-complete: rgba(34, 197, 94, 0.14);
                 --contrib-table-complete-alt: rgba(34, 197, 94, 0.1);
                 --contrib-table-complete-hover: rgba(34, 197, 94, 0.22);
@@ -94,6 +97,43 @@
             display: none;
         }
         .wrap { max-width: 1140px; margin: 0 auto; }
+
+        .landing-site-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.35rem 0 1.1rem;
+            margin-bottom: 0.35rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .landing-site-nav__logo-wrap {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .landing-site-nav__logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transform: scale(1.14);
+            transform-origin: center center;
+            display: block;
+        }
+
+        .landing-site-nav__title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
 
         /* Landing — same vocabulary as index dashboard */
         #landingBlock .hero {
@@ -161,6 +201,32 @@
         }
         body.contrib-session .muted {
             color: var(--text-muted);
+        }
+
+        /* Animated Silk-style shader behind the session workspace only (sidebar/nav chrome unchanged) */
+        .user-dashboard-silk-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .user-dashboard-silk-bg canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        body.contrib-session #workspaceShell {
+            position: relative;
+            z-index: 1;
+        }
+        body.contrib-session .contrib-stage {
+            background: transparent;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .user-dashboard-silk-bg {
+                display: none !important;
+            }
         }
 
         /* —— Dashboard shell (sidebar + stage) —— */
@@ -249,7 +315,7 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            transform: scale(1.65);
+            transform: scale(1.72);
             transform-origin: center center;
             display: block;
         }
@@ -276,22 +342,36 @@
             font-weight: 600;
             letter-spacing: 0.06em;
             text-transform: uppercase;
-            color: #94a3b8;
+            color: #a8a8a8;
             margin: 1rem 0 0.5rem 0.5rem;
         }
         .contrib-nav-section__label:first-child {
             margin-top: 0;
         }
+        .contrib-nav-section__label--ruled {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--sidebar-border);
+        }
         .contrib-sidebar__nav {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
+            padding-bottom: 0.55rem;
+            margin-bottom: 0.35rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Avoid double rule: nav already has a bottom border above Category */
+        #contribCategorySection > .contrib-nav-section__label.contrib-nav-section__label--ruled:first-child {
+            margin-top: 0;
+            padding-top: 0.45rem;
+            border-top: none;
         }
         .contrib-sidenav__btn {
             appearance: none;
             border: none;
             background: transparent;
-            color: #94a3b8;
+            color: #a8a8a8;
             font-family: inherit;
             font-size: 0.8125rem;
             font-weight: 500;
@@ -313,6 +393,16 @@
             background: var(--sidebar-active);
             font-weight: 600;
         }
+        .contrib-category-guide-nav--active {
+            color: #f8fafc !important;
+            background: var(--sidebar-active) !important;
+            font-weight: 600;
+        }
+        .contrib-bug-category-guide-nav--active {
+            color: #f8fafc !important;
+            background: var(--sidebar-active) !important;
+            font-weight: 600;
+        }
         .contrib-sidenav__link {
             display: flex;
             align-items: center;
@@ -321,7 +411,7 @@
             border-radius: var(--radius-sm);
             font-size: 0.8125rem;
             font-weight: 500;
-            color: #94a3b8;
+            color: #a8a8a8;
             text-decoration: none;
             transition: background 0.15s, color 0.15s;
         }
@@ -340,7 +430,7 @@
             font-family: inherit;
             border: none;
             background: transparent;
-            color: #94a3b8;
+            color: #a8a8a8;
             padding: 0.5rem 0.75rem;
             border-radius: var(--radius-sm);
             cursor: pointer;
@@ -372,35 +462,89 @@
             opacity: 0.75;
             flex-shrink: 0;
         }
-        .contrib-submitted-list {
+        .contrib-issues-nav-list {
             list-style: none;
             margin: 0 0 0.25rem;
             padding: 0 0.5rem 0 0.75rem;
-            max-height: 11rem;
+            max-height: min(40vh, 14rem);
             overflow-y: auto;
             scrollbar-width: thin;
+            scrollbar-color: rgba(168, 168, 168, 0.45) transparent;
         }
-        .contrib-submitted-list::-webkit-scrollbar {
+        .contrib-issues-nav-list::-webkit-scrollbar {
             width: 6px;
         }
-        .contrib-submitted-list::-webkit-scrollbar-thumb {
-            background: rgba(148, 163, 184, 0.35);
+        .contrib-issues-nav-list::-webkit-scrollbar-thumb {
+            background: rgba(168, 168, 168, 0.4);
             border-radius: 10px;
         }
-        .contrib-submitted-list__item {
-            font-size: 0.75rem;
-            line-height: 1.45;
-            padding: 0.2rem 0;
-            color: #cbd5e1;
+        .contrib-issues-nav__item {
+            margin: 0;
+            padding: 0;
         }
-        .contrib-submitted-list__item code {
+        .contrib-issues-nav__btn {
+            width: 100%;
+            margin: 0;
+            padding: 0.45rem 0.35rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: inherit;
+            font-family: inherit;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.35rem;
+            transition: background 0.15s;
+        }
+        .contrib-issues-nav__btn:hover {
+            background: var(--sidebar-hover);
+        }
+        .contrib-issues-nav__btn:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.45);
+            outline-offset: 0;
+        }
+        .contrib-issues-nav__key code {
             font-family: ui-monospace, 'Consolas', monospace;
-            font-size: 0.75rem;
-            color: #e2e8f0;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #f1f5f9;
         }
-        .contrib-submitted-list__empty {
+        .contrib-issues-nav__prog {
+            font-size: 0.6875rem;
+            line-height: 1.35;
+            color: #a8a8a8;
+            width: 100%;
+        }
+        .contrib-issues-nav__prog .contrib-status-sep {
+            opacity: 0.85;
+        }
+        .contrib-issues-nav__prog .contrib-status--ok {
+            color: #4ade80;
+        }
+        .contrib-issues-nav__prog .contrib-status--pending {
+            color: #fbbf24;
+        }
+        .contrib-issues-nav__prog .contrib-status--err {
+            color: #f87171;
+        }
+        .contrib-issues-nav__empty {
             font-size: 0.75rem;
             padding: 0.15rem 0 0.35rem;
+        }
+        .contrib-issue-row--flash {
+            animation: contribIssueFlash 1s ease;
+        }
+        @keyframes contribIssueFlash {
+            0%,
+            100% {
+                background: transparent;
+            }
+            35% {
+                background: rgba(59, 130, 246, 0.12);
+            }
         }
         .contrib-sidebar__footer {
             padding: 1rem 1.25rem 1.1rem;
@@ -442,6 +586,45 @@
             flex: 1;
             min-width: 0;
             min-height: 0;
+        }
+
+        .contrib-mobile-bar__brand {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .contrib-mobile-bar__logo-wrap {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contrib-mobile-bar__logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transform: scale(1.14);
+            transform-origin: center center;
+            display: block;
+        }
+
+        .contrib-mobile-bar__title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Mobile menu — toggled via body.contrib-nav-open (see @media max-width 900px) */
@@ -612,6 +795,12 @@
             line-height: 1.55;
             max-width: 56ch;
         }
+        .contrib-panel-dash__hint--one-line {
+            max-width: none;
+            white-space: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
         /* Save / validation errors: inside Spillover (or Bugs) panel, not fixed viewport */
         .contrib-panel-alert {
             width: 100%;
@@ -692,49 +881,6 @@
             font-family: inherit;
         }
         .contrib-spill-done-cta__btn:hover {
-            background: var(--accent-hover);
-            border-color: var(--accent-hover);
-        }
-        /* Inline tip above Spillover — category definitions */
-        .contrib-category-callout {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-start;
-            gap: 0.65rem 1rem;
-            margin: 0 0 1rem;
-            padding: 0.75rem 1rem;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(59, 130, 246, 0.22);
-            background: rgba(59, 130, 246, 0.08);
-            max-width: min(100%, 56rem);
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .contrib-category-callout__text {
-            flex: 1 1 18rem;
-            margin: 0;
-            font-size: 0.8125rem;
-            line-height: 1.5;
-            color: #94a3b8;
-        }
-        .contrib-category-callout__text strong {
-            color: var(--text);
-            font-weight: 600;
-        }
-        .contrib-category-callout__btn {
-            appearance: none;
-            flex-shrink: 0;
-            padding: 0.42rem 1rem;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--accent);
-            background: var(--accent);
-            color: #fff;
-            font-weight: 600;
-            font-size: 0.75rem;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        .contrib-category-callout__btn:hover {
             background: var(--accent-hover);
             border-color: var(--accent-hover);
         }
@@ -828,11 +974,57 @@
         }
         .contrib-data-table col.contrib-col--issue { width: 12%; }
         .contrib-data-table col.contrib-col--assignee { width: 10%; }
-        .contrib-data-table col.contrib-col--summary { width: 22%; }
-        .contrib-data-table col.contrib-col--progress { width: 15%; }
-        .contrib-data-table col.contrib-col--field-a { width: 17%; }
-        .contrib-data-table col.contrib-col--field-b { width: 16%; }
+        .contrib-data-table col.contrib-col--summary { width: 28%; }
+        .contrib-data-table col.contrib-col--field-a { width: 19%; }
+        .contrib-data-table col.contrib-col--field-b { width: 18%; }
         .contrib-data-table col.contrib-col--action { width: 8.5rem; }
+
+        /* Bugs table — Issue / Yes/No + Reason + Category column widths */
+        .contrib-data-table.contrib-data-table--bugs col.contrib-col--issue { width: 11%; }
+        .contrib-data-table.contrib-data-table--bugs col.contrib-col--assignee { width: 9%; }
+        .contrib-data-table.contrib-data-table--bugs col.contrib-col--summary { width: 18%; }
+        .contrib-data-table.contrib-data-table--bugs col.contrib-col--field-a { width: 11%; }
+        .contrib-data-table.contrib-data-table--bugs col.contrib-col--field-b { width: 26%; }
+        .contrib-data-table.contrib-data-table--bugs col.contrib-col--field-c { width: 16%; }
+        .contrib-data-table.contrib-data-table--bugs col.contrib-col--action {
+            width: 4.75rem;
+            min-width: 4.75rem;
+            max-width: 4.75rem;
+        }
+        .contrib-data-table.contrib-data-table--bugs tbody td:first-child {
+            min-width: 0;
+            max-width: 11.5rem;
+            padding-left: 0.85rem;
+            padding-right: 0.45rem;
+            vertical-align: middle;
+        }
+        .contrib-data-table.contrib-data-table--bugs tbody td:first-child .contrib-code {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.8125rem;
+            letter-spacing: -0.02em;
+        }
+        .contrib-data-table.contrib-data-table--bugs td.contrib-td-field--prod select {
+            font-size: 0.8125rem;
+            padding: 0.38rem 0.45rem;
+            min-height: 2.2rem;
+            height: 2.2rem;
+        }
+        .contrib-data-table td.contrib-td--action .btn-save {
+            width: auto;
+            min-width: 3.75rem;
+            padding: 0.38rem 0.65rem;
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contrib-data-table td.contrib-td--action .btn-save .text {
+            display: inline;
+            font-weight: 600;
+        }
+
         .contrib-data-table thead th {
             text-align: left;
             padding: 0.85rem 1rem;
@@ -1005,19 +1197,7 @@
             word-break: break-word;
             color: inherit;
         }
-        .contrib-data-table td.contrib-td-progress {
-            min-width: 9.5rem;
-            vertical-align: middle;
-            font-size: 0.75rem;
-            line-height: 1.5;
-            color: var(--text-muted);
-            white-space: normal;
-            word-break: break-word;
-        }
-        body.contrib-session .contrib-data-table td.contrib-td-progress {
-            color: var(--text-muted);
-        }
-        .contrib-data-table .contrib-status {
+        .contrib-td-summary__text {
             font-weight: 600;
             font-size: 0.75rem;
             line-height: 1.4;
@@ -1054,94 +1234,24 @@
             text-align: right;
             vertical-align: middle;
         }
-
-        /* Save button — Uiverse bookmark-style (vinodjangid07), scoped to contributor tables */
-        .contrib-data-table .bookmarkBtn {
-            position: relative;
-            width: 100px;
-            height: 40px;
-            padding: 0;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.349);
-            background-color: rgb(12, 12, 12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition-duration: 0.3s;
-            overflow: hidden;
+        /* Spillover — center Action label and Save in the Action column */
+        .contrib-data-table:not(.contrib-data-table--bugs) thead th.contrib-th--action {
+            text-align: center;
+        }
+        .contrib-data-table:not(.contrib-data-table--bugs) td.contrib-td--action {
+            text-align: center;
+        }
+        .contrib-data-table:not(.contrib-data-table--bugs) td.contrib-td--action .btn-save {
             margin-left: auto;
-            box-sizing: border-box;
-            font: inherit;
-            appearance: none;
-            -webkit-appearance: none;
+            margin-right: auto;
         }
-        .contrib-data-table .bookmarkBtn .IconContainer {
-            width: 30px;
-            height: 30px;
-            flex-shrink: 0;
-            background: linear-gradient(to bottom, rgb(147, 197, 253), rgb(59, 130, 246));
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            z-index: 2;
-            transition-duration: 0.3s;
+
+        .contrib-data-table td.contrib-td--action .btn-save.btn-save--saved {
+            background: rgb(22, 163, 74);
+            color: #fff;
         }
-        .contrib-data-table .btn-save--saved.bookmarkBtn .IconContainer {
-            background: linear-gradient(to bottom, rgb(74, 222, 128), rgb(22, 163, 74));
-        }
-        .contrib-data-table .bookmarkBtn .icon {
-            width: 16px;
-            height: 16px;
-            border-radius: 1px;
-            display: block;
-            color: #ffffff;
-        }
-        .contrib-data-table .bookmarkBtn .text {
-            height: 100%;
-            width: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            z-index: 1;
-            transition-duration: 0.3s;
-            font-size: 1.04em;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            white-space: nowrap;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .contrib-data-table .bookmarkBtn:hover:not(:disabled) .IconContainer {
-            width: 90px;
-            transition-duration: 0.3s;
-        }
-        .contrib-data-table .bookmarkBtn:hover:not(:disabled) .text {
-            transform: translate(10px);
-            width: 0;
-            font-size: 0;
-            transition-duration: 0.3s;
-        }
-        .contrib-data-table .bookmarkBtn:active:not(:disabled) {
-            transform: scale(0.95);
-            transition-duration: 0.3s;
-        }
-        .contrib-data-table .bookmarkBtn:disabled {
-            opacity: 0.55;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .contrib-data-table .bookmarkBtn:focus-visible {
-            outline: 2px solid var(--focus-ring);
-            outline-offset: 2px;
-        }
-        /* Beat generic `.btn-save:hover` from landing styles */
-        .contrib-data-table .bookmarkBtn:hover:not(:disabled) {
-            background-color: rgb(12, 12, 12);
-            border-color: rgba(255, 255, 255, 0.349);
+        .contrib-data-table td.contrib-td--action .btn-save.btn-save--saved:hover:not(:disabled) {
+            background: rgb(21, 128, 61);
         }
 
         @media (max-width: 900px) {
@@ -1791,7 +1901,20 @@
     </script>
 </head>
 <body>
+    <div id="userDashboardSilkBg" class="user-dashboard-silk-bg" hidden aria-hidden="true"></div>
     <div id="landingBlock" class="wrap">
+        <header class="landing-site-nav" aria-label="Jira Spillover Analyzer">
+            <div class="landing-site-nav__logo-wrap" aria-hidden="true">
+                <img
+                    src="images/LOGO.gif"
+                    alt=""
+                    width="40"
+                    height="40"
+                    decoding="async"
+                />
+            </div>
+            <span class="landing-site-nav__title">Jira Spillover Analyzer</span>
+        </header>
         <header class="hero">
             <span class="hero__badge">Contributor workspace</span>
             <h1>Your workload</h1>
@@ -1832,14 +1955,36 @@
                 </div>
                 <div class="contrib-sidebar__scroll">
                     <p class="contrib-nav-section__label">Your tasks</p>
-                    <nav id="contribNavTabs" class="contrib-sidebar__nav" role="tablist" aria-label="Spillover, bugs, and category guide"></nav>
-                    <p class="contrib-nav-section__label">Links</p>
-                    <button type="button" class="contrib-sidenav__link contrib-sidenav__link--button" id="fullAnalyzerGate">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                        Full analyzer
-                    </button>
-                    <p class="contrib-nav-section__label">Submitted</p>
-                    <ul id="contribSubmittedList" class="contrib-submitted-list" aria-label="Issues saved this session"></ul>
+                    <nav id="contribNavTabs" class="contrib-sidebar__nav" role="tablist" aria-label="Spillover and bugs"></nav>
+                    <div id="contribCategorySection" hidden>
+                        <p class="contrib-nav-section__label contrib-nav-section__label--ruled">Category</p>
+                        <div id="contribSpillCategoryGuideWrap">
+                            <button
+                                type="button"
+                                class="contrib-sidenav__link contrib-sidenav__link--button"
+                                id="contribCategoryGuideNavBtn"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                Spillover guide
+                            </button>
+                        </div>
+                        <div id="contribBugCategoryNavWrap" class="contrib-bug-category-nav-wrap" hidden>
+                            <button
+                                type="button"
+                                class="contrib-sidenav__link contrib-sidenav__link--button"
+                                id="contribBugCategoryGuideNavBtn"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                Bug category guide
+                            </button>
+                        </div>
+                    </div>
+                    <p class="contrib-nav-section__label contrib-nav-section__label--ruled">Issues</p>
+                    <ul id="contribIssuesNavList" class="contrib-issues-nav-list" aria-label="Issue keys and progress"></ul>
                 </div>
                 <div class="contrib-sidebar__footer">
                     <div class="contrib-sidebar__welcome">
@@ -1863,6 +2008,18 @@
                             <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
                         </svg>
                     </button>
+                    <div class="contrib-mobile-bar__brand">
+                        <div class="contrib-mobile-bar__logo-wrap" aria-hidden="true">
+                            <img
+                                src="images/LOGO.gif"
+                                alt=""
+                                width="32"
+                                height="32"
+                                decoding="async"
+                            />
+                        </div>
+                        <span class="contrib-mobile-bar__title">Jira Spillover Analyzer</span>
+                    </div>
                 </div>
                 <main class="contrib-main-dash">
                     <div class="contrib-session-bar">
@@ -2008,6 +2165,169 @@
                             </div>
                         </div>
                     </section>
+                    <section
+                        id="panelBugCategoryGuide"
+                        class="contrib-panel-dash"
+                        aria-labelledby="contribPanelBugCategoryTitle"
+                        hidden
+                    >
+                        <h2 id="contribPanelBugCategoryTitle" class="contrib-panel-dash__title">Bug defect categories</h2>
+                        <p class="contrib-category-guide__intro">
+                            Use this reference when you choose <strong>Category</strong> on the Bugs tab. Pick the closest match; use
+                            <strong>RCA</strong> for specifics.
+                        </p>
+                        <div class="contrib-category-guide">
+                            <div class="contrib-ref-wrap" role="region" aria-label="Bug category definitions">
+                                <table class="contrib-ref-table">
+                                    <colgroup>
+                                        <col class="col-cat" />
+                                        <col class="col-def" />
+                                        <col class="col-sub" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Definition</th>
+                                            <th scope="col">Examples / notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Requirements Issues</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Defects rooted in how requirements were written, communicated, or understood.
+                                                </p>
+                                            </td>
+                                            <td data-label="Examples / notes">
+                                                <ul>
+                                                    <li>
+                                                        <strong>Ambiguous Requirements</strong> — unclear, incomplete, or not well-defined.
+                                                    </li>
+                                                    <li>
+                                                        <strong>Changing Requirements</strong> — frequent changes not properly communicated or managed.
+                                                    </li>
+                                                    <li>
+                                                        <strong>Misunderstood Requirements</strong> — incorrect interpretation by dev or QA.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Design Problems</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">Issues stemming from UX or design decisions.</p>
+                                            </td>
+                                            <td data-label="Examples / notes">
+                                                <ul>
+                                                    <li><strong>UX related issues</strong></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Implementation Errors</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Problems introduced during design implementation: architecture, code quality, testing discipline, or operational setup.
+                                                </p>
+                                            </td>
+                                            <td data-label="Examples / notes">
+                                                <ul>
+                                                    <li><strong>Architecture</strong> — flawed system architecture.</li>
+                                                    <li><strong>Complexity</strong> — designs hard to implement or test.</li>
+                                                    <li><strong>Coding Errors</strong> — bugs in coding (including regression defects).</li>
+                                                    <li><strong>Inadequate Code Reviews</strong> — insufficient peer review.</li>
+                                                    <li><strong>Inadequate or Missing Unit Tests</strong> — lack of basic unit testing.</li>
+                                                    <li><strong>Technical Debt</strong> — quick fixes and workarounds degrading quality.</li>
+                                                    <li><strong>New Configuations</strong> — setup needed per environment.</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Testing Deficiencies</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Gaps in validation: coverage, design of tests, manual mistakes, automation, or specialized test types.
+                                                </p>
+                                            </td>
+                                            <td data-label="Examples / notes">
+                                                <ul>
+                                                    <li>Inadequate Test Coverage; Poor Test Design; Manual Testing Errors</li>
+                                                    <li>Automation Errors; Load Testing; E2E Testing; UAT Testing</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Process, Tools and Environment</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Workflow, tooling, documentation, environments, and configuration management.
+                                                </p>
+                                            </td>
+                                            <td data-label="Examples / notes">
+                                                <ul>
+                                                    <li>Lack of Process Adherence; Inefficient Processes; Inadequate Documentation</li>
+                                                    <li>Inadequate Tools; Environment Issues (dev vs test vs prod)</li>
+                                                    <li>
+                                                        <strong>Configuration Management</strong> — configs, certificates, dependencies.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Human Factors</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">People and organizational constraints affecting quality.</p>
+                                            </td>
+                                            <td data-label="Examples / notes">
+                                                <ul>
+                                                    <li>Skill Gaps; Communication Issues; Resource Constraints</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">External Factors</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">Issues originating outside the core codebase.</p>
+                                            </td>
+                                            <td data-label="Examples / notes">
+                                                <ul>
+                                                    <li>
+                                                        <strong>Third-Party Components</strong> — integrated tools (e.g. MAO, Mulesoft, Aurus).
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Data Issues</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    Problems with data correctness, completeness, duplication, freshness, or integration from source systems.
+                                                </p>
+                                            </td>
+                                            <td data-label="Examples / notes">
+                                                <ul>
+                                                    <li>
+                                                        <strong>Data Quality Issues</strong> — incorrect, incomplete, duplicate, or outdated data (e.g. product data on Business Manager).
+                                                    </li>
+                                                    <li><strong>Data Integration Issues</strong> — mapping from source systems.</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" class="contrib-ref-name">Acknowledged</th>
+                                            <td data-label="Definition">
+                                                <p class="contrib-ref-defcell">
+                                                    QA has reviewed the ticket and is actively investigating root cause. Temporary status until a defect category is assigned.
+                                                </p>
+                                            </td>
+                                            <td data-label="Examples / notes"><span class="contrib-ref-dash">—</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
                 </main>
             </div>
         </div>
@@ -2028,20 +2348,6 @@
         </div>
     </div>
 
-    <div id="contribAdminModal" class="contrib-modal contrib-modal--admin" role="dialog" aria-modal="true" aria-labelledby="contribAdminTitle" hidden>
-        <div class="contrib-modal__backdrop" data-modal-close tabindex="-1" aria-hidden="true"></div>
-        <div class="contrib-modal__panel">
-            <h2 id="contribAdminTitle" class="contrib-modal__title">Full analyzer — admin access only</h2>
-            <p class="contrib-modal__text">
-                The main Spillover Analyzer app is restricted to workspace administrators. This invite page is only for updating the issues you were assigned.
-                If you need the full analyzer, ask your admin for access or the correct link.
-            </p>
-            <div class="contrib-modal__actions">
-                <button type="button" class="contrib-modal__btn" data-modal-close>Got it</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         var CATEGORY_OPTIONS = [
             'Defect Blocker',
@@ -2053,6 +2359,49 @@
         ];
 
         var PROD_OPTIONS = ['', 'Yes', 'No'];
+
+        /** Nine bug defect categories — dropdown and saves use these labels only. */
+        var BUG_CATEGORY_OPTIONS = [
+            'Requirements Issues',
+            'Design Problems',
+            'Implementation Errors',
+            'Testing Deficiencies',
+            'Process, Tools and Environment',
+            'Human Factors',
+            'External Factors',
+            'Data Issues',
+            'Acknowledged'
+        ];
+
+        /** Builds options for `<select id="{rid}-bugCategory">`. Reload: GET /session → `edits[].bug_category` → `bugCategoryFromEdit` → here. Save: field value → PUT body `bugCategory` → DB column `bug_category`. */
+        function bugCategoryOptionsHtml(selected) {
+            var selTrim = selected != null ? String(selected).trim() : '';
+            var o = '<option value="">Category</option>';
+            var i;
+            var matched = false;
+            for (i = 0; i < BUG_CATEGORY_OPTIONS.length; i++) {
+                var v = BUG_CATEGORY_OPTIONS[i];
+                var isSel = String(v).trim() === selTrim;
+                if (isSel) matched = true;
+                o +=
+                    '<option value="' +
+                    escapeAttr(v) +
+                    '"' +
+                    (isSel ? ' selected' : '') +
+                    '>' +
+                    escapeHtml(v) +
+                    '</option>';
+            }
+            if (selTrim !== '' && !matched) {
+                o +=
+                    '<option value="' +
+                    escapeAttr(selTrim) +
+                    '" selected>' +
+                    escapeHtml(selTrim) +
+                    '</option>';
+            }
+            return o;
+        }
 
         function apiBase() {
             try {
@@ -2229,21 +2578,18 @@
         }
 
         function wireContribModals() {
-            ['contribThankModal', 'contribAdminModal'].forEach(function (id) {
-                var root = document.getElementById(id);
-                if (!root) return;
-                root.querySelectorAll('[data-modal-close]').forEach(function (el) {
+            var thank = document.getElementById('contribThankModal');
+            if (thank) {
+                thank.querySelectorAll('[data-modal-close]').forEach(function (el) {
                     el.addEventListener('click', function () {
-                        root.hidden = true;
+                        thank.hidden = true;
                     });
                 });
-            });
+            }
             document.addEventListener('keydown', function (e) {
                 if (e.key !== 'Escape') return;
                 var t = document.getElementById('contribThankModal');
-                var a = document.getElementById('contribAdminModal');
                 if (t && !t.hidden) t.hidden = true;
-                if (a && !a.hidden) a.hidden = true;
             });
         }
 
@@ -2265,15 +2611,6 @@
             }
         }
 
-        function showAdminOnlyModal() {
-            var root = document.getElementById('contribAdminModal');
-            if (root) {
-                root.hidden = false;
-                var ok = root.querySelector('.contrib-modal__btn');
-                if (ok) try { ok.focus(); } catch (e) {}
-            }
-        }
-
         function normalizeIssueKeyLookup(ik) {
             return String(ik || '')
                 .trim()
@@ -2283,25 +2620,103 @@
         }
 
         function editMapFromRows(rows) {
+            function pickMergeStr(prev, next) {
+                var n = String(next == null ? '' : next).trim();
+                if (n !== '') return n;
+                return String(prev == null ? '' : prev).trim();
+            }
             var m = {};
             if (!rows) return m;
             for (var i = 0; i < rows.length; i++) {
                 var r = rows[i];
-                m[normalizeIssueKeyLookup(r.issue_key)] = r;
+                var normalized = Object.assign({}, r);
+                if (
+                    (normalized.bug_category === undefined ||
+                        normalized.bug_category === null ||
+                        normalized.bug_category === '') &&
+                    r.bugCategory != null &&
+                    String(r.bugCategory).trim() !== ''
+                ) {
+                    normalized.bug_category = String(r.bugCategory).trim();
+                }
+                var k = normalizeIssueKeyLookup(r.issue_key);
+                if (!k) continue;
+                var prevRow = m[k];
+                if (!prevRow) {
+                    m[k] = normalized;
+                    continue;
+                }
+                m[k] = Object.assign({}, prevRow, normalized, {
+                    issue_key: k,
+                    spillover_reason: pickMergeStr(prevRow.spillover_reason, normalized.spillover_reason),
+                    spillover_category: pickMergeStr(
+                        prevRow.spillover_category,
+                        normalized.spillover_category
+                    ),
+                    prod: pickMergeStr(prevRow.prod, normalized.prod),
+                    rca: pickMergeStr(prevRow.rca, normalized.rca),
+                    bug_category: pickMergeStr(
+                        bugCategoryFromEdit(prevRow),
+                        bugCategoryFromEdit(normalized)
+                    )
+                });
             }
             return m;
         }
 
+        /** Drop empty spill fields so bug-only saves do not wipe spill text on the in-memory edit row before re-render (fixes category flashing empty). */
+        function sanitizeSessionMergePatch(patch) {
+            var out = {};
+            var k;
+            for (k in patch) {
+                if (!Object.prototype.hasOwnProperty.call(patch, k)) continue;
+                var v = patch[k];
+                if (
+                    (k === 'spillover_reason' || k === 'spillover_category') &&
+                    (v === '' || v == null)
+                ) {
+                    continue;
+                }
+                out[k] = v;
+            }
+            return out;
+        }
+
+        /** After PUT saves, merge same fields into session `edits` so the UI shows bug_category etc. before any stale read. */
+        function mergeSavedIntoSessionEdits(body, issueKey, patch) {
+            if (!body || !issueKey || !patch) return;
+            var edits = body.edits;
+            var ik = normalizeIssueKeyLookup(issueKey);
+            var merged = sanitizeSessionMergePatch(patch);
+            var i;
+            if (!edits || !edits.length) {
+                body.edits = [Object.assign({ issue_key: ik }, merged)];
+                return;
+            }
+            for (i = 0; i < edits.length; i++) {
+                var ek = edits[i].issue_key;
+                if (ek != null && normalizeIssueKeyLookup(ek) === ik) {
+                    Object.assign(edits[i], merged);
+                    return;
+                }
+            }
+            edits.push(Object.assign({ issue_key: ik }, merged));
+        }
+
         function issueNeedsSpilloverFields(iss) {
-            var legacy =
-                iss.needsSpilloverFields === undefined && iss.needsBugFields === undefined;
-            return legacy || iss.needsSpilloverFields === true;
+            if (!iss) return false;
+            if (iss.needsSpilloverFields === undefined && iss.needsBugFields === undefined) {
+                return true;
+            }
+            return iss.needsSpilloverFields === true;
         }
 
         function issueNeedsBugFields(iss) {
-            var legacy =
-                iss.needsSpilloverFields === undefined && iss.needsBugFields === undefined;
-            return legacy || iss.needsBugFields === true;
+            if (!iss) return false;
+            if (iss.needsSpilloverFields === undefined && iss.needsBugFields === undefined) {
+                return false;
+            }
+            return iss.needsBugFields === true;
         }
 
         /** Set by renderContributorWorkspace for mixed invites — drives header when switching Spillover / Bugs tabs. */
@@ -2309,8 +2724,6 @@
 
         /** Todo counts from last render — used to detect “last save” (all work complete). */
         var contribLastWorkspaceStats = { spillTodo: 0, bugTodo: 0 };
-
-        var contribSaveInlineTimer = null;
 
         /** Set each render — nav click handler uses this to show the right panel. */
         var contribNavVisibility = { showSpill: false, showBug: false };
@@ -2347,88 +2760,17 @@
             };
         }
 
-        function todoDoneStatPhrase(todo, done) {
-            return (
-                todo +
-                (todo === 1 ? ' row needs input · ' : ' rows need input · ') +
-                done +
-                ' complete'
-            );
-        }
-
-        /** Green line above the table (right-aligned, Action column side). kind: 'spill' | 'bug'. */
-        function showInlineSaveMessage(issueKey, kind) {
-            kind = kind === 'bug' ? 'bug' : 'spill';
-            var k = issueKey ? String(issueKey).trim() : '';
-            var text = k ? k + ' · Saved' : 'Saved';
-            var spillEl = document.getElementById('contribSpillSaveMsg');
-            var bugEl = document.getElementById('contribBugSaveMsg');
-            if (contribSaveInlineTimer) {
-                clearTimeout(contribSaveInlineTimer);
-                contribSaveInlineTimer = null;
-            }
-            if (kind === 'bug') {
-                if (spillEl) {
-                    spillEl.hidden = true;
-                    spillEl.textContent = '';
-                }
-                if (bugEl) {
-                    bugEl.textContent = text;
-                    bugEl.hidden = false;
-                }
-            } else {
-                if (bugEl) {
-                    bugEl.hidden = true;
-                    bugEl.textContent = '';
-                }
-                if (spillEl) {
-                    spillEl.textContent = text;
-                    spillEl.hidden = false;
-                }
-            }
-            contribSaveInlineTimer = setTimeout(function () {
-                if (kind === 'bug' && bugEl) {
-                    bugEl.hidden = true;
-                    bugEl.textContent = '';
-                } else if (spillEl) {
-                    spillEl.hidden = true;
-                    spillEl.textContent = '';
-                }
-                contribSaveInlineTimer = null;
-            }, 3200);
-        }
-
         function refreshMixedInviteHeader() {
             if (!contribChromeCtx || !contribChromeCtx.hints || !contribChromeCtx.hints.mixed) return;
-            var panel = getActiveContribPanel();
             var pt = document.getElementById('pageTitle');
             var ps = document.getElementById('pageSub');
             if (!pt || !ps) return;
             var data = contribChromeCtx.data || {};
-            var ss = contribChromeCtx.spillStats || { todo: 0, done: 0 };
-            var bs = contribChromeCtx.bugStats || { todo: 0, done: 0 };
+            pt.textContent = contributorDisplayName(data);
             var invite = contributorRequestHeading({ mixed: true });
-            var statsLine;
-            if (panel === 'bug') {
-                pt.textContent = contributorDisplayName(data);
-                statsLine =
-                    bs.todo +
-                    (bs.todo === 1 ? ' row needs input · ' : ' rows need input · ') +
-                    bs.done +
-                    ' complete';
-            } else {
-                pt.textContent = contributorDisplayName(data);
-                statsLine =
-                    ss.todo +
-                    (ss.todo === 1 ? ' row needs input · ' : ' rows need input · ') +
-                    ss.done +
-                    ' complete';
-            }
             ps.innerHTML =
                 '<span class="contrib-page-head__invite">' +
                 escapeHtml(invite) +
-                '</span><br /><span class="contrib-page-head__statline muted">' +
-                escapeHtml(statsLine) +
                 '</span>';
         }
 
@@ -2439,11 +2781,19 @@
             return sr && sc;
         }
 
+        function bugCategoryFromEdit(ed) {
+            ed = ed || {};
+            var sn = ed.bug_category != null ? String(ed.bug_category).trim() : '';
+            var cm = ed.bugCategory != null ? String(ed.bugCategory).trim() : '';
+            return sn || cm;
+        }
+
         function bugEditsComplete(ed) {
             if (!ed) return false;
             var pr = ed.prod != null && String(ed.prod).trim() !== '';
             var rc = ed.rca != null && String(ed.rca).trim() !== '';
-            return pr && rc;
+            var bc = bugCategoryFromEdit(ed) !== '';
+            return pr && rc && bc;
         }
 
         /** spill / bug: ok = submitted (green), pending = partial (yellow), err = not submitted (red). */
@@ -2460,8 +2810,9 @@
             ed = ed || {};
             var pr = ed.prod != null && String(ed.prod).trim() !== '';
             var rc = ed.rca != null && String(ed.rca).trim() !== '';
-            if (pr && rc) return 'ok';
-            if (pr || rc) return 'pending';
+            var bc = bugCategoryFromEdit(ed) !== '';
+            if (pr && rc && bc) return 'ok';
+            if (pr || rc || bc) return 'pending';
             return 'err';
         }
 
@@ -2471,7 +2822,7 @@
             return 'contrib-status contrib-status--err';
         }
 
-        /** HTML for Progress column (escaped labels inside spans). */
+        /** Spill/bug completion summary for sidebar issue list (same tiers as former table column). */
         function contributorProgressHtml(iss, ed) {
             ed = ed || {};
             var needSpill = issueNeedsSpilloverFields(iss);
@@ -2513,6 +2864,56 @@
             return chunks.join('<span class="contrib-status-sep"> · </span>');
         }
 
+        function findContribTableRowByIssueKey(issueKey) {
+            var ik = normalizeIssueKeyLookup(issueKey);
+            var rows = document.querySelectorAll(
+                '#panelSpill tbody tr[data-issue-key], #panelBug tbody tr[data-issue-key]'
+            );
+            var i;
+            for (i = 0; i < rows.length; i++) {
+                if (normalizeIssueKeyLookup(rows[i].getAttribute('data-issue-key')) === ik) {
+                    return rows[i];
+                }
+            }
+            return null;
+        }
+
+        /** Sidebar: issue keys with spill/bug status (replaces table Progress column). */
+        function renderIssuesNavList(issues, editsByKey) {
+            editsByKey = editsByKey || {};
+            var ul = document.getElementById('contribIssuesNavList');
+            if (!ul) return;
+            if (!issues || !issues.length) {
+                ul.innerHTML =
+                    '<li class="contrib-issues-nav__empty muted" role="presentation">No issues</li>';
+                return;
+            }
+            var sorted = issues.slice().sort(function (a, b) {
+                return String(a.issueKey || '').localeCompare(String(b.issueKey || ''));
+            });
+            var html = '';
+            var i;
+            for (i = 0; i < sorted.length; i++) {
+                var iss = sorted[i];
+                var k = iss.issueKey;
+                var ed = editsByKey[normalizeIssueKeyLookup(k)] || {};
+                var prog = contributorProgressHtml(iss, ed);
+                html +=
+                    '<li class="contrib-issues-nav__item">' +
+                    '<button type="button" class="contrib-issues-nav__btn" data-issue-key="' +
+                    escapeAttr(k) +
+                    '">' +
+                    '<span class="contrib-issues-nav__key"><code>' +
+                    escapeHtml(k) +
+                    '</code></span>' +
+                    '<span class="contrib-issues-nav__prog">' +
+                    prog +
+                    '</span>' +
+                    '</button></li>';
+            }
+            ul.innerHTML = html;
+        }
+
         function partitionIssuesByEdits(issues, editsByKey, kind) {
             var todo = [];
             var done = [];
@@ -2532,7 +2933,6 @@
                 '<col class="contrib-col contrib-col--issue" />' +
                 '<col class="contrib-col contrib-col--assignee" />' +
                 '<col class="contrib-col contrib-col--summary" />' +
-                '<col class="contrib-col contrib-col--progress" />' +
                 '<col class="contrib-col contrib-col--field-a" />' +
                 '<col class="contrib-col contrib-col--field-b" />' +
                 '<col class="contrib-col contrib-col--action" />' +
@@ -2541,7 +2941,6 @@
                 '<th scope="col">Issue</th>' +
                 '<th scope="col">Assignee</th>' +
                 '<th scope="col">Summary</th>' +
-                '<th scope="col">Progress</th>' +
                 '<th scope="col">Reason</th>' +
                 '<th scope="col">Category</th>' +
                 '<th scope="col" class="contrib-th--action">Action</th>' +
@@ -2555,31 +2954,26 @@
                 '<col class="contrib-col contrib-col--issue" />' +
                 '<col class="contrib-col contrib-col--assignee" />' +
                 '<col class="contrib-col contrib-col--summary" />' +
-                '<col class="contrib-col contrib-col--progress" />' +
                 '<col class="contrib-col contrib-col--field-a" />' +
                 '<col class="contrib-col contrib-col--field-b" />' +
+                '<col class="contrib-col contrib-col--field-c" />' +
                 '<col class="contrib-col contrib-col--action" />' +
                 '</colgroup>' +
                 '<thead><tr>' +
                 '<th scope="col">Issue</th>' +
                 '<th scope="col">Assignee</th>' +
                 '<th scope="col">Summary</th>' +
-                '<th scope="col">Progress</th>' +
                 '<th scope="col">Yes / No</th>' +
-                '<th scope="col">RCA</th>' +
+                '<th scope="col">Reason</th>' +
+                '<th scope="col">Category</th>' +
                 '<th scope="col" class="contrib-th--action">Action</th>' +
                 '</tr></thead>'
             );
         }
 
-        var BOOKMARK_SAVE_SVG =
-            '<svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-            '<path d="M17 3H7a2 2 0 00-2 2v16l7-4 7 4V5a2 2 0 00-2-2z" fill="currentColor"/>' +
-            '</svg>';
-
         function contributorBookmarkSaveBtnHtml(token, rid, kind, complete) {
             return (
-                '<button type="button" class="btn-save bookmarkBtn' +
+                '<button type="button" class="btn-save' +
                 (complete ? ' btn-save--saved' : '') +
                 '" data-token="' +
                 escapeAttr(token) +
@@ -2587,11 +2981,7 @@
                 escapeAttr(rid) +
                 '" data-kind="' +
                 escapeAttr(kind) +
-                '">' +
-                '<span class="IconContainer">' +
-                BOOKMARK_SAVE_SVG +
-                '</span>' +
-                '<span class="text">' +
+                '"><span class="text">' +
                 (complete ? 'Saved' : 'Save') +
                 '</span></button>'
             );
@@ -2632,7 +3022,6 @@
                 '"><span class="contrib-td-summary__text">' +
                 escapeHtml(iss.summary || '—') +
                 '</span></td>';
-            html += '<td class="contrib-td-progress">' + contributorProgressHtml(iss, ed) + '</td>';
             html += '<td class="contrib-td-field contrib-td-field--wide"><div class="field-stack">';
             html += '<label class="visually-hidden" for="' + rid + '-sr">Reason</label>';
             html +=
@@ -2692,6 +3081,7 @@
             var ed = editsByKey[normalizeIssueKeyLookup(k)] || {};
             var rid = 'cbug-' + index;
             var pv = ed.prod != null && ed.prod !== '' ? String(ed.prod) : '';
+            var bc = bugCategoryFromEdit(ed);
             var rc = ed.rca != null && ed.rca !== '' ? String(ed.rca) : '';
             var complete = bugEditsComplete(ed);
             var rowClass = 'contrib-issue-row';
@@ -2710,19 +3100,27 @@
                 '"><span class="contrib-td-summary__text">' +
                 escapeHtml(iss.summary || '—') +
                 '</span></td>';
-            html += '<td class="contrib-td-progress">' + contributorProgressHtml(iss, ed) + '</td>';
-            html += '<td class="contrib-td-field"><div class="field-stack">';
+            html += '<td class="contrib-td-field contrib-td-field--prod"><div class="field-stack">';
             html += '<label class="visually-hidden" for="' + rid + '-prod">Yes or No</label>';
             html += '<select id="' + rid + '-prod">' + prodOptionsHtml(pv) + '</select>';
             html += '</div></td>';
             html += '<td class="contrib-td-field contrib-td-field--wide"><div class="field-stack">';
-            html += '<label class="visually-hidden" for="' + rid + '-rca">RCA</label>';
+            html += '<label class="visually-hidden" for="' + rid + '-rca">Reason</label>';
             html +=
                 '<textarea id="' +
                 rid +
-                '-rca" rows="1" placeholder="RCA">' +
+                '-rca" rows="1" placeholder="Reason">' +
                 escapeHtml(rc) +
                 '</textarea>';
+            html += '</div></td>';
+            html += '<td class="contrib-td-field"><div class="field-stack">';
+            html += '<label class="visually-hidden" for="' + rid + '-bugCategory">Category</label>';
+            html +=
+                '<select class="contrib-field-bug-category" id="' +
+                rid +
+                '-bugCategory">' +
+                bugCategoryOptionsHtml(bc) +
+                '</select>';
             html += '</div></td>';
             html += '<td class="contrib-td--action">';
             html += contributorBookmarkSaveBtnHtml(token, rid, 'bug', complete);
@@ -2740,7 +3138,7 @@
                     part.todo.length +
                     '</span></h3>';
                 html +=
-                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table contrib-data-table--bugs">' +
                     bugTableHeader() +
                     '<tbody>';
                 for (var i = 0; i < part.todo.length; i++) {
@@ -2754,7 +3152,7 @@
                     part.done.length +
                     '</span></h3>';
                 html +=
-                    '<div class="contrib-table-wrap"><table class="contrib-data-table">' +
+                    '<div class="contrib-table-wrap"><table class="contrib-data-table contrib-data-table--bugs">' +
                     bugTableHeader() +
                     '<tbody>';
                 for (var j = 0; j < part.done.length; j++) {
@@ -2765,63 +3163,150 @@
             return html;
         }
 
-        /** Read spill + bug fields from whichever panel(s) contain this issue (mixed invites). */
-        function collectAllFieldsForIssue(issueKey) {
+        /** Read bug PROD / category / RCA by stable ids — never rely on `selects[0]` index (extensions or DOM changes break saves). */
+        function collectBugFieldsFromTr(tr) {
+            var out = { prod: '', bugCategory: '', rca: '' };
+            if (!tr || !tr.querySelector) return out;
+            var prodSel = tr.querySelector('select[id$="-prod"]');
+            var catSel =
+                tr.querySelector('select.contrib-field-bug-category') ||
+                tr.querySelector('select[id$="-bugCategory"]');
+            var rtx = tr.querySelector('textarea[id$="-rca"]');
+            if (prodSel) out.prod = String(prodSel.value != null ? prodSel.value : '');
+            if (catSel) out.bugCategory = String(catSel.value != null ? catSel.value : '');
+            if (rtx) out.rca = String(rtx.value != null ? rtx.value : '');
+            return out;
+        }
+
+        /** Read spill + bug fields from whichever panel(s) contain this issue (mixed invites).
+         *  @param {string} issueKey
+         *  @param {string} [bookmarkRid] Row bookmark from Save button `data-row` (e.g. cbug-0, cspill-1) — when set, reads that row's controls by id so category/prod/rca always match the clicked Save.
+         *  @param {HTMLElement|null} [saveRowEl] `<tr>` containing the Save button — fallback when resolving category field within that row only.
+         */
+        function collectAllFieldsForIssue(issueKey, bookmarkRid, saveRowEl) {
             var sr = '';
             var sc = '';
             var prod = '';
+            var bugCategoryVal = '';
             var rca = '';
-            var spillRows = document.querySelectorAll('#panelSpill tbody tr[data-issue-key]');
-            var bugRows = document.querySelectorAll('#panelBug tbody tr[data-issue-key]');
+            var ik = normalizeIssueKeyLookup(issueKey);
+            var br = bookmarkRid != null ? String(bookmarkRid).trim() : '';
             var i;
-            for (i = 0; i < spillRows.length; i++) {
-                if (spillRows[i].getAttribute('data-issue-key') === issueKey) {
-                    var ta = spillRows[i].querySelector('textarea[id$="-sr"]');
-                    var sel = spillRows[i].querySelector('select[id$="-sc"]');
-                    if (ta) sr = ta.value;
-                    if (sel) sc = sel.value;
-                    break;
+
+            if (/^cspill-/i.test(br)) {
+                var taSp = document.getElementById(br + '-sr');
+                var selSp = document.getElementById(br + '-sc');
+                if (taSp) sr = taSp.value;
+                if (selSp) sc = selSp.value;
+            } else {
+                var spillRows = document.querySelectorAll('#panelSpill tbody tr[data-issue-key]');
+                for (i = 0; i < spillRows.length; i++) {
+                    var sk = spillRows[i].getAttribute('data-issue-key');
+                    if (sk != null && normalizeIssueKeyLookup(sk) === ik) {
+                        var ta = spillRows[i].querySelector('textarea[id$="-sr"]');
+                        var sel = spillRows[i].querySelector('select[id$="-sc"]');
+                        if (ta) sr = ta.value;
+                        if (sel) sc = sel.value;
+                        break;
+                    }
                 }
             }
-            for (i = 0; i < bugRows.length; i++) {
-                if (bugRows[i].getAttribute('data-issue-key') === issueKey) {
-                    var pe = bugRows[i].querySelector('select[id$="-prod"]');
-                    var rtx = bugRows[i].querySelector('textarea[id$="-rca"]');
-                    if (pe) prod = pe.value;
-                    if (rtx) rca = rtx.value;
-                    break;
+
+            /** Bug fields: `cbug-*` bookmark IDs are authoritative (matches Save button row exactly). */
+            if (/^cbug-/i.test(br)) {
+                var peId = document.getElementById(br + '-prod');
+                var sbId = document.getElementById(br + '-bugCategory');
+                var rtxId = document.getElementById(br + '-rca');
+                if (peId) prod = String(peId.value != null ? peId.value : '').trim();
+                if (sbId) bugCategoryVal = String(sbId.value != null ? sbId.value : '').trim();
+                if (rtxId) rca = String(rtxId.value != null ? rtxId.value : '').trim();
+            } else {
+                var saveIsBugRow =
+                    saveRowEl &&
+                    saveRowEl.querySelector &&
+                    saveRowEl.querySelector('textarea[id$="-rca"]');
+                if (saveIsBugRow) {
+                    var bf = collectBugFieldsFromTr(saveRowEl);
+                    prod = bf.prod;
+                    bugCategoryVal = bf.bugCategory;
+                    rca = bf.rca;
+                } else {
+                    var bugRows = document.querySelectorAll('#panelBug tbody tr[data-issue-key]');
+                    for (i = 0; i < bugRows.length; i++) {
+                        var bk = bugRows[i].getAttribute('data-issue-key');
+                        if (bk != null && normalizeIssueKeyLookup(bk) === ik) {
+                            var bfLoop = collectBugFieldsFromTr(bugRows[i]);
+                            prod = bfLoop.prod;
+                            bugCategoryVal = bfLoop.bugCategory;
+                            rca = bfLoop.rca;
+                            break;
+                        }
+                    }
                 }
             }
-            return { sr: sr, sc: sc, prod: prod, rca: rca };
+
+            if (/^cbug-/i.test(br) && String(bugCategoryVal).trim() === '') {
+                var sbF = document.getElementById(br + '-bugCategory');
+                if (sbF) bugCategoryVal = String(sbF.value != null ? sbF.value : '').trim();
+            }
+
+            return { sr: sr, sc: sc, prod: prod, bugCategory: bugCategoryVal, rca: rca };
         }
 
+        /**
+         * PUT /api/invite/:token/issue — send camelCase JSON once (no duplicate bug fields).
+         * Server maps: prod, rca, bugCategory → columns prod, rca, bug_category (see pickBugCategoryFromBody).
+         * mergeEditPatch uses snake_case because GET /session returns edits with DB column names.
+         */
         function wireSaveButtons(root, token) {
             if (!root) return;
             root.querySelectorAll('.btn-save').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     var t = btn.getAttribute('data-token') || token;
-                    var kind = btn.getAttribute('data-kind') || 'spill';
-                    var row = btn.closest('[data-issue-key]');
+                    var row = btn.closest('tr[data-issue-key]');
                     var issueKey = row ? row.getAttribute('data-issue-key') : '';
                     if (!issueKey) return;
+                    var panelBug = document.getElementById('panelBug');
+                    var panelSpill = document.getElementById('panelSpill');
+                    var kindAttr = btn.getAttribute('data-kind');
+                    var kind;
+                    if (row && row.querySelector && row.querySelector('textarea[id$="-rca"]')) kind = 'bug';
+                    else if (row && row.querySelector && row.querySelector('textarea[id$="-sr"]'))
+                        kind = 'spill';
+                    else if (panelBug && row && panelBug.contains(row)) kind = 'bug';
+                    else if (panelSpill && row && panelSpill.contains(row)) kind = 'spill';
+                    else kind = kindAttr || 'spill';
                     btn.classList.remove('btn-save--saved');
                     setContributorSaveButtonLabel(btn, 'Save');
-                    var all = collectAllFieldsForIssue(issueKey);
+                    var bookmarkRid = btn.getAttribute('data-row') || '';
+                    var saveRow = row;
+                    var all = collectAllFieldsForIssue(issueKey, bookmarkRid, saveRow);
                     var sr = all.sr;
                     var sc = all.sc;
                     var prod = all.prod;
+                    var bugCategory = all.bugCategory;
                     var rca = all.rca;
+                    if (kind === 'bug' && bookmarkRid && /^cbug-/i.test(bookmarkRid)) {
+                        var bm = bookmarkRid;
+                        var peBm = document.getElementById(bm + '-prod');
+                        var bcBm = document.getElementById(bm + '-bugCategory');
+                        var rcBm = document.getElementById(bm + '-rca');
+                        if (peBm) prod = String(peBm.value != null ? peBm.value : '').trim();
+                        if (bcBm) bugCategory = String(bcBm.value != null ? bcBm.value : '').trim();
+                        if (rcBm) rca = String(rcBm.value != null ? rcBm.value : '').trim();
+                    }
                     btn.disabled = true;
                     fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(t) + '/issue'), {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            issueKey: issueKey,
+                            issueKey: String(issueKey || '').trim(),
                             kind: kind,
-                            spilloverReason: sr,
-                            spilloverCategory: sc,
-                            prod: prod,
-                            rca: rca
+                            spilloverReason: sr != null ? String(sr) : '',
+                            spilloverCategory: sc != null ? String(sc) : '',
+                            prod: prod != null ? String(prod) : '',
+                            bugCategory: bugCategory != null ? String(bugCategory) : '',
+                            rca: rca != null ? String(rca) : ''
                         })
                     })
                         .then(function (r) {
@@ -2835,12 +3320,52 @@
                                 btn.classList.remove('btn-save--saved');
                                 setContributorSaveButtonLabel(btn, 'Save');
                             } else {
+                                var bodyOk = out.body || {};
+                                var hasBcKey = Object.prototype.hasOwnProperty.call(bodyOk, 'bug_category');
+                                var persistedBc = hasBcKey
+                                    ? bodyOk.bug_category != null
+                                        ? String(bodyOk.bug_category).trim()
+                                        : ''
+                                    : null;
+                                var wantedBc = String(bugCategory || '').trim();
+
+                                if (kind === 'bug' && wantedBc !== '') {
+                                    if (!hasBcKey || persistedBc === null) {
+                                        showContributorSaveError(
+                                            'Bug category was not confirmed by the server after save. Deploy the latest server or verify DATABASE_URL.',
+                                            'bug'
+                                        );
+                                        btn.classList.remove('btn-save--saved');
+                                        setContributorSaveButtonLabel(btn, 'Save');
+                                        return;
+                                    }
+                                    if (persistedBc === '') {
+                                        showContributorSaveError(
+                                            'Bug category did not save to the database. Check DATABASE_URL and server logs, then try again.',
+                                            'bug'
+                                        );
+                                        btn.classList.remove('btn-save--saved');
+                                        setContributorSaveButtonLabel(btn, 'Save');
+                                        return;
+                                    }
+                                }
+
+                                var mergeBc =
+                                    kind === 'bug' && hasBcKey && persistedBc !== null && persistedBc !== ''
+                                        ? persistedBc
+                                        : String(bugCategory != null ? bugCategory : '').trim();
                                 setContributorSaveButtonLabel(btn, 'Saved');
                                 btn.classList.add('btn-save--saved');
-                                recordSubmittedIssueKey(issueKey, t);
                                 refreshContributorWorkspace(t, {
                                     afterSaveIssueKey: issueKey,
-                                    saveKind: kind
+                                    saveKind: kind,
+                                    mergeEditPatch: {
+                                        spillover_reason: sr,
+                                        spillover_category: sc,
+                                        prod: prod,
+                                        rca: rca,
+                                        bug_category: mergeBc
+                                    }
                                 });
                             }
                         })
@@ -2856,6 +3381,39 @@
             });
         }
 
+        function setCategoryGuideNavActive(active) {
+            var btn = document.getElementById('contribCategoryGuideNavBtn');
+            if (!btn) return;
+            if (btn.hidden || !contribNavVisibility.showSpill) {
+                btn.classList.remove('contrib-category-guide-nav--active');
+                btn.removeAttribute('aria-current');
+                return;
+            }
+            btn.classList.toggle('contrib-category-guide-nav--active', !!active);
+            if (active) {
+                btn.setAttribute('aria-current', 'page');
+            } else {
+                btn.removeAttribute('aria-current');
+            }
+        }
+
+        function setBugCategoryGuideNavActive(active) {
+            var btn = document.getElementById('contribBugCategoryGuideNavBtn');
+            var wrap = document.getElementById('contribBugCategoryNavWrap');
+            if (!btn) return;
+            if (!wrap || wrap.hidden) {
+                btn.classList.remove('contrib-bug-category-guide-nav--active');
+                btn.removeAttribute('aria-current');
+                return;
+            }
+            btn.classList.toggle('contrib-bug-category-guide-nav--active', !!active);
+            if (active) {
+                btn.setAttribute('aria-current', 'page');
+            } else {
+                btn.removeAttribute('aria-current');
+            }
+        }
+
         /** Single delegated handler — avoids stacking duplicate listeners on each refresh. */
         function setupContribNavTabsDelegation() {
             var nav = document.getElementById('contribNavTabs');
@@ -2869,6 +3427,7 @@
                 var panelSpill = document.getElementById('panelSpill');
                 var panelBug = document.getElementById('panelBug');
                 var panelCat = document.getElementById('panelCategoryGuide');
+                var panelBugCat = document.getElementById('panelBugCategoryGuide');
                 var i;
                 for (i = 0; i < tabs.length; i++) {
                     var t = tabs[i];
@@ -2876,10 +3435,13 @@
                     t.classList.toggle('contrib-sidenav__btn--active', on);
                     t.setAttribute('aria-selected', on ? 'true' : 'false');
                 }
+                setCategoryGuideNavActive(false);
+                setBugCategoryGuideNavActive(false);
                 setContribPanelVisibility(
                     panelSpill,
                     panelBug,
                     panelCat,
+                    panelBugCat,
                     contribNavVisibility.showSpill,
                     contribNavVisibility.showBug,
                     { activePanel: panel }
@@ -2888,34 +3450,130 @@
             });
         }
 
+        function setupContribCategoryGuideNavButton() {
+            var btn = document.getElementById('contribCategoryGuideNavBtn');
+            if (!btn || btn.dataset.contribCatGuideWired === '1') return;
+            btn.dataset.contribCatGuideWired = '1';
+            btn.addEventListener('click', function () {
+                if (!contribNavVisibility.showSpill) return;
+                setBugCategoryGuideNavActive(false);
+                setCategoryGuideNavActive(true);
+                var nav = document.getElementById('contribNavTabs');
+                if (nav) {
+                    var tabs = nav.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                    for (var i = 0; i < tabs.length; i++) {
+                        tabs[i].classList.remove('contrib-sidenav__btn--active');
+                        tabs[i].setAttribute('aria-selected', 'false');
+                    }
+                }
+                var panelSpill = document.getElementById('panelSpill');
+                var panelBug = document.getElementById('panelBug');
+                var panelCat = document.getElementById('panelCategoryGuide');
+                var panelBugCat = document.getElementById('panelBugCategoryGuide');
+                setContribPanelVisibility(
+                    panelSpill,
+                    panelBug,
+                    panelCat,
+                    panelBugCat,
+                    contribNavVisibility.showSpill,
+                    contribNavVisibility.showBug,
+                    { activePanel: 'categories' }
+                );
+                refreshMixedInviteHeader();
+            });
+        }
+
+        function setupContribBugCategoryGuideNavButton() {
+            var btn = document.getElementById('contribBugCategoryGuideNavBtn');
+            if (!btn || btn.dataset.contribBugCatGuideWired === '1') return;
+            btn.dataset.contribBugCatGuideWired = '1';
+            btn.addEventListener('click', function () {
+                if (!contribNavVisibility.showBug) return;
+                setCategoryGuideNavActive(false);
+                setBugCategoryGuideNavActive(true);
+                var nav = document.getElementById('contribNavTabs');
+                if (nav) {
+                    var tabs = nav.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                    for (var i = 0; i < tabs.length; i++) {
+                        tabs[i].classList.remove('contrib-sidenav__btn--active');
+                        tabs[i].setAttribute('aria-selected', 'false');
+                    }
+                }
+                var panelSpill = document.getElementById('panelSpill');
+                var panelBug = document.getElementById('panelBug');
+                var panelCat = document.getElementById('panelCategoryGuide');
+                var panelBugCat = document.getElementById('panelBugCategoryGuide');
+                setContribPanelVisibility(
+                    panelSpill,
+                    panelBug,
+                    panelCat,
+                    panelBugCat,
+                    contribNavVisibility.showSpill,
+                    contribNavVisibility.showBug,
+                    { activePanel: 'bugCategories' }
+                );
+                refreshMixedInviteHeader();
+            });
+        }
+
         function getActiveContribPanel() {
+            var bugGuideBtn = document.getElementById('contribBugCategoryGuideNavBtn');
+            var bugWrap = document.getElementById('contribBugCategoryNavWrap');
+            var catSection = document.getElementById('contribCategorySection');
+            if (
+                bugGuideBtn &&
+                bugWrap &&
+                catSection &&
+                !catSection.hidden &&
+                !bugWrap.hidden &&
+                bugGuideBtn.classList.contains('contrib-bug-category-guide-nav--active')
+            ) {
+                return 'bugCategories';
+            }
+            var catBtn = document.getElementById('contribCategoryGuideNavBtn');
+            var spillWrap = document.getElementById('contribSpillCategoryGuideWrap');
+            if (
+                catBtn &&
+                catSection &&
+                !catSection.hidden &&
+                contribNavVisibility.showSpill &&
+                (!spillWrap || !spillWrap.hidden) &&
+                !catBtn.hidden &&
+                catBtn.classList.contains('contrib-category-guide-nav--active')
+            ) {
+                return 'categories';
+            }
             var active = document.querySelector(
                 '#contribNavTabs .contrib-sidenav__btn.contrib-sidenav__btn--active[data-panel]'
             );
             if (!active) return 'spill';
             var p = active.getAttribute('data-panel') || 'spill';
-            if (p === 'bug' || p === 'categories') return p;
+            if (p === 'bug' || p === 'categories' || p === 'bugCategories') return p;
             return 'spill';
         }
 
-        function setContribPanelVisibility(panelSpill, panelBug, panelCat, showSpill, showBug, opts) {
+        function setContribPanelVisibility(panelSpill, panelBug, panelCat, panelBugCat, showSpill, showBug, opts) {
             opts = opts || {};
             var active = opts.activePanel || 'spill';
-            if (active === 'categories' && !showSpill) active = 'spill';
+            if (active === 'categories' && !showSpill) active = showBug ? 'bug' : 'spill';
+            if (active === 'bugCategories' && !showBug) active = showSpill ? 'spill' : 'bug';
             var both = showSpill && showBug;
 
             if (panelCat) {
                 panelCat.hidden = !(showSpill && active === 'categories');
             }
+            if (panelBugCat) {
+                panelBugCat.hidden = !(showBug && active === 'bugCategories');
+            }
             if (panelSpill) {
                 if (!showSpill) panelSpill.hidden = true;
-                else if (active === 'categories') panelSpill.hidden = true;
+                else if (active === 'categories' || active === 'bugCategories') panelSpill.hidden = true;
                 else if (both && active === 'bug') panelSpill.hidden = true;
                 else panelSpill.hidden = false;
             }
             if (panelBug) {
                 if (!showBug) panelBug.hidden = true;
-                else if (active === 'categories') panelBug.hidden = true;
+                else if (active === 'categories' || active === 'bugCategories') panelBug.hidden = true;
                 else if (both && active === 'spill') panelBug.hidden = true;
                 else panelBug.hidden = false;
             }
@@ -2930,6 +3588,14 @@
             var saveKind = opts.saveKind === 'bug' ? 'bug' : 'spill';
             var prevSpillTodo = contribLastWorkspaceStats.spillTodo;
             var prevBugTodo = contribLastWorkspaceStats.bugTodo;
+
+            function warnRefreshFailed() {
+                showContributorSaveError(
+                    'Your save reached the server, but reloading the workspace failed. Refresh the page (F5) — your data is stored in the database.',
+                    saveKind
+                );
+            }
+
             fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
                 .then(function (r) {
                     return r.json().then(function (j) {
@@ -2937,22 +3603,39 @@
                     });
                 })
                 .then(function (res) {
-                    if (res.status === 410 || !res.ok || !res.body || !res.body.ok) return;
+                    if (res.status === 410) {
+                        if (saveKey) {
+                            showContributorSaveError(
+                                'This invite has expired. Open a new invite link from the analyzer.',
+                                saveKind
+                            );
+                        }
+                        return;
+                    }
+                    if (!res.ok || !res.body || !res.body.ok) {
+                        if (saveKey) warnRefreshFailed();
+                        return;
+                    }
+                    if (saveKey && opts.mergeEditPatch) {
+                        mergeSavedIntoSessionEdits(res.body, saveKey, opts.mergeEditPatch);
+                    }
                     renderContributorWorkspace(res.body, token, { activePanel: activePanel });
                     if (!saveKey) return;
                     var st = getWorkspaceCompletionState(res.body);
                     var hadIncompleteBefore = prevSpillTodo > 0 || prevBugTodo > 0;
                     if (st.allComplete && hadIncompleteBefore) {
                         showThankYouModal(saveKey);
-                    } else {
-                        showInlineSaveMessage(saveKey, saveKind);
                     }
                 })
-                .catch(function () {});
+                .catch(function () {
+                    if (saveKey) warnRefreshFailed();
+                });
         }
 
         function renderContributorWorkspace(data, token, opts) {
             opts = opts || {};
+            token = String(token || '').trim();
+            window.contribSessionToken = token;
             var issues = data.issues || [];
             var editsByKey = editMapFromRows(data.edits);
             var spillIssues = [];
@@ -2968,6 +3651,25 @@
             contribNavVisibility.showSpill = showSpill;
             contribNavVisibility.showBug = showBug;
 
+            var catSection = document.getElementById('contribCategorySection');
+            if (catSection) {
+                catSection.hidden = !(showSpill || showBug);
+                if (catSection.hidden) {
+                    setCategoryGuideNavActive(false);
+                    setBugCategoryGuideNavActive(false);
+                }
+            }
+            var spillGuideBtn = document.getElementById('contribCategoryGuideNavBtn');
+            var spillGuideWrap = document.getElementById('contribSpillCategoryGuideWrap');
+            var bugWrap = document.getElementById('contribBugCategoryNavWrap');
+            var bugGuideBtnEl = document.getElementById('contribBugCategoryGuideNavBtn');
+            if (spillGuideWrap) spillGuideWrap.hidden = !showSpill;
+            if (spillGuideBtn) spillGuideBtn.hidden = !showSpill;
+            if (!showSpill) setCategoryGuideNavActive(false);
+            if (bugWrap) bugWrap.hidden = !showBug;
+            if (bugGuideBtnEl) bugGuideBtnEl.hidden = !showBug;
+            if (!showBug) setBugCategoryGuideNavActive(false);
+
             var hints = {
                 onlySpillover: showSpill && !showBug,
                 onlyBugs: showBug && !showSpill,
@@ -2981,8 +3683,6 @@
             if (hints.mixed) {
                 contribChromeCtx = {
                     hints: hints,
-                    spillStats: { todo: spillPart.todo.length, done: spillPart.done.length },
-                    bugStats: { todo: bugPart.todo.length, done: bugPart.done.length },
                     data: data
                 };
             } else {
@@ -2998,9 +3698,23 @@
                 contribLastWorkspaceStats.bugTodo = 0;
                 contribNavVisibility.showSpill = false;
                 contribNavVisibility.showBug = false;
+                var catSectionEmpty = document.getElementById('contribCategorySection');
+                if (catSectionEmpty) catSectionEmpty.hidden = true;
+                var spillGuideEmpty = document.getElementById('contribCategoryGuideNavBtn');
+                var spillWrapEmpty = document.getElementById('contribSpillCategoryGuideWrap');
+                if (spillWrapEmpty) spillWrapEmpty.hidden = true;
+                if (spillGuideEmpty) spillGuideEmpty.hidden = true;
+                var bugWrapEmpty = document.getElementById('contribBugCategoryNavWrap');
+                if (bugWrapEmpty) bugWrapEmpty.hidden = true;
+                var bugGuideBtnEmpty = document.getElementById('contribBugCategoryGuideNavBtn');
+                if (bugGuideBtnEmpty) bugGuideBtnEmpty.hidden = true;
+                setCategoryGuideNavActive(false);
+                setBugCategoryGuideNavActive(false);
                 if (tabsEl) tabsEl.innerHTML = '';
                 var panelCatEmpty = document.getElementById('panelCategoryGuide');
                 if (panelCatEmpty) panelCatEmpty.hidden = true;
+                var panelBugCatEmpty = document.getElementById('panelBugCategoryGuide');
+                if (panelBugCatEmpty) panelBugCatEmpty.hidden = true;
                 if (panelSpill) {
                     panelSpill.hidden = false;
                     panelSpill.innerHTML =
@@ -3011,7 +3725,7 @@
                     panelBug.innerHTML = '';
                 }
                 updateWorkspaceChrome(data, hints);
-                initSubmittedStoreForToken(token);
+                renderIssuesNavList([], {});
                 return;
             }
 
@@ -3021,8 +3735,6 @@
                     '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>';
                 var icoBug =
                     '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
-                var icoCat =
-                    '<svg class="contrib-sidenav__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>';
                 if (showSpill) {
                     tabsEl.innerHTML +=
                         '<button type="button" role="tab" class="contrib-sidenav__btn contrib-sidenav__btn--active" data-panel="spill" aria-selected="true">' +
@@ -3039,12 +3751,6 @@
                         icoBug +
                         'Bugs</button>';
                 }
-                if (showSpill) {
-                    tabsEl.innerHTML +=
-                        '<button type="button" role="tab" class="contrib-sidenav__btn" data-panel="categories" aria-selected="false">' +
-                        icoCat +
-                        'Category guide</button>';
-                }
                 if (
                     showSpill &&
                     showBug &&
@@ -3060,16 +3766,24 @@
                     bBug.setAttribute('aria-selected', 'true');
                 }
                 if (showSpill && opts.activePanel === 'categories') {
-                    var catBtn = tabsEl.querySelector('[data-panel="categories"]');
-                    if (catBtn) {
-                        var navBtns = tabsEl.querySelectorAll('.contrib-sidenav__btn[data-panel]');
-                        for (var nb = 0; nb < navBtns.length; nb++) {
-                            var btn = navBtns[nb];
-                            var on = btn.getAttribute('data-panel') === 'categories';
-                            btn.classList.toggle('contrib-sidenav__btn--active', on);
-                            btn.setAttribute('aria-selected', on ? 'true' : 'false');
-                        }
+                    var navBtnsCat = tabsEl.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                    for (var nc = 0; nc < navBtnsCat.length; nc++) {
+                        navBtnsCat[nc].classList.remove('contrib-sidenav__btn--active');
+                        navBtnsCat[nc].setAttribute('aria-selected', 'false');
                     }
+                    setCategoryGuideNavActive(true);
+                    setBugCategoryGuideNavActive(false);
+                } else if (showBug && opts.activePanel === 'bugCategories') {
+                    var navBtnsBc = tabsEl.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                    for (var nb = 0; nb < navBtnsBc.length; nb++) {
+                        navBtnsBc[nb].classList.remove('contrib-sidenav__btn--active');
+                        navBtnsBc[nb].setAttribute('aria-selected', 'false');
+                    }
+                    setBugCategoryGuideNavActive(true);
+                    setCategoryGuideNavActive(false);
+                } else {
+                    setCategoryGuideNavActive(false);
+                    setBugCategoryGuideNavActive(false);
                 }
             }
 
@@ -3081,21 +3795,12 @@
                         ? '<div class="contrib-spill-done-cta" role="status">' +
                           '<div class="contrib-spill-done-cta__copy">' +
                           '<p class="contrib-spill-done-cta__lead">Spillover is complete for every issue in this invite.</p>' +
-                          '<p class="contrib-spill-done-cta__next"><strong>Now you need to fill bug data</strong> — open the <strong>Bugs</strong> tab and choose <strong>Yes or No</strong> and enter <strong>RCA</strong> for each row.</p>' +
+                          '<p class="contrib-spill-done-cta__next"><strong>Now you need to fill bug data</strong> — open the <strong>Bugs</strong> tab and choose <strong>Yes or No</strong>, enter <strong>Reason</strong>, and pick a <strong>Bug category</strong> for each row.</p>' +
                           '</div>' +
                           '<button type="button" class="contrib-spill-done-cta__btn" id="contribGoToBugsFromSpill">Open Bugs tab</button>' +
                           '</div>'
                         : '<p class="contrib-panel-dash__hint">Enter spillover <strong>reason</strong> and <strong>category</strong> for each row below.</p>';
-                    var categoryGuideCallout = spillDoneBugRemaining
-                        ? ''
-                        : '<div class="contrib-category-callout" role="region" aria-label="Category guide">' +
-                          '<p class="contrib-category-callout__text">' +
-                          'If you are not sure which <strong>category</strong> fits, open the <strong>Category guide</strong> tab in the sidebar for definitions and examples. Then pick the closest match in the category column.' +
-                          '</p>' +
-                          '<button type="button" class="contrib-category-callout__btn" id="contribSpillOpenCategoryGuide">Open Category guide</button>' +
-                          '</div>';
                     panelSpill.innerHTML =
-                        categoryGuideCallout +
                         '<h2 id="contribPanelSpillTitle" class="contrib-panel-dash__title">Spillover</h2>' +
                         '<div id="contribSpillPanelAlert" class="contrib-panel-alert contrib-panel-alert--err" role="alert" hidden></div>' +
                         spillHintBlock +
@@ -3120,7 +3825,7 @@
                           '</div>' +
                           '<button type="button" class="contrib-spill-done-cta__btn" id="contribGoToSpillFromBug">Open Spillover tab</button>' +
                           '</div>'
-                        : '<p class="contrib-panel-dash__hint">For each bug row, choose <strong>Yes or No</strong> and enter <strong>RCA</strong>.</p>';
+                        : '<p class="contrib-panel-dash__hint contrib-panel-dash__hint--one-line">For each bug row, choose <strong>Yes or No</strong>, enter <strong>Reason</strong>, and select <strong>Bug category</strong>.</p>';
                     panelBug.innerHTML =
                         '<h2 id="contribPanelBugTitle" class="contrib-panel-dash__title">Bugs</h2>' +
                         '<div id="contribBugPanelAlert" class="contrib-panel-alert contrib-panel-alert--err" role="alert" hidden></div>' +
@@ -3135,14 +3840,17 @@
             }
 
             var panelCat = document.getElementById('panelCategoryGuide');
-            setContribPanelVisibility(panelSpill, panelBug, panelCat, showSpill, showBug, opts);
+            var panelBugCat = document.getElementById('panelBugCategoryGuide');
+            setContribPanelVisibility(panelSpill, panelBug, panelCat, panelBugCat, showSpill, showBug, opts);
 
             updateWorkspaceChrome(data, hints);
             if (hints.mixed) {
                 refreshMixedInviteHeader();
             }
             setupContribNavTabsDelegation();
-            initSubmittedStoreForToken(token);
+            setupContribCategoryGuideNavButton();
+            setupContribBugCategoryGuideNavButton();
+            renderIssuesNavList(issues, editsByKey);
         }
 
         function escapeHtml(s) {
@@ -3156,71 +3864,6 @@
 
         function escapeAttr(s) {
             return escapeHtml(s).replace(/'/g, '&#39;');
-        }
-
-        var contribSubmittedStore = { token: '', keys: [] };
-
-        function submittedStorageKey(token) {
-            return 'jiraSpilloverSubmitted:' + String(token || '').trim();
-        }
-
-        function loadSubmittedFromStorage(token) {
-            try {
-                var raw = sessionStorage.getItem(submittedStorageKey(token));
-                if (!raw) return [];
-                var arr = JSON.parse(raw);
-                return Array.isArray(arr) ? arr : [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveSubmittedToStorage(token, keys) {
-            try {
-                sessionStorage.setItem(submittedStorageKey(token), JSON.stringify(keys));
-            } catch (e) {}
-        }
-
-        function renderSubmittedNavList() {
-            var ul = document.getElementById('contribSubmittedList');
-            if (!ul) return;
-            var keys = contribSubmittedStore.keys.slice().sort();
-            if (!keys.length) {
-                ul.innerHTML =
-                    '<li class="contrib-submitted-list__empty muted" role="presentation">None yet</li>';
-                return;
-            }
-            var html = '';
-            for (var i = 0; i < keys.length; i++) {
-                html +=
-                    '<li class="contrib-submitted-list__item"><code>' +
-                    escapeHtml(keys[i]) +
-                    '</code></li>';
-            }
-            ul.innerHTML = html;
-        }
-
-        function initSubmittedStoreForToken(token) {
-            token = String(token || '').trim();
-            if (!token) return;
-            contribSubmittedStore.token = token;
-            contribSubmittedStore.keys = loadSubmittedFromStorage(token);
-            renderSubmittedNavList();
-        }
-
-        function recordSubmittedIssueKey(issueKey, token) {
-            token = String(token || '').trim();
-            var k = normalizeIssueKeyLookup(issueKey);
-            if (!token || !k) return;
-            if (contribSubmittedStore.token !== token) {
-                contribSubmittedStore.token = token;
-                contribSubmittedStore.keys = loadSubmittedFromStorage(token);
-            }
-            if (contribSubmittedStore.keys.indexOf(k) === -1) {
-                contribSubmittedStore.keys.push(k);
-                saveSubmittedToStorage(token, contribSubmittedStore.keys);
-            }
-            renderSubmittedNavList();
         }
 
         function categoryOptionsHtml(selected) {
@@ -3297,15 +3940,15 @@
         function contributorRequestHeading(hints) {
             hints = hints || {};
             if (hints.onlySpillover) {
-                return 'Use the Spillover tab for your assigned issues.';
+                return "You're invited to fill the spillover.";
             }
             if (hints.onlyBugs) {
-                return 'Use the Bugs tab for your assigned issues.';
+                return "You're invited to fill the bug.";
             }
             if (hints.mixed) {
-                return 'Use Spillover and Bugs tabs for your assigned issues.';
+                return "You're invited to fill the spillover and the bug.";
             }
-            return 'Use the tabs below for your assigned issues.';
+            return "You're invited to complete your assigned fields.";
         }
 
         function updateWorkspaceChrome(data, hints) {
@@ -3330,37 +3973,17 @@
             if (wn) wn.textContent = contributorSidebarWelcomeName(data);
             if (!ps) return;
 
-            if (hints.mixed) {
-                ps.textContent = '';
-                return;
-            }
-
-            var st = getWorkspaceCompletionState(data);
             var invite = contributorRequestHeading(hints);
-            var statsLine = '';
-            if (hints.onlySpillover && st.showSpill) {
-                statsLine = todoDoneStatPhrase(st.spillTodo, st.spillDone);
-            } else if (hints.onlyBugs && st.showBug) {
-                statsLine = todoDoneStatPhrase(st.bugTodo, st.bugDone);
-            } else {
-                var parts = [];
-                if (st.showSpill) parts.push(todoDoneStatPhrase(st.spillTodo, st.spillDone));
-                if (st.showBug) parts.push(todoDoneStatPhrase(st.bugTodo, st.bugDone));
-                statsLine = parts.join(' · ');
-            }
-
             ps.innerHTML =
                 '<span class="contrib-page-head__invite">' +
                 escapeHtml(invite) +
-                '</span>' +
-                (statsLine
-                    ? '<br /><span class="contrib-page-head__statline muted">' +
-                      escapeHtml(statsLine) +
-                      '</span>'
-                    : '');
+                '</span>';
         }
 
         function restoreContributorLandingView() {
+            try {
+                if (typeof teardownUserDashboardSilk === 'function') teardownUserDashboardSilk();
+            } catch (eSilkTeardown) {}
             document.body.classList.remove('contrib-session');
             document.body.classList.remove('contrib-nav-open');
             document.documentElement.classList.remove('contrib-invite-pending');
@@ -3402,6 +4025,298 @@
             if (ps) ps.textContent = '';
             var wn = document.getElementById('contribSidebarWelcomeName');
             if (wn) wn.textContent = '—';
+            requestAnimationFrame(function () {
+                try {
+                    if (typeof tryInitUserDashboardSilk === 'function') tryInitUserDashboardSilk();
+                } catch (eSilk) {}
+            });
+        }
+
+        (function initUserDashboardSilkBg() {
+            /** Silk tuning: darker base + lower pattern peak (highlights) */
+            var SILK_SPEED = 5;
+            var SILK_SCALE = 1;
+            var SILK_COLOR_HEX = '#54505c';
+            var SILK_NOISE = 0;
+            var SILK_ROTATION = 0;
+
+            function hexToNormalizedRGB(hex) {
+                hex = String(hex || '').replace('#', '');
+                return [
+                    parseInt(hex.slice(0, 2), 16) / 255,
+                    parseInt(hex.slice(2, 4), 16) / 255,
+                    parseInt(hex.slice(4, 6), 16) / 255
+                ];
+            }
+
+            /* Same GLSL as React Bits Silk + @react-three/fiber (SilkPlane / ShaderMaterial) */
+            var SILK_VERTEX = [
+                'varying vec2 vUv;',
+                'varying vec3 vPosition;',
+                '',
+                'void main() {',
+                '  vPosition = position;',
+                '  vUv = uv;',
+                '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+                '}'
+            ].join('\n');
+
+            var SILK_FRAGMENT = [
+                'varying vec2 vUv;',
+                'varying vec3 vPosition;',
+                '',
+                'uniform float uTime;',
+                'uniform vec3  uColor;',
+                'uniform float uSpeed;',
+                'uniform float uScale;',
+                'uniform float uRotation;',
+                'uniform float uNoiseIntensity;',
+                '',
+                'const float e = 2.71828182845904523536;',
+                '',
+                'float noise(vec2 texCoord) {',
+                '  float G = e;',
+                '  vec2  r = (G * sin(G * texCoord));',
+                '  return fract(r.x * r.y * (1.0 + texCoord.x));',
+                '}',
+                '',
+                'vec2 rotateUvs(vec2 uv, float angle) {',
+                '  float c = cos(angle);',
+                '  float s = sin(angle);',
+                '  mat2  rot = mat2(c, -s, s, c);',
+                '  return rot * uv;',
+                '}',
+                '',
+                'void main() {',
+                '  float rnd        = noise(gl_FragCoord.xy);',
+                '  vec2  uv         = rotateUvs(vUv * uScale, uRotation);',
+                '  vec2  tex        = uv * uScale;',
+                '  float tOffset    = uSpeed * uTime;',
+                '',
+                '  tex.y += 0.03 * sin(8.0 * tex.x - tOffset);',
+                '',
+                '  /* Darker silk: low peak / contrast vs original 0.6 + 0.4 */',
+                '  float pattern = 0.34 +',
+                '                  0.18 * sin(5.0 * (tex.x + tex.y +',
+                '                                   cos(3.0 * tex.x + 5.0 * tex.y) +',
+                '                                   0.02 * tOffset) +',
+                '                           sin(20.0 * (tex.x + tex.y - 0.1 * tOffset)));',
+                '',
+                '  vec4 col = vec4(uColor, 1.0) * vec4(pattern) - rnd / 15.0 * uNoiseIntensity;',
+                '  col.a = 1.0;',
+                '  gl_FragColor = col;',
+                '}'
+            ].join('\n');
+
+            function loadThreeJs(done) {
+                if (typeof THREE !== 'undefined') {
+                    done();
+                    return;
+                }
+                var existing = document.querySelector('script[data-three-silk="1"]');
+                if (existing) {
+                    if (existing.getAttribute('data-loaded') === '1') {
+                        done();
+                    } else {
+                        existing.addEventListener(
+                            'load',
+                            function onThreeLoad() {
+                                done();
+                            },
+                            { once: true }
+                        );
+                        existing.addEventListener(
+                            'error',
+                            function () {
+                                done();
+                            },
+                            { once: true }
+                        );
+                    }
+                    return;
+                }
+                var s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js';
+                s.async = true;
+                s.setAttribute('data-three-silk', '1');
+                s.addEventListener('load', function () {
+                    s.setAttribute('data-loaded', '1');
+                    done();
+                });
+                s.addEventListener(
+                    'error',
+                    function () {
+                        done();
+                    },
+                    { once: true }
+                );
+                document.head.appendChild(s);
+            }
+
+            window.teardownUserDashboardSilk = function () {
+                if (window.__userDashboardSilkRaf) {
+                    cancelAnimationFrame(window.__userDashboardSilkRaf);
+                    window.__userDashboardSilkRaf = null;
+                }
+                if (window.__userDashboardSilkResize) {
+                    window.removeEventListener('resize', window.__userDashboardSilkResize);
+                    window.__userDashboardSilkResize = null;
+                }
+                var sceneDispose = window.__userDashboardSilkScene;
+                if (sceneDispose) {
+                    try {
+                        sceneDispose.traverse(function (obj) {
+                            if (obj.geometry) obj.geometry.dispose();
+                            if (obj.material) obj.material.dispose();
+                        });
+                    } catch (eTr) {}
+                    window.__userDashboardSilkScene = null;
+                }
+                var r = window.__userDashboardSilkRenderer;
+                if (r) {
+                    try {
+                        r.dispose();
+                    } catch (eR) {}
+                    window.__userDashboardSilkRenderer = null;
+                }
+                var el = document.getElementById('userDashboardSilkBg');
+                if (el) {
+                    el.innerHTML = '';
+                    el.hidden = true;
+                    el.setAttribute('aria-hidden', 'true');
+                    delete el.dataset.silkReady;
+                }
+            };
+
+            window.tryInitUserDashboardSilk = function () {
+                if (!document.body.classList.contains('contrib-session')) return;
+                try {
+                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                } catch (eRm) {}
+                var mount = document.getElementById('userDashboardSilkBg');
+                if (!mount || mount.dataset.silkReady === '1') return;
+                if (window.__userDashboardSilkRenderer) return;
+
+                mount.hidden = false;
+                mount.setAttribute('aria-hidden', 'true');
+
+                loadThreeJs(function () {
+                    if (typeof THREE === 'undefined') {
+                        mount.hidden = true;
+                        return;
+                    }
+                    if (!document.body.classList.contains('contrib-session')) {
+                        mount.hidden = true;
+                        return;
+                    }
+                    if (mount.dataset.silkReady === '1' || window.__userDashboardSilkRenderer) return;
+
+                    var renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    renderer.setClearColor(0x0d0d0d, 1);
+                    mount.appendChild(renderer.domElement);
+
+                    var scene = new THREE.Scene();
+                    /* Default @react-three/fiber Canvas: PerspectiveCamera fov 75, position z=5 */
+                    var aspect = window.innerWidth / Math.max(window.innerHeight, 1);
+                    var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+                    camera.position.z = 5;
+
+                    var rgb = hexToNormalizedRGB(SILK_COLOR_HEX);
+                    var uniforms = {
+                        uTime: { value: 0 },
+                        uSpeed: { value: SILK_SPEED },
+                        uScale: { value: SILK_SCALE },
+                        uNoiseIntensity: { value: SILK_NOISE },
+                        uRotation: { value: SILK_ROTATION },
+                        uColor: { value: new THREE.Color(rgb[0], rgb[1], rgb[2]) }
+                    };
+
+                    var material = new THREE.ShaderMaterial({
+                        uniforms: uniforms,
+                        vertexShader: SILK_VERTEX,
+                        fragmentShader: SILK_FRAGMENT
+                    });
+
+                    var geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+                    var mesh = new THREE.Mesh(geometry, material);
+                    scene.add(mesh);
+
+                    function silkViewportWorldSize() {
+                        var vFov = (camera.fov * Math.PI) / 180;
+                        var dist = camera.position.z;
+                        var vHeight = 2 * Math.tan(vFov / 2) * dist;
+                        var vWidth = vHeight * camera.aspect;
+                        return { width: vWidth, height: vHeight };
+                    }
+
+                    function applySilkPlaneScale() {
+                        var vp = silkViewportWorldSize();
+                        mesh.scale.set(vp.width, vp.height, 1);
+                    }
+
+                    applySilkPlaneScale();
+
+                    if (window.__userDashboardSilkRenderer) {
+                        try {
+                            geometry.dispose();
+                            material.dispose();
+                            renderer.dispose();
+                            if (renderer.domElement && renderer.domElement.parentNode) {
+                                renderer.domElement.parentNode.removeChild(renderer.domElement);
+                            }
+                        } catch (eDup) {}
+                        return;
+                    }
+
+                    var clock = new THREE.Clock();
+
+                    function resizeSilk() {
+                        var w = window.innerWidth;
+                        var h = Math.max(window.innerHeight, 1);
+                        camera.aspect = w / h;
+                        camera.updateProjectionMatrix();
+                        applySilkPlaneScale();
+                        renderer.setSize(w, h);
+                    }
+
+                    function animate() {
+                        window.__userDashboardSilkRaf = requestAnimationFrame(animate);
+                        if (document.hidden) return;
+                        var delta = clock.getDelta();
+                        material.uniforms.uTime.value += 0.1 * delta;
+                        renderer.render(scene, camera);
+                    }
+
+                    window.__userDashboardSilkRenderer = renderer;
+                    window.__userDashboardSilkScene = scene;
+                    window.__userDashboardSilkResize = resizeSilk;
+                    window.addEventListener('resize', resizeSilk, { passive: true });
+
+                    mount.dataset.silkReady = '1';
+                    animate();
+                });
+            };
+        })();
+
+        /** Stored so F5 / reload can call GET /session without ?token= in the URL (sessionStorage + localStorage backup). */
+        var CONTRIB_INVITE_TOKEN_STORAGE_KEY = 'jiraSpilloverContribInviteToken';
+
+        function persistContribInviteToken(token) {
+            try {
+                token = String(token || '').trim();
+                if (!/^[0-9a-f-]{36}$/i.test(token)) return;
+                sessionStorage.setItem(CONTRIB_INVITE_TOKEN_STORAGE_KEY, token);
+                localStorage.setItem(CONTRIB_INVITE_TOKEN_STORAGE_KEY, token);
+            } catch (e) {}
+        }
+
+        function clearStoredContribInviteToken() {
+            try {
+                sessionStorage.removeItem(CONTRIB_INVITE_TOKEN_STORAGE_KEY);
+                localStorage.removeItem(CONTRIB_INVITE_TOKEN_STORAGE_KEY);
+            } catch (e) {}
         }
 
         function loadSession(token) {
@@ -3425,6 +4340,7 @@
                 })
                 .then(function (res) {
                     if (res.status === 410) {
+                        clearStoredContribInviteToken();
                         restoreContributorLandingView();
                         showBanner(
                             (res.body && res.body.error) || 'This invite has expired.',
@@ -3442,6 +4358,7 @@
                     document.documentElement.classList.remove('contrib-invite-pending');
 
                     var data = res.body;
+                    persistContribInviteToken(token);
                     renderContributorWorkspace(data, token);
                     requestAnimationFrame(function () {
                         triggerWorkspaceEnterAnimation();
@@ -3457,15 +4374,34 @@
                 });
         }
 
+        /**
+         * Reload flow: with the same invite token, GET /api/invite/:token/session returns issues + edits
+         * from Postgres; editMapFromRows → editsByKey; rows fill PROD / RCA / category / spill fields from ed.
+         * Token may come from ?token=, sessionStorage, or localStorage (see persistContribInviteToken).
+         */
         function initTokenFromQuery() {
             try {
                 var p = new URLSearchParams(window.location.search);
                 var t = p.get('token');
-                if (t) {
+                var fromUrl = !!(t && String(t).trim());
+                if (!fromUrl) {
+                    try {
+                        t =
+                            sessionStorage.getItem(CONTRIB_INVITE_TOKEN_STORAGE_KEY) ||
+                            localStorage.getItem(CONTRIB_INVITE_TOKEN_STORAGE_KEY);
+                    } catch (eSt) {}
+                }
+                if (t && String(t).trim()) {
+                    t = String(t).trim();
+                    if (!/^[0-9a-f-]{36}$/i.test(t)) return;
                     document.getElementById('tokenInput').value = t;
                     document.getElementById('tokenRow').style.display = 'none';
-                    document.getElementById('tokenCard').querySelector('.card__head').textContent =
-                        'Invite access · loaded from link';
+                    var cardHead = document.getElementById('tokenCard');
+                    if (cardHead) {
+                        cardHead.querySelector('.card__head').textContent = fromUrl
+                            ? 'Invite access · loaded from link'
+                            : 'Invite access · restored in this browser';
+                    }
                     loadSession(t);
                 }
             } catch (e) {}
@@ -3475,13 +4411,6 @@
             loadSession(document.getElementById('tokenInput').value);
         });
 
-        var fullAnalyzerBtn = document.getElementById('fullAnalyzerGate');
-        if (fullAnalyzerBtn) {
-            fullAnalyzerBtn.addEventListener('click', function () {
-                showAdminOnlyModal();
-            });
-        }
-
         wireContribModals();
         (function wireMobileContributorNav() {
             var toggle = document.getElementById('contribNavMenuToggle');
@@ -3490,8 +4419,7 @@
 
             function modalBlocksEscape() {
                 var thank = document.getElementById('contribThankModal');
-                var admin = document.getElementById('contribAdminModal');
-                return (thank && !thank.hidden) || (admin && !admin.hidden);
+                return thank && !thank.hidden;
             }
 
             function setNavOpen(open) {
@@ -3520,9 +4448,32 @@
                     if (ev.target.closest('.contrib-sidenav__btn[data-panel]')) setNavOpen(false);
                 });
             }
-            var faBtn = document.getElementById('fullAnalyzerGate');
-            if (faBtn) {
-                faBtn.addEventListener('click', function () {
+            var issuesNavList = document.getElementById('contribIssuesNavList');
+            if (issuesNavList) {
+                issuesNavList.addEventListener('click', function (ev) {
+                    var btn = ev.target.closest('.contrib-issues-nav__btn');
+                    if (!btn || !issuesNavList.contains(btn)) return;
+                    var key = btn.getAttribute('data-issue-key');
+                    var row = findContribTableRowByIssueKey(key);
+                    if (row) {
+                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        row.classList.add('contrib-issue-row--flash');
+                        window.setTimeout(function () {
+                            row.classList.remove('contrib-issue-row--flash');
+                        }, 2000);
+                    }
+                    setNavOpen(false);
+                });
+            }
+            var catGuideNavBtn = document.getElementById('contribCategoryGuideNavBtn');
+            if (catGuideNavBtn) {
+                catGuideNavBtn.addEventListener('click', function () {
+                    setNavOpen(false);
+                });
+            }
+            var bugCatGuideNavBtn = document.getElementById('contribBugCategoryGuideNavBtn');
+            if (bugCatGuideNavBtn) {
+                bugCatGuideNavBtn.addEventListener('click', function () {
                     setNavOpen(false);
                 });
             }
@@ -3554,12 +4505,6 @@
                     );
                     if (spillTab) spillTab.click();
                     return;
-                }
-                if (ev.target && ev.target.closest('#contribSpillOpenCategoryGuide')) {
-                    var catTab = document.querySelector(
-                        '#contribNavTabs .contrib-sidenav__btn[data-panel="categories"]'
-                    );
-                    if (catTab) catTab.click();
                 }
             });
         })();

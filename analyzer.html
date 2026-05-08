@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jira Spillover Analyzer</title>
+    <link rel="icon" href="images/favicon-zoom.svg" type="image/svg+xml" sizes="any" />
+    <link rel="icon" href="images/favicon.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="images/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -607,7 +610,7 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            transform: scale(1.65);
+            transform: scale(1.72);
             transform-origin: center center;
             display: block;
         }
@@ -1008,7 +1011,8 @@
         }
 
         .spillover-category-select,
-        .bug-prod-select {
+        .bug-prod-select,
+        .bug-category-select {
             width: 100%;
             box-sizing: border-box;
             padding: 0.45rem 2rem 0.45rem 0.55rem;
@@ -1027,7 +1031,8 @@
         }
 
         .spillover-category-select:focus,
-        .bug-prod-select:focus {
+        .bug-prod-select:focus,
+        .bug-category-select:focus {
             outline: none;
             border-color: rgba(234, 179, 8, 0.55);
             box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.12);
@@ -3433,6 +3438,35 @@
                 background: rgba(255, 255, 255, 0.08);
             }
 
+            .mobile-topbar__logo-wrap {
+                flex-shrink: 0;
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mobile-topbar__logo-wrap img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+                transform: scale(1.14);
+                transform-origin: center center;
+                display: block;
+            }
+
+            .mobile-topbar__brand {
+                display: flex;
+                align-items: center;
+                gap: 0.55rem;
+                min-width: 0;
+                flex: 1;
+            }
+
             .mobile-topbar__title {
                 font-size: 0.8rem;
                 font-weight: 600;
@@ -3767,60 +3801,6 @@
             color: var(--text);
         }
 
-        .ana-bars {
-            display: flex;
-            flex-direction: column;
-            gap: 0.85rem;
-        }
-
-        .ana-bar-line {
-            display: grid;
-            grid-template-columns: minmax(5.5rem, 7.5rem) 1fr 2.75rem;
-            gap: 0.55rem 0.9rem;
-            align-items: center;
-            font-size: 0.8125rem;
-        }
-
-        .ana-bar-line__label {
-            color: #b0b0b0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-weight: 500;
-        }
-
-        .ana-bar-line__track {
-            height: 0.55rem;
-            border-radius: 6px;
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            overflow: hidden;
-        }
-
-        .ana-bar-line__fill {
-            height: 100%;
-            border-radius: 5px;
-            background: linear-gradient(90deg, #2563eb, #60a5fa);
-            min-width: 0;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
-        }
-
-        .ana-bar-line__fill--yes {
-            background: linear-gradient(90deg, #b45309, #fbbf24);
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
-        }
-
-        .ana-bar-line__fill--no {
-            background: linear-gradient(90deg, #4b5563, #9ca3af);
-        }
-
-        .ana-bar-line__num {
-            text-align: right;
-            font-variant-numeric: tabular-nums;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
         .ana-donut-hint {
             font-size: 0.78rem;
             color: var(--text-muted);
@@ -3828,6 +3808,88 @@
             line-height: 1.45;
             padding-top: 0.5rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ana-analytics-row {
+            align-items: stretch;
+        }
+
+        .ana-chart-card__subtitle {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin: 0.35rem 0 0;
+            line-height: 1.45;
+        }
+
+        .ana-chart-card__body {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.15rem;
+        }
+
+        .ana-pie-wrap {
+            flex: 0 0 auto;
+            width: min(220px, 100%);
+        }
+
+        .ana-pie-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .ana-chart-card__legend {
+            flex: 1 1 12rem;
+            min-width: 0;
+        }
+
+        .ana-pie-legend {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-size: 0.8125rem;
+        }
+
+        .ana-pie-legend li {
+            display: grid;
+            grid-template-columns: 0.55rem 1fr auto auto;
+            gap: 0.45rem 0.65rem;
+            align-items: center;
+            margin-bottom: 0.35rem;
+            line-height: 1.35;
+        }
+
+        .ana-pie-legend li:last-child {
+            margin-bottom: 0;
+        }
+
+        .ana-pie-legend__sw {
+            width: 0.55rem;
+            height: 0.55rem;
+            border-radius: 2px;
+        }
+
+        .ana-pie-legend__txt {
+            word-break: break-word;
+        }
+
+        .ana-pie-legend__pct {
+            font-variant-numeric: tabular-nums;
+            color: var(--text-muted);
+        }
+
+        .ana-pie-legend__num {
+            font-variant-numeric: tabular-nums;
+            color: var(--text-dim);
+            font-size: 0.78rem;
+        }
+
+        .ana-pie-empty-note {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin: 0.65rem 0 0;
+            line-height: 1.4;
         }
 
         .analytics-phase .panel-dark .panel-dark__body {
@@ -3927,11 +3989,28 @@
             gap: 1rem;
         }
 
+        .export-graph-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+            gap: 1rem;
+            padding: 0 1rem 1rem;
+        }
+
+        .export-graph-preview-block__title {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-dim);
+            margin: 0 0 0.45rem;
+        }
+
         .export-sheet-card {
             border-radius: var(--radius);
             border: 1px solid var(--border);
             background: rgba(0, 0, 0, 0.22);
             overflow: hidden;
+            color: var(--text-muted);
         }
 
         .export-sheet-card__head {
@@ -3949,6 +4028,7 @@
             margin: 0;
             font-size: 1rem;
             font-weight: 600;
+            color: #c4c4c4;
         }
 
         .export-sheet-card__meta {
@@ -3965,6 +4045,9 @@
             gap: 0.35rem;
             align-content: flex-start;
             margin-bottom: 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(100, 116, 139, 0.65) rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.22);
         }
 
         .col-chip {
@@ -4001,7 +4084,36 @@
             overflow: auto;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.48);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(100, 116, 139, 0.65) rgba(0, 0, 0, 0.5);
+            color: var(--text-muted);
+        }
+
+        .export-preview-scroll::-webkit-scrollbar,
+        .export-sheet-card__cols::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .export-preview-scroll::-webkit-scrollbar-track,
+        .export-sheet-card__cols::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 4px;
+        }
+
+        .export-preview-scroll::-webkit-scrollbar-thumb,
+        .export-sheet-card__cols::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+            border-radius: 4px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .export-preview-scroll::-webkit-scrollbar-thumb:hover,
+        .export-sheet-card__cols::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.55);
+            background-clip: padding-box;
         }
 
         .export-preview-table {
@@ -4009,6 +4121,7 @@
             min-width: 100%;
             border-collapse: collapse;
             font-size: 0.7rem;
+            color: var(--text-muted);
         }
 
         .export-preview-table th,
@@ -4408,7 +4521,18 @@
             <button type="button" class="mobile-topbar__toggle" id="mobileNavToggle" aria-expanded="false" aria-controls="sidebarNavHost" title="Menu">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
-            <span class="mobile-topbar__title">Jira Spillover Analyzer</span>
+            <div class="mobile-topbar__brand">
+                <div class="mobile-topbar__logo-wrap" aria-hidden="true">
+                    <img
+                        src="images/LOGO.gif"
+                        alt=""
+                        width="32"
+                        height="32"
+                        decoding="async"
+                    />
+                </div>
+                <span class="mobile-topbar__title">Jira Spillover Analyzer</span>
+            </div>
         </header>
         <aside class="sidebar sidebar--rail" id="sidebarNavHost" aria-label="Primary navigation">
             <div class="sidebar__brand">
@@ -4803,7 +4927,7 @@
                     <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
 
-                <!-- Bug tracking: PROD + RCA per bug row (exported on Bug sheet) -->
+                <!-- Bug tracking: PROD, Bug category, RCA per bug row (exported on Bug sheet) -->
                 <div id="bugPhase" class="bug-dashboard-phase spillover-dashboard-phase" hidden>
                     <header class="page-head">
                         <div>
@@ -4824,13 +4948,13 @@
                             <div class="panel-dark__head panel-dark__head--stack">
                                 <div>
                                     <h2 id="bugDashHeading">Bugs</h2>
-                                    <p class="panel-dark__sub">Rows are Issue Type = Bug from your sheet. PROD and RCA export as the last two columns on the Bug sheet.</p>
+                                    <p class="panel-dark__sub">Rows are Issue Type = Bug from your sheet. PROD, Bug category, and RCA export as extra columns on the Bug sheet.</p>
                                 </div>
                             </div>
                             <div class="panel-dark__body">
                                 <div class="dash-list-toolbar">
                                     <label class="dash-list-toolbar__label" for="bugDashSearch">Search bugs</label>
-                                    <span class="dash-list-toolbar__hint">Type to filter by issue key, assignee, PROD, or RCA.</span>
+                                    <span class="dash-list-toolbar__hint">Type to filter by issue key, assignee, PROD, Bug category, or RCA.</span>
                                     <div class="dash-list-search-wrap">
                                         <svg class="dash-list-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                             <circle cx="11" cy="11" r="7" />
@@ -4881,7 +5005,7 @@
                                 <div>
                                     <h2 id="assigneeDetailSectionHeading">Issues &amp; export fields</h2>
                                     <p class="panel-dark__sub">
-                                        Every issue for this assignee from your latest Proceed. Spillover, reason, and category follow the Spillover dashboard; PROD and RCA apply to Issue Type = Bug.
+                                        Every issue for this assignee from your latest Proceed. Spillover, reason, and category follow the Spillover dashboard; PROD, Bug category, and RCA apply to Issue Type = Bug.
                                     </p>
                                 </div>
                             </div>
@@ -4918,7 +5042,7 @@
                     <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
 
-                <!-- Analytics: charts & distribution -->
+                <!-- Analytics: sprint velocity + spillover category pies from latest Proceed -->
                 <div id="analyticsPhase" class="analytics-phase secondary-dashboard dashboard-phase" hidden>
                     <header class="page-head">
                         <div>
@@ -4928,7 +5052,7 @@
                                 <span>Analytics</span>
                             </p>
                             <h1 class="page-head__title">Sprint analytics</h1>
-                            <p class="page-head__sub">Spillover split, issue mix, and workload by assignee from your latest run.</p>
+                            <p class="page-head__sub">Ticket intake vs spillover rows, and spillover category mix from your latest <strong>Proceed</strong> run.</p>
                         </div>
                         <div class="page-head__actions">
                             <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Main dashboard</button>
@@ -5420,6 +5544,7 @@
         })();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
     <script>
@@ -5434,8 +5559,10 @@
         let spilloverReasonByKey = {};
         /** Issue key → spillover category (dropdown); exported on SpillOver sheet only. */
         let spilloverCategoryByKey = {};
-        /** Issue key → PROD (Yes/No) for Bug sheet last columns. */
+        /** Issue key → PROD (Yes/No) for Bug sheet. */
         let bugProdByKey = {};
+        /** Issue key → Bug category (dropdown) for Bug sheet. */
+        let bugCategoryByKey = {};
         /** Issue key → RCA text for Bug sheet. */
         let bugRcaByKey = {};
         /** Populated when the search palette opens; lists unique issue keys for filtering. */
@@ -5540,6 +5667,19 @@
             'Carryover Work'
         ];
 
+        /** Bug defect categories — same labels as contributor workspace / DB `bug_category`. */
+        const BUG_CATEGORY_OPTIONS = [
+            'Requirements Issues',
+            'Design Problems',
+            'Implementation Errors',
+            'Testing Deficiencies',
+            'Process, Tools and Environment',
+            'Human Factors',
+            'External Factors',
+            'Data Issues',
+            'Acknowledged'
+        ];
+
         /** Database upload id when file was saved or loaded from DB (used to merge shared issue edits). */
         let currentUploadId = null;
         /** Invalidates in-flight export contributor checks when the user closes the modal during loading. */
@@ -5557,10 +5697,27 @@
         function startContributorActivityPollIfDashboard() {
             stopContributorActivityPoll();
             contributorActivityPollTimer = setInterval(function () {
-                if (!currentUploadId || !analysisSheetData || analysisSheetData.length < 2) return;
-                fetchAndMergeIssueEdits(currentUploadId);
-            }, 45000);
+                var uid = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+                if (!uid || !analysisSheetData || analysisSheetData.length < 2) return;
+                fetchAndMergeIssueEdits(uid);
+            }, 15000);
         }
+
+        /** When switching back from contributor tab, refresh shared DB edits so Bug category etc. appear without waiting for the poll. */
+        (function wireAnalyzerIssueEditsOnFocus() {
+            var lastFetchAt = 0;
+            window.addEventListener('focus', function () {
+                try {
+                    if (document.hidden) return;
+                    var uid = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+                    if (!uid || !analysisSheetData || analysisSheetData.length < 2) return;
+                    var now = Date.now();
+                    if (now - lastFetchAt < 1500) return;
+                    lastFetchAt = now;
+                    fetchAndMergeIssueEdits(uid, { refreshEvenIfNoEdits: true });
+                } catch (eF) {}
+            });
+        })();
 
         function formatRelativeTime(iso) {
             if (!iso) return '';
@@ -5623,8 +5780,9 @@
             var sc = String(row.spillover_category || '').trim();
             var pr = String(row.prod || '').trim();
             var rc = String(row.rca || '').trim();
+            var bc = String(row.bug_category || '').trim();
             if (sr !== '' || sc !== '') kinds.push('spillover');
-            if (pr !== '' || rc !== '') kinds.push('bug');
+            if (pr !== '' || rc !== '' || bc !== '') kinds.push('bug');
             return kinds;
         }
 
@@ -5633,7 +5791,9 @@
             var emptyEl = document.getElementById('dashActivityEmpty');
             var colHead = document.getElementById('dashActivityColumnHeaders');
             if (!listEl || !emptyEl) return;
-            if (!currentUploadId) {
+            var uploadIdForActivity =
+                typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            if (!uploadIdForActivity) {
                 listEl.innerHTML = '';
                 emptyEl.hidden = false;
                 emptyEl.textContent =
@@ -5649,7 +5809,7 @@
                     return fetch(
                         base +
                             '/api/uploads/' +
-                            encodeURIComponent(currentUploadId) +
+                            encodeURIComponent(uploadIdForActivity) +
                             '/issue-edits/recent?limit=' +
                             encodeURIComponent(String(DASH_PANEL_RECENT_LIMIT))
                     );
@@ -5753,16 +5913,66 @@
                 });
         }
 
-        function mergeIssueEditsIntoMaps(edits) {
+        /** Merge DB edit rows into lookup maps. With replaceMaps, maps are cleared first so the DB is the source of truth (fixes stale empty bug_category after contributor saves). */
+        function mergeIssueEditsIntoMaps(edits, opts) {
+            opts = opts || {};
+            if (opts.replaceMaps) {
+                spilloverReasonByKey = {};
+                spilloverCategoryByKey = {};
+                bugProdByKey = {};
+                bugRcaByKey = {};
+                bugCategoryByKey = {};
+            }
             if (!edits || !edits.length) return;
+
+            function pickMergeStr(prev, next) {
+                var n = String(next == null ? '' : next).trim();
+                if (n !== '') return n;
+                return String(prev == null ? '' : prev).trim();
+            }
+
+            function rowBugCategory(row) {
+                if (!row || typeof row !== 'object') return '';
+                var direct =
+                    row.bug_category !== undefined && row.bug_category !== null
+                        ? row.bug_category
+                        : null;
+                if (direct != null && String(direct).trim() !== '') return String(direct).trim();
+                if (
+                    row.bugCategory !== undefined &&
+                    row.bugCategory != null &&
+                    String(row.bugCategory).trim() !== ''
+                ) {
+                    return String(row.bugCategory).trim();
+                }
+                for (var key in row) {
+                    if (!Object.prototype.hasOwnProperty.call(row, key)) continue;
+                    var lk = String(key).toLowerCase().replace(/[\s_-]/g, '');
+                    if (lk.indexOf('bug') >= 0 && lk.indexOf('categor') >= 0) {
+                        var v = row[key];
+                        if (v != null && String(v).trim() !== '') return String(v).trim();
+                    }
+                }
+                return '';
+            }
+
             for (var i = 0; i < edits.length; i++) {
                 var row = edits[i];
-                var k = row.issue_key;
+                var ikRaw = row.issue_key != null ? row.issue_key : row.issueKey;
+                var k = normalizeIssueKeyDedupe(ikRaw);
                 if (!k) continue;
-                spilloverReasonByKey[k] = row.spillover_reason != null ? String(row.spillover_reason) : '';
-                spilloverCategoryByKey[k] = row.spillover_category != null ? String(row.spillover_category) : '';
-                bugProdByKey[k] = row.prod != null ? String(row.prod) : '';
-                bugRcaByKey[k] = row.rca != null ? String(row.rca) : '';
+
+                spilloverReasonByKey[k] = pickMergeStr(
+                    spilloverReasonByKey[k],
+                    row.spillover_reason != null ? row.spillover_reason : ''
+                );
+                spilloverCategoryByKey[k] = pickMergeStr(
+                    spilloverCategoryByKey[k],
+                    row.spillover_category != null ? row.spillover_category : ''
+                );
+                bugProdByKey[k] = pickMergeStr(bugProdByKey[k], row.prod != null ? row.prod : '');
+                bugRcaByKey[k] = pickMergeStr(bugRcaByKey[k], row.rca != null ? row.rca : '');
+                bugCategoryByKey[k] = pickMergeStr(bugCategoryByKey[k], rowBugCategory(row));
             }
         }
 
@@ -5800,13 +6010,17 @@
             var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
             return fetch(base + '/api/uploads/' + encodeURIComponent(uploadId) + '/issue-edits')
                 .then(function (r) {
-                    return r.json();
+                    return r.json().then(function (data) {
+                        return { ok: r.ok, data: data };
+                    });
                 })
-                .then(function (data) {
-                    if (data.edits && data.edits.length) {
-                        mergeIssueEditsIntoMaps(data.edits);
-                    }
-                    if (opts.refreshEvenIfNoEdits || (data.edits && data.edits.length)) {
+                .then(function (res) {
+                    var data = res && res.data ? res.data : {};
+                    var edits = data.edits;
+                    if (res.ok) {
+                        mergeIssueEditsIntoMaps(Array.isArray(edits) ? edits : [], { replaceMaps: true });
+                        refreshIssueEditDependentDashboards();
+                    } else if (opts.refreshEvenIfNoEdits) {
                         refreshIssueEditDependentDashboards();
                     }
                     var dash = document.getElementById('dashboardPhase');
@@ -5815,7 +6029,11 @@
                         refreshDashSubmissionSummary();
                     }
                 })
-                .catch(function () {});
+                .catch(function () {
+                    if (opts.refreshEvenIfNoEdits) {
+                        refreshIssueEditDependentDashboards();
+                    }
+                });
         }
 
         function updateNavForView(view) {
@@ -5913,8 +6131,9 @@
                 analysisSheetData &&
                 analysisSheetData.length >= 2
             ) {
-                if (currentUploadId) {
-                    fetchAndMergeIssueEdits(currentUploadId, { refreshEvenIfNoEdits: true });
+                var mergeUid = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+                if (mergeUid) {
+                    fetchAndMergeIssueEdits(mergeUid, { refreshEvenIfNoEdits: true });
                 } else {
                     refreshIssueEditDependentDashboards();
                 }
@@ -6624,7 +6843,9 @@
                 wrap.hidden = !show;
             }
 
-            if (!currentUploadId) {
+            var uploadId =
+                typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            if (!uploadId) {
                 emptyEl.hidden = false;
                 emptyEl.textContent =
                     'Save your workbook to the database so submission status can use your upload.';
@@ -6633,7 +6854,7 @@
                 setDashSubmissionStatus('', '');
                 return;
             }
-            var uploadId = String(currentUploadId);
+            uploadId = String(uploadId);
             var thVal = getProceedThresholdForDashboards();
             setDashSubmissionStatus('Loading submission status…', 'pending');
             emptyEl.hidden = true;
@@ -7257,6 +7478,7 @@
                 '<th scope="col">Reason (export)</th>' +
                 '<th scope="col">Category</th>' +
                 '<th scope="col">PROD</th>' +
+                '<th scope="col">Bug category</th>' +
                 '<th scope="col">RCA</th>' +
                 '</tr></thead><tbody>';
             for (i = 0; i < keys.length; i++) {
@@ -7271,10 +7493,10 @@
                         : false;
                 if (isSpill) {
                     spillCount += 1;
-                    var rv = spilloverReasonByKey[k];
+                    var rv = getIssueEditMapValue(spilloverReasonByKey, k);
                     var rStr = rv == null ? '' : String(rv).trim();
                     if (rStr) reasonFilled += 1;
-                    var cv = spilloverCategoryByKey[k];
+                    var cv = getIssueEditMapValue(spilloverCategoryByKey, k);
                     var cStr = cv == null ? '' : String(cv).trim();
                     if (cStr) catFilled += 1;
                 }
@@ -7287,12 +7509,12 @@
                     reasonCell = '\u2014';
                     catCell = '\u2014';
                 } else {
-                    var rv2 = spilloverReasonByKey[k];
+                    var rv2 = getIssueEditMapValue(spilloverReasonByKey, k);
                     var rOk = rv2 != null && String(rv2).trim() !== '';
                     reasonCell = rOk
                         ? '<span class="assignee-dash-tag assignee-dash-tag--ok">Entered</span>'
                         : '<span class="assignee-dash-tag assignee-dash-tag--miss">Empty</span>';
-                    var cv2 = spilloverCategoryByKey[k];
+                    var cv2 = getIssueEditMapValue(spilloverCategoryByKey, k);
                     var cOk = cv2 != null && String(cv2).trim() !== '';
                     catCell = cOk
                         ? '<span class="assignee-dash-tag assignee-dash-tag--ok">Set</span>'
@@ -7314,9 +7536,10 @@
                     itypeIdx >= 0 && rowR[itypeIdx] != null ? String(rowR[itypeIdx]).trim() : '';
                 var typeDisp = typeRaw ? escapeHtml(typeRaw) : '\u2014';
                 var prodCell = '\u2014';
+                var bugCatCell = '\u2014';
                 var rcaCell = '\u2014';
                 if (itypeIdx >= 0 && isBugRow(rowR, itypeIdx)) {
-                    var pv = bugProdByKey[k];
+                    var pv = getIssueEditMapValue(bugProdByKey, k);
                     var pStr = pv == null ? '' : String(pv).trim();
                     prodCell = pStr
                         ? '<span class="assignee-dash-tag ' +
@@ -7325,7 +7548,12 @@
                           escapeHtml(pStr) +
                           '</span>'
                         : '<span class="assignee-dash-tag assignee-dash-tag--miss">Not set</span>';
-                    var rcaV = bugRcaByKey[k];
+                    var bcv = getIssueEditMapValue(bugCategoryByKey, k);
+                    var bcStr = bcv == null ? '' : String(bcv).trim();
+                    bugCatCell = bcStr
+                        ? '<span class="assignee-dash-tag assignee-dash-tag--ok">Set</span>'
+                        : '<span class="assignee-dash-tag assignee-dash-tag--miss">Not set</span>';
+                    var rcaV = getIssueEditMapValue(bugRcaByKey, k);
                     var rcaStr = rcaV == null ? '' : String(rcaV).trim();
                     rcaCell = rcaStr
                         ? '<span class="assignee-dash-tag assignee-dash-tag--ok">Entered</span>'
@@ -7361,6 +7589,9 @@
                     prodCell +
                     '</td>' +
                     '<td>' +
+                    bugCatCell +
+                    '</td>' +
+                    '<td>' +
                     rcaCell +
                     '</td>' +
                     '</tr>';
@@ -7379,7 +7610,7 @@
                     'No sprint threshold on Setup — spillover is shown as No until you set a threshold and run Proceed again.';
             } else {
                 subEl.textContent =
-                    'Spillover uses your sprint threshold from Setup. PROD and RCA apply to bugs only (Bug sheet export).';
+                    'Spillover uses your sprint threshold from Setup. PROD, Bug category, and RCA apply to bugs only (Bug sheet export).';
             }
             var notSpill = totalIssues - spillCount;
             var reasonFrac =
@@ -7428,6 +7659,38 @@
                 .replace(/"/g, '&quot;');
         }
 
+        function buildBugCategorySelectHtml(selected) {
+            var sel = selected != null ? String(selected).trim() : '';
+            var selLower = sel.toLowerCase();
+            var html =
+                '<option value="">Select category\u2026</option>';
+            var i;
+            var matched = false;
+            for (i = 0; i < BUG_CATEGORY_OPTIONS.length; i++) {
+                var v = BUG_CATEGORY_OPTIONS[i];
+                var vt = String(v).trim();
+                var isSel = sel !== '' && vt.toLowerCase() === selLower;
+                if (isSel) matched = true;
+                html +=
+                    '<option value="' +
+                    escapeHtml(v) +
+                    '"' +
+                    (isSel ? ' selected' : '') +
+                    '>' +
+                    escapeHtml(v) +
+                    '</option>';
+            }
+            if (sel !== '' && !matched) {
+                html +=
+                    '<option value="' +
+                    escapeHtml(sel) +
+                    '" selected>' +
+                    escapeHtml(sel) +
+                    '</option>';
+            }
+            return html;
+        }
+
         function findColumnByNames(headerRow, names) {
             if (!headerRow) return -1;
             var lowered = names.map(function (n) {
@@ -7442,12 +7705,52 @@
             return -1;
         }
 
+        /**
+         * Same rules as server `headerIndexIssueKey` so Proceed sees the same issue keys as uploads / contributor saves.
+         * Does not use bare substring "key" (avoids "Parent Key"); allows "Issue key", "Issuekey", "Work Item Key", etc.
+         */
         function findIssueKeyColumnIndex(headerRow) {
-            return findColumnByNames(headerRow, [
+            if (!headerRow || !headerRow.length) return -1;
+            var exactCandidates = [
                 'issue key',
                 'key',
                 'issue id',
-                'jira key'
+                'jira key',
+                'issuekey',
+                'work item key'
+            ];
+            var lowerHeaders = [];
+            var j;
+            for (j = 0; j < headerRow.length; j++) {
+                lowerHeaders.push(
+                    String(headerRow[j] == null ? '' : headerRow[j]).trim().toLowerCase()
+                );
+            }
+            var c;
+            for (c = 0; c < exactCandidates.length; c++) {
+                var idx = lowerHeaders.indexOf(exactCandidates[c]);
+                if (idx >= 0) return idx;
+            }
+            var substringNeedles = ['issue key', 'jira key', 'issue id', 'work item key'];
+            for (j = 0; j < lowerHeaders.length; j++) {
+                var h = lowerHeaders[j];
+                if (!h) continue;
+                var n;
+                for (n = 0; n < substringNeedles.length; n++) {
+                    if (h.indexOf(substringNeedles[n]) !== -1) return j;
+                }
+            }
+            return -1;
+        }
+
+        function findSpilloverCategoryColumnIndex(headerRow) {
+            return findColumnByNames(headerRow, [
+                'spillover category',
+                'ticket spillover category',
+                'spillovercategory',
+                'spill category',
+                'spillover cat',
+                'spillover_cat'
             ]);
         }
 
@@ -7589,12 +7892,14 @@
                 var nameEl = tr.querySelector('.spillover-table__name');
                 var keyEl = tr.querySelector('.spillover-table__key');
                 var prodSel = tr.querySelector('.bug-prod-select');
+                var catSel = tr.querySelector('.bug-category-select');
                 var rcaInp = tr.querySelector('.bug-rca-input');
                 var name = nameEl ? String(nameEl.textContent || '') : '';
                 var key = keyEl ? String(keyEl.textContent || '') : '';
                 var prod = prodSel ? String(prodSel.value || '') : '';
+                var cat = catSel ? String(catSel.value || '') : '';
                 var rca = rcaInp ? String(rcaInp.value || '') : '';
-                var hay = (name + ' ' + key + ' ' + prod + ' ' + rca).toLowerCase();
+                var hay = (name + ' ' + key + ' ' + prod + ' ' + cat + ' ' + rca).toLowerCase();
                 var show = !q || hay.indexOf(q) !== -1;
                 tr.style.display = show ? '' : 'none';
             }
@@ -7718,14 +8023,8 @@
             for (var r = 0; r < rows.length; r++) {
                 var k = rows[r].key;
                 var keyAttr = escapeHtml(k);
-                var reasonVal =
-                    spilloverReasonByKey[k] !== undefined && spilloverReasonByKey[k] !== null
-                        ? spilloverReasonByKey[k]
-                        : '';
-                var catVal =
-                    spilloverCategoryByKey[k] !== undefined && spilloverCategoryByKey[k] !== null
-                        ? spilloverCategoryByKey[k]
-                        : '';
+                var reasonVal = String(getIssueEditMapValue(spilloverReasonByKey, k) || '');
+                var catVal = String(getIssueEditMapValue(spilloverCategoryByKey, k) || '');
                 var catHtml =
                     '<td class="spillover-table__category-cell">' +
                     '<select class="spillover-category-select" data-issue-key="' +
@@ -7782,7 +8081,7 @@
 
             if (issueTypeIdx < 0) {
                 container.innerHTML =
-                    '<p class="preview-hint">No <strong>Issue Type</strong> column found — cannot list bugs for PROD/RCA.</p>';
+                    '<p class="preview-hint">No <strong>Issue Type</strong> column found — cannot list bugs for PROD / Bug category / RCA.</p>';
                 return;
             }
             if (kIdx < 0) {
@@ -7832,15 +8131,14 @@
             var html =
                 warn +
                 '<div class="spillover-table-wrap"><table class="spillover-table">' +
-                '<thead><tr><th scope="col">Assignee</th><th scope="col">Issue key</th><th scope="col">PROD</th><th scope="col">RCA (Root Cause Analysis)</th></tr></thead><tbody>';
+                '<thead><tr><th scope="col">Assignee</th><th scope="col">Issue key</th><th scope="col">PROD</th><th scope="col">Bug category</th><th scope="col">RCA (Root Cause Analysis)</th></tr></thead><tbody>';
 
             for (var r = 0; r < rows.length; r++) {
                 var k = rows[r].key;
                 var keyAttr = escapeHtml(k);
-                var prodVal =
-                    bugProdByKey[k] !== undefined && bugProdByKey[k] !== null ? bugProdByKey[k] : '';
-                var rcaVal =
-                    bugRcaByKey[k] !== undefined && bugRcaByKey[k] !== null ? bugRcaByKey[k] : '';
+                var prodVal = String(getIssueEditMapValue(bugProdByKey, k) || '');
+                var catVal = String(getIssueEditMapValue(bugCategoryByKey, k) || '');
+                var rcaVal = String(getIssueEditMapValue(bugRcaByKey, k) || '');
                 var yesSel = prodVal === 'Yes' ? ' selected' : '';
                 var noSel = prodVal === 'No' ? ' selected' : '';
                 html +=
@@ -7866,6 +8164,12 @@
                     '<option value="No"' +
                     noSel +
                     '>No</option>' +
+                    '</select></td>' +
+                    '<td class="spillover-table__category-cell">' +
+                    '<select class="bug-category-select" data-issue-key="' +
+                    keyAttr +
+                    '" title="Bug category — exported on Bug sheet">' +
+                    buildBugCategorySelectHtml(catVal) +
                     '</select></td>' +
                     '<td class="spillover-table__rca-cell">' +
                     '<input type="text" class="spillover-reason-input bug-rca-input" data-issue-key="' +
@@ -7974,14 +8278,14 @@
                 var inp = e.target.closest('.spillover-reason-input');
                 if (!inp) return;
                 var key = inp.getAttribute('data-issue-key');
-                if (key) spilloverReasonByKey[key] = inp.value;
+                if (key) setIssueEditMapValue(spilloverReasonByKey, key, inp.value);
                 filterSpilloverDashTable();
             });
             list.addEventListener('change', function (e) {
                 var sel = e.target.closest('.spillover-category-select');
                 if (!sel) return;
                 var key = sel.getAttribute('data-issue-key');
-                if (key) spilloverCategoryByKey[key] = sel.value;
+                if (key) setIssueEditMapValue(spilloverCategoryByKey, key, sel.value);
                 filterSpilloverDashTable();
             });
             list.addEventListener('click', function (e) {
@@ -8013,19 +8317,28 @@
                 var inp = e.target.closest('.bug-rca-input');
                 if (!inp) return;
                 var key = inp.getAttribute('data-issue-key');
-                if (key) bugRcaByKey[key] = inp.value;
+                if (key) setIssueEditMapValue(bugRcaByKey, key, inp.value);
                 filterBugDashTable();
             });
             list.addEventListener('change', function (e) {
-                var sel = e.target.closest('.bug-prod-select');
-                if (!sel) return;
-                var key = sel.getAttribute('data-issue-key');
-                if (key) bugProdByKey[key] = sel.value;
-                filterBugDashTable();
+                var prodSel = e.target.closest('.bug-prod-select');
+                if (prodSel) {
+                    var pk = prodSel.getAttribute('data-issue-key');
+                    if (pk) setIssueEditMapValue(bugProdByKey, pk, prodSel.value);
+                    filterBugDashTable();
+                    return;
+                }
+                var catSel = e.target.closest('.bug-category-select');
+                if (catSel) {
+                    var ck = catSel.getAttribute('data-issue-key');
+                    if (ck) setIssueEditMapValue(bugCategoryByKey, ck, catSel.value);
+                    filterBugDashTable();
+                }
             });
             list.addEventListener('click', function (e) {
                 if (e.target.closest('.bug-rca-input')) return;
                 if (e.target.closest('.bug-prod-select')) return;
+                if (e.target.closest('.bug-category-select')) return;
                 if (e.target.closest('.spillover-table__rca-cell')) return;
                 if (e.target.closest('.spillover-table__category-cell')) return;
                 var row = e.target.closest('.bug-table__row');
@@ -8036,6 +8349,7 @@
             list.addEventListener('keydown', function (e) {
                 if (e.target.closest('.bug-rca-input')) return;
                 if (e.target.closest('.bug-prod-select')) return;
+                if (e.target.closest('.bug-category-select')) return;
                 if (e.key !== 'Enter' && e.key !== ' ') return;
                 var row = e.target.closest('.bug-table__row');
                 if (!row) return;
@@ -8353,57 +8667,6 @@
             return n;
         }
 
-        function computeTopAssignees(allData) {
-            var out = [];
-            if (!allData || allData.length < 2) return out;
-            var headerRow = allData[0];
-            var aIdx = findAssigneeColumnIndex(headerRow);
-            var kIdx = findIssueKeyColumnIndex(headerRow);
-            if (aIdx < 0 || kIdx < 0) return out;
-            var counts = {};
-            for (var i = 1; i < allData.length; i++) {
-                var row = allData[i];
-                var keyCell = row[kIdx];
-                if (keyCell == null || String(keyCell).trim() === '') continue;
-                var rawName = row[aIdx];
-                var name =
-                    rawName == null || String(rawName).trim() === ''
-                        ? 'Unassigned'
-                        : String(rawName).trim();
-                counts[name] = (counts[name] || 0) + 1;
-            }
-            for (var nm in counts) {
-                if (Object.prototype.hasOwnProperty.call(counts, nm)) {
-                    out.push({ name: nm, count: counts[nm] });
-                }
-            }
-            out.sort(function (a, b) {
-                return b.count - a.count;
-            });
-            return out.slice(0, 8);
-        }
-
-        function anaBarRow(label, value, max, variant) {
-            var w = max > 0 ? Math.round((100 * value) / max) : 0;
-            var fillClass = 'ana-bar-line__fill';
-            if (variant === 'yes') fillClass += ' ana-bar-line__fill--yes';
-            else if (variant === 'no') fillClass += ' ana-bar-line__fill--no';
-            return (
-                '<div class="ana-bar-line">' +
-                '<span class="ana-bar-line__label">' +
-                escapeHtml(label) +
-                '</span>' +
-                '<div class="ana-bar-line__track"><div class="' +
-                fillClass +
-                '" style="width:' +
-                w +
-                '%"></div></div>' +
-                '<span class="ana-bar-line__num">' +
-                value +
-                '</span></div>'
-            );
-        }
-
         function buildColumnChips(headers, newKeyMap) {
             var html = '';
             var i;
@@ -8447,6 +8710,7 @@
 
                 var bugHeader = intakeHeader.slice();
                 if (!bugHeader.includes('PROD')) bugHeader.push('PROD');
+                if (!bugHeader.includes('Bug category')) bugHeader.push('Bug category');
                 if (!bugHeader.includes('RCA')) bugHeader.push('RCA');
 
                 var originalSet = {};
@@ -8501,8 +8765,8 @@
                         }
                         spillPreview.push(
                             Object.assign({}, rowObj, {
-                                SpillOverReason: ik ? String(spilloverReasonByKey[ik] || '') : '',
-                                SpillOverCategory: ik ? String(spilloverCategoryByKey[ik] || '') : ''
+                                SpillOverReason: ik ? String(getIssueEditMapValue(spilloverReasonByKey, ik) || '') : '',
+                                SpillOverCategory: ik ? String(getIssueEditMapValue(spilloverCategoryByKey, ik) || '') : ''
                             })
                         );
                     }
@@ -8513,14 +8777,26 @@
                         }
                         bugPreview.push(
                             Object.assign({}, rowObj, {
-                                PROD: ik ? String(bugProdByKey[ik] || '') : '',
-                                RCA: ik ? String(bugRcaByKey[ik] || '') : ''
+                                PROD: ik ? String(getIssueEditMapValue(bugProdByKey, ik) || '') : '',
+                                'Bug category': ik ? String(getIssueEditMapValue(bugCategoryByKey, ik) || '') : '',
+                                RCA: ik ? String(getIssueEditMapValue(bugRcaByKey, ik) || '') : ''
                             })
                         );
                     }
                 }
 
                 var nextVersion = (parseFloat(baseVersion) + 0.1).toFixed(1);
+                var graphBuckets = computeSpillCategoryBuckets(allData, threshold, headerRow);
+                var graphCategories = [];
+                var gk;
+                for (gk in graphBuckets) {
+                    if (Object.prototype.hasOwnProperty.call(graphBuckets, gk)) {
+                        graphCategories.push({ label: gk, count: graphBuckets[gk] });
+                    }
+                }
+                graphCategories.sort(function (a, b) {
+                    return b.count - a.count || String(a.label).localeCompare(String(b.label));
+                });
                 return {
                     baseVersion: baseVersion,
                     threshold: threshold,
@@ -8541,7 +8817,10 @@
                     intakePreview: intakePreview,
                     spillPreview: spillPreview,
                     bugPreview: bugPreview,
-                    previewCap: PREVIEW_CAP
+                    previewCap: PREVIEW_CAP,
+                    graphVelocityIntake: totalRows - spillYes,
+                    graphVelocitySpill: spillYes,
+                    graphCategories: graphCategories
                 };
             } catch (err) {
                 return null;
@@ -8635,6 +8914,46 @@
             }
         }
 
+        function renderExportGraphCategoryPreview(cats) {
+            if (!cats || !cats.length) {
+                return (
+                    '<div class="export-preview-scroll">' +
+                    '<table class="export-preview-table">' +
+                    '<thead><tr><th scope="col">Category</th><th scope="col">Count</th></tr></thead>' +
+                    '<tbody><tr><td colspan="2" class="export-preview-empty">No spillover rows in this run.</td></tr></tbody>' +
+                    '</table></div>'
+                );
+            }
+            var tbody = '';
+            var i;
+            var cap = Math.min(cats.length, 14);
+            for (i = 0; i < cap; i++) {
+                tbody +=
+                    '<tr><td>' +
+                    escapeHtml(String(cats[i].label)) +
+                    '</td><td>' +
+                    escapeHtml(String(cats[i].count)) +
+                    '</td></tr>';
+            }
+            var more =
+                cats.length > cap
+                    ? '<p class="export-preview-caption">' +
+                      (cats.length - cap) +
+                      ' more categor' +
+                      (cats.length - cap === 1 ? 'y' : 'ies') +
+                      ' on the Graph sheet.</p>'
+                    : '';
+            return (
+                '<div class="export-preview-scroll">' +
+                more +
+                '<table class="export-preview-table">' +
+                '<thead><tr><th scope="col">Category</th><th scope="col">Count</th></tr></thead>' +
+                '<tbody>' +
+                tbody +
+                '</tbody></table></div>'
+            );
+        }
+
         function renderExportPreviewDashboard() {
             var root = document.getElementById('exportPreviewBody');
             if (!root) return;
@@ -8725,6 +9044,32 @@
                 '</div>' +
                 tblBug +
                 '</div>' +
+                '<div class="export-sheet-card">' +
+                '<div class="export-sheet-card__head">' +
+                '<h3 class="export-sheet-card__title">Graph_' +
+                escapeHtml(bv) +
+                '</h3>' +
+                '<span class="export-sheet-card__meta">Pie images + source tables</span></div>' +
+                '<p class="ana-donut-hint" style="margin:0 0 0.75rem 1rem">Download embeds <strong>PNG pie charts</strong> on this sheet (same data as Analytics); tables below are the numbers.</p>' +
+                '<div class="export-graph-preview-grid">' +
+                '<div class="export-graph-preview-block">' +
+                '<p class="export-graph-preview-block__title">Sprint velocity</p>' +
+                '<div class="export-preview-scroll">' +
+                '<table class="export-preview-table">' +
+                '<thead><tr><th scope="col">Metric</th><th scope="col">Count</th></tr></thead>' +
+                '<tbody>' +
+                '<tr><td>Ticket intake</td><td>' +
+                escapeHtml(String(plan.graphVelocityIntake != null ? plan.graphVelocityIntake : '\u2014')) +
+                '</td></tr>' +
+                '<tr><td>Ticket spillover</td><td>' +
+                escapeHtml(String(plan.graphVelocitySpill != null ? plan.graphVelocitySpill : '\u2014')) +
+                '</td></tr>' +
+                '</tbody></table></div></div>' +
+                '<div class="export-graph-preview-block">' +
+                '<p class="export-graph-preview-block__title">Spillover category</p>' +
+                renderExportGraphCategoryPreview(plan.graphCategories) +
+                '</div></div>' +
+                '</div>' +
                 '</div>';
         }
 
@@ -8774,6 +9119,7 @@
             var sr = countMapNonEmpty(spilloverReasonByKey);
             var sc = countMapNonEmpty(spilloverCategoryByKey);
             var bugsProd = countMapNonEmpty(bugProdByKey);
+            var bugsCat = countMapNonEmpty(bugCategoryByKey);
             var bugsRca = countMapNonEmpty(bugRcaByKey);
             var bugsTotal = st.typeCounts ? st.typeCounts.bug : 0;
             var spillTotal = st.spillYes;
@@ -8880,7 +9226,7 @@
                 escapeHtml(bv || '?') +
                 '</strong></td><td>' +
                 (bugRowsDisplay > 0 ? bugRowsDisplay : '1*') +
-                '</td><td>Bug rows only; PROD &amp; RCA on this sheet; * if no bugs</td></tr>' +
+                '</td><td>Bug rows only; PROD, Bug category &amp; RCA on this sheet; * if no bugs</td></tr>' +
                 '</tbody></table>' +
                 '<p class="ana-donut-hint">* Excel uses one placeholder row when Issue Type has no bugs.</p>' +
                 '</div></div>' +
@@ -8936,6 +9282,11 @@
                 ' / ' +
                 bugsTotal +
                 '</dd>' +
+                '<dt>Bugs with Bug category</dt><dd>' +
+                bugsCat +
+                ' / ' +
+                bugsTotal +
+                '</dd>' +
                 '<dt>Bugs with RCA</dt><dd>' +
                 bugsRca +
                 ' / ' +
@@ -8946,6 +9297,343 @@
                 '</div></div>';
         }
 
+        var ANA_PIE_CAT_COLORS = [
+            '#4472C4',
+            '#ED7D31',
+            '#A5A5A5',
+            '#FFC000',
+            '#5B9BD5',
+            '#70AD47',
+            '#264478'
+        ];
+
+        function normalizeSpillCategoryLabel(raw) {
+            var s = raw == null ? '' : String(raw).trim();
+            return s === '' ? 'Uncategorized' : s;
+        }
+
+        function computeSpillCategoryBuckets(rows, threshold, headerRow) {
+            var catIdx = findSpilloverCategoryColumnIndex(headerRow);
+            var issueKeyIdx = findIssueKeyColumnIndex(headerRow);
+            var buckets = {};
+            for (var i = 1; i < rows.length; i++) {
+                var row = rows[i];
+                if (!hasSpilloverRaw(row, threshold)) continue;
+                var lab = '';
+                if (catIdx >= 0 && row[catIdx] != null && String(row[catIdx]).trim() !== '') {
+                    lab = String(row[catIdx]).trim();
+                } else if (issueKeyIdx >= 0) {
+                    var iv = getIssueEditMapValue(spilloverCategoryByKey, row[issueKeyIdx]);
+                    lab = iv != null ? String(iv).trim() : '';
+                }
+                lab = normalizeSpillCategoryLabel(lab);
+                buckets[lab] = (buckets[lab] || 0) + 1;
+            }
+            return buckets;
+        }
+
+        /**
+         * Summary tables for the Excel Graph sheet — same numbers as Analytics (velocity + spill category breakdown).
+         */
+        function buildExportGraphSheetAoa(allData, threshold, headerRow) {
+            var noSpill = 0;
+            var spillRows = 0;
+            var ri;
+            for (ri = 1; ri < allData.length; ri++) {
+                if (hasSpilloverRaw(allData[ri], threshold)) spillRows++;
+                else noSpill++;
+            }
+            var buckets = computeSpillCategoryBuckets(allData, threshold, headerRow);
+            var entries = [];
+            var bk;
+            for (bk in buckets) {
+                if (Object.prototype.hasOwnProperty.call(buckets, bk)) {
+                    entries.push({ label: bk, count: buckets[bk] });
+                }
+            }
+            entries.sort(function (a, b) {
+                return b.count - a.count || String(a.label).localeCompare(String(b.label));
+            });
+            var aoa = [];
+            aoa.push(['Sprint velocity']);
+            aoa.push([]);
+            aoa.push(['Metric', 'Count']);
+            aoa.push(['Ticket intake', noSpill]);
+            aoa.push(['Ticket spillover', spillRows]);
+            aoa.push([]);
+            aoa.push(['Spillover category']);
+            aoa.push([]);
+            aoa.push(['Category', 'Count']);
+            if (entries.length) {
+                for (ri = 0; ri < entries.length; ri++) {
+                    aoa.push([entries[ri].label, entries[ri].count]);
+                }
+            } else {
+                aoa.push(['(no spillover rows)', 0]);
+            }
+            aoa.push([]);
+            aoa.push([
+                'Tip: In Excel, select the Metric/Count or Category/Count block (with headers) → Insert → Charts → Pie — same data as the app Analytics view.'
+            ]);
+            return aoa;
+        }
+
+        /**
+         * Raster pie for Excel embed (SheetJS cannot write native chart XML; ExcelJS can embed PNG).
+         * slices: { value, color }[] — label optional (not drawn).
+         */
+        function canvasPieToBase64Png(slices, pixelSize) {
+            var n = pixelSize > 0 ? pixelSize : 320;
+            var canvas = document.createElement('canvas');
+            canvas.width = n;
+            canvas.height = n;
+            var ctx = canvas.getContext('2d');
+            if (!ctx) return '';
+            var cx = n / 2;
+            var cy = n / 2;
+            var r = n * 0.38;
+            var total = 0;
+            var i;
+            for (i = 0; i < slices.length; i++) {
+                total += Math.max(0, slices[i].value || 0);
+            }
+            ctx.clearRect(0, 0, n, n);
+            if (total <= 0) {
+                ctx.fillStyle = 'rgba(180,180,185,0.35)';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            } else {
+                var cum = 0;
+                for (i = 0; i < slices.length; i++) {
+                    var v = Math.max(0, slices[i].value || 0);
+                    if (v <= 0) continue;
+                    var a0 = (cum / total) * 2 * Math.PI - Math.PI / 2;
+                    cum += v;
+                    var a1 = (cum / total) * 2 * Math.PI - Math.PI / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, r, a0, a1);
+                    ctx.closePath();
+                    ctx.fillStyle = slices[i].color || '#888888';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+            var dataUrl = canvas.toDataURL('image/png');
+            var comma = dataUrl.indexOf(',');
+            return comma >= 0 ? dataUrl.slice(comma + 1) : '';
+        }
+
+        function buildExportCategoryPieSlices(allData, threshold, headerRow) {
+            var buckets = computeSpillCategoryBuckets(allData, threshold, headerRow);
+            var entries = [];
+            var k;
+            for (k in buckets) {
+                if (Object.prototype.hasOwnProperty.call(buckets, k)) {
+                    entries.push({ label: k, count: buckets[k] });
+                }
+            }
+            entries.sort(function (a, b) {
+                return b.count - a.count || String(a.label).localeCompare(String(b.label));
+            });
+            var slices = [];
+            for (var i = 0; i < entries.length; i++) {
+                slices.push({
+                    label: entries[i].label,
+                    value: entries[i].count,
+                    color: ANA_PIE_CAT_COLORS[i % ANA_PIE_CAT_COLORS.length]
+                });
+            }
+            return slices;
+        }
+
+        function exceljsPopulateSheetFromObjects(worksheet, header, rows) {
+            worksheet.addRow(header);
+            var ri, ci, arr;
+            for (ri = 0; ri < rows.length; ri++) {
+                arr = [];
+                for (ci = 0; ci < header.length; ci++) {
+                    var key = header[ci];
+                    var v = rows[ri][key];
+                    arr.push(v !== undefined && v !== null ? v : '');
+                }
+                worksheet.addRow(arr);
+            }
+        }
+
+        /** Excel row index (1-based) for first row of Graph data tables — below embedded pie images. */
+        var EXCELJS_GRAPH_DATA_START_ROW = 24;
+
+        function exceljsAddGraphSheetWithPies(workbook, baseVersion, allData, threshold, headerRow, graphAoa) {
+            var noSpill = 0;
+            var spillRows = 0;
+            var i;
+            for (i = 1; i < allData.length; i++) {
+                if (hasSpilloverRaw(allData[i], threshold)) spillRows++;
+                else noSpill++;
+            }
+            var velSlices = [
+                { value: noSpill, color: '#4472C4' },
+                { value: spillRows, color: '#ED7D31' }
+            ];
+            var catSlices = buildExportCategoryPieSlices(allData, threshold, headerRow);
+            var pngVel = canvasPieToBase64Png(velSlices, 340);
+            var pngCat = canvasPieToBase64Png(catSlices, 340);
+            var ws = workbook.addWorksheet(safeSheetName('Graph_' + baseVersion));
+            if (pngVel) {
+                var img1 = workbook.addImage({ base64: pngVel, extension: 'png' });
+                ws.addImage(img1, {
+                    tl: { col: 0, row: 0 },
+                    ext: { width: 300, height: 300 }
+                });
+            }
+            if (pngCat) {
+                var img2 = workbook.addImage({ base64: pngCat, extension: 'png' });
+                ws.addImage(img2, {
+                    tl: { col: 5, row: 0 },
+                    ext: { width: 300, height: 300 }
+                });
+            }
+            for (i = 0; i < graphAoa.length; i++) {
+                var line = graphAoa[i];
+                var row = ws.getRow(EXCELJS_GRAPH_DATA_START_ROW + i);
+                for (var j = 0; j < line.length; j++) {
+                    row.getCell(j + 1).value = line[j];
+                }
+            }
+            ws.getColumn(1).width = 40;
+            ws.getColumn(2).width = 14;
+        }
+
+        function anaPiePathsFromSlices(slices, cx, cy, r) {
+            var total = 0;
+            var i;
+            for (i = 0; i < slices.length; i++) {
+                total += Math.max(0, slices[i].value || 0);
+            }
+            if (total <= 0) {
+                return (
+                    '<circle cx="' +
+                    cx +
+                    '" cy="' +
+                    cy +
+                    '" r="' +
+                    r +
+                    '" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="0.35"/>'
+                );
+            }
+            var html = '';
+            var cum = 0;
+            for (i = 0; i < slices.length; i++) {
+                var v = Math.max(0, slices[i].value || 0);
+                if (v <= 0) continue;
+                var startFrac = cum / total;
+                cum += v;
+                var endFrac = cum / total;
+                var a0 = startFrac * 2 * Math.PI - Math.PI / 2;
+                var a1 = endFrac * 2 * Math.PI - Math.PI / 2;
+                var x0 = cx + r * Math.cos(a0);
+                var y0 = cy + r * Math.sin(a0);
+                var x1 = cx + r * Math.cos(a1);
+                var y1 = cy + r * Math.sin(a1);
+                var large = endFrac - startFrac > 0.5 ? 1 : 0;
+                var col = slices[i].color || '#888888';
+                html +=
+                    '<path d="M ' +
+                    cx +
+                    ' ' +
+                    cy +
+                    ' L ' +
+                    x0 +
+                    ' ' +
+                    y0 +
+                    ' A ' +
+                    r +
+                    ' ' +
+                    r +
+                    ' 0 ' +
+                    large +
+                    ' 1 ' +
+                    x1 +
+                    ' ' +
+                    y1 +
+                    ' Z" fill="' +
+                    col +
+                    '" stroke="rgba(0,0,0,0.2)" stroke-width="0.35"/>';
+            }
+            return html;
+        }
+
+        function anaPieLegendHtml(slices, total) {
+            var html = '<ul class="ana-pie-legend">';
+            var i;
+            for (i = 0; i < slices.length; i++) {
+                var s = slices[i];
+                var val = Math.max(0, s.value || 0);
+                if (val <= 0) continue;
+                var pct = total ? Math.round((val / total) * 100) : 0;
+                html +=
+                    '<li><span class="ana-pie-legend__sw" style="background:' +
+                    escapeHtml(s.color) +
+                    '"></span>' +
+                    '<span class="ana-pie-legend__txt">' +
+                    escapeHtml(s.label) +
+                    '</span>' +
+                    '<span class="ana-pie-legend__pct">' +
+                    pct +
+                    '%</span>' +
+                    '<span class="ana-pie-legend__num">(' +
+                    val +
+                    ')</span></li>';
+            }
+            html += '</ul>';
+            return html;
+        }
+
+        function anaBuildPiePanel(opts) {
+            var title = opts.title || '';
+            var subtitle = opts.subtitle || '';
+            var slices = opts.slices || [];
+            var emptyNote = opts.emptyNote || '';
+            var total = 0;
+            var j;
+            for (j = 0; j < slices.length; j++) {
+                total += Math.max(0, slices[j].value || 0);
+            }
+            var paths = anaPiePathsFromSlices(slices, 50, 50, 38);
+            var legend = anaPieLegendHtml(slices, total);
+            var noteBelow = '';
+            if (emptyNote && total <= 0) {
+                noteBelow = '<p class="ana-pie-empty-note">' + escapeHtml(emptyNote) + '</p>';
+            }
+            return (
+                '<div class="panel-dark ana-chart-card">' +
+                '<div class="panel-dark__head">' +
+                '<h2>' +
+                escapeHtml(title) +
+                '</h2>' +
+                (subtitle
+                    ? '<p class="ana-chart-card__subtitle">' + escapeHtml(subtitle) + '</p>'
+                    : '') +
+                '</div>' +
+                '<div class="panel-dark__body ana-chart-card__body">' +
+                '<div class="ana-pie-wrap" aria-hidden="true">' +
+                '<svg viewBox="0 0 100 100" class="ana-pie-svg" role="img" aria-hidden="true">' +
+                paths +
+                '</svg></div>' +
+                '<div class="ana-chart-card__legend">' +
+                legend +
+                noteBelow +
+                '</div></div></div>'
+            );
+        }
+
         function renderAnalyticsDashboard() {
             var root = document.getElementById('analyticsDashboardBody');
             if (!root) return;
@@ -8954,66 +9642,67 @@
                     '<div class="panel-dark"><div class="panel-dark__body"><p class="preview-hint">Run <strong>Proceed</strong> to load analytics.</p></div></div>';
                 return;
             }
-            var st = lastRunStats;
-            var total = st.totalRows;
-            var yes = st.spillYes;
-            var no = st.spillNo;
-            var html =
-                '<div class="dash-row">' +
-                '<div class="panel-dark"><div class="panel-dark__head"><h2>Spillover split</h2></div><div class="panel-dark__body">' +
-                '<div class="ana-bars">' +
-                anaBarRow('SpillOver Yes', yes, total, 'yes') +
-                anaBarRow('SpillOver No', no, total, 'no') +
-                '</div>' +
-                '<p class="ana-donut-hint">Rows where any Sprint equals threshold <strong>' +
-                escapeHtml(String(st.threshold)) +
-                '</strong></p>' +
-                '</div></div>';
+            var th = lastRunStats.threshold;
+            var intake = lastRunStats.spillNo;
+            var spillRows = lastRunStats.spillYesRows;
+            var bvEl = document.getElementById('baseVersion');
+            var bv = bvEl ? String(bvEl.value || '').trim() : '';
+            var velTitle = 'Sprint velocity' + (bv ? ' · ' + bv : '');
+            var velSub =
+                'Rows without spillover vs rows at threshold ' +
+                String(th) +
+                ' (same counts as Proceed).';
+            var velSlices = [
+                { label: 'Ticket intake', value: intake, color: '#4472C4' },
+                { label: 'Ticket spillover', value: spillRows, color: '#ED7D31' }
+            ];
 
-            html +=
-                '<div class="panel-dark"><div class="panel-dark__head"><h2>Issue types</h2></div><div class="panel-dark__body">';
-            if (st.issueTypeIdx < 0) {
-                html +=
-                    '<p class="preview-hint">No <strong>Issue Type</strong> column in this export.</p>';
-            } else {
-                var tc = st.typeCounts;
-                var types = [
-                    ['Bug', tc.bug],
-                    ['Epic', tc.epic],
-                    ['Story', tc.story],
-                    ['Sub-task', tc.subtask],
-                    ['Task', tc.task],
-                    ['Other', tc.other]
-                ];
-                var maxT = 0;
-                var ti;
-                for (ti = 0; ti < types.length; ti++) maxT = Math.max(maxT, types[ti][1]);
-                if (maxT < 1) maxT = 1;
-                html += '<div class="ana-bars">';
-                for (ti = 0; ti < types.length; ti++) {
-                    html += anaBarRow(types[ti][0], types[ti][1], maxT, '');
+            var hdr = analysisSheetData[0];
+            var buckets = computeSpillCategoryBuckets(analysisSheetData, th, hdr);
+            var catEntries = [];
+            var k;
+            for (k in buckets) {
+                if (Object.prototype.hasOwnProperty.call(buckets, k)) {
+                    catEntries.push({ label: k, value: buckets[k] });
                 }
-                html += '</div>';
             }
-            html += '</div></div></div>';
+            catEntries.sort(function (a, b) {
+                return b.value - a.value || String(a.label).localeCompare(String(b.label));
+            });
+            var catSlices = [];
+            var c;
+            for (c = 0; c < catEntries.length; c++) {
+                catSlices.push({
+                    label: catEntries[c].label,
+                    value: catEntries[c].value,
+                    color: ANA_PIE_CAT_COLORS[c % ANA_PIE_CAT_COLORS.length]
+                });
+            }
+            var spillCatTotal = 0;
+            for (c = 0; c < catEntries.length; c++) {
+                spillCatTotal += catEntries[c].value;
+            }
+            var catTitle = 'Spillover category';
+            var catSub =
+                'Spillover rows only — uses your sheet column when present, otherwise category saved in the Spillover workflow.';
+            var catEmpty =
+                spillCatTotal === 0 ? 'No rows matched the spillover rule for this run.' : '';
 
-            var topA = computeTopAssignees(analysisSheetData);
-            html +=
-                '<div class="panel-dark"><div class="panel-dark__head"><h2>Top assignees</h2></div><div class="panel-dark__body">';
-            if (!topA.length) {
-                html +=
-                    '<p class="preview-hint">Need <strong>Assignee</strong> and <strong>Issue key</strong> columns to rank workload.</p>';
-            } else {
-                var maxA = topA[0].count;
-                html += '<div class="ana-bars">';
-                var ai;
-                for (ai = 0; ai < topA.length; ai++) {
-                    html += anaBarRow(topA[ai].name, topA[ai].count, maxA, '');
-                }
-                html += '</div>';
-            }
-            html += '</div></div>';
-            root.innerHTML = html;
+            root.innerHTML =
+                '<div class="dash-row ana-analytics-row">' +
+                anaBuildPiePanel({
+                    title: velTitle,
+                    subtitle: velSub,
+                    slices: velSlices,
+                    emptyNote: intake + spillRows === 0 ? 'No data rows to chart.' : ''
+                }) +
+                anaBuildPiePanel({
+                    title: catTitle,
+                    subtitle: catSub,
+                    slices: catSlices,
+                    emptyNote: catEmpty
+                }) +
+                '</div>';
         }
 
         function clearDashboardMetrics() {
@@ -9334,11 +10023,12 @@
                 spilloverCategoryByKey = {};
                 bugProdByKey = {};
                 bugRcaByKey = {};
+                bugCategoryByKey = {};
                 setPhase(false);
                 setAssigneesPanelOpen(false);
                 renderAssigneesPlaceholder('Run <strong>Proceed</strong>, then open <strong>Assignees</strong> for names and issue keys (needs those columns in the export).');
                 renderSpilloverDashboardPlaceholder('Run <strong>Proceed</strong> to list spillover issue keys here (sprint equals threshold).');
-                renderBugDashboardPlaceholder('Run <strong>Proceed</strong> to list bugs for PROD and RCA.');
+                renderBugDashboardPlaceholder('Run <strong>Proceed</strong> to list bugs for PROD, Bug category, and RCA.');
 
                 var fnPanel = document.getElementById('exportFilenamePanel');
                 var fnInput = document.getElementById('exportFileNameInput');
@@ -9418,11 +10108,25 @@
             return indices;
         }
 
+        /** Match server `normalizeIssueKeyDedupe` so DB edits merge with sheet rows. */
         function normalizeIssueKeyDedupe(ik) {
             return String(ik || '')
                 .trim()
                 .replace(/\s+/g, ' ')
+                .replace(/[\u2010-\u2015\u2212]/g, '-')
                 .toUpperCase();
+        }
+
+        function getIssueEditMapValue(map, rawKey) {
+            if (rawKey == null || String(rawKey).trim() === '') return undefined;
+            var nk = normalizeIssueKeyDedupe(rawKey);
+            if (Object.prototype.hasOwnProperty.call(map, nk)) return map[nk];
+            return map[rawKey];
+        }
+
+        function setIssueEditMapValue(map, rawKey, val) {
+            if (rawKey == null || String(rawKey).trim() === '') return;
+            map[normalizeIssueKeyDedupe(rawKey)] = val;
         }
 
         /** Excel/sheet floats: treat values as equal when within this epsilon (e.g. 14.1 vs 14.1000001). */
@@ -9922,6 +10626,11 @@
                 renderReportsDashboard();
                 renderAnalyticsDashboard();
                 renderExportPreviewDashboard();
+                var mergeAfterProceed =
+                    typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+                if (mergeAfterProceed && typeof fetchAndMergeIssueEdits === 'function') {
+                    fetchAndMergeIssueEdits(String(mergeAfterProceed), { refreshEvenIfNoEdits: true });
+                }
                 setMainView('dashboard');
 
                 let summaryExtra = '';
@@ -10172,6 +10881,8 @@
                 return;
             }
 
+            var exportUid = resolveExportUploadId();
+            function processExcelBuild() {
             try {
                 const sheet = workbookData.Sheets[workbookData.SheetNames[0]];
                 const allData = XLSX.utils.sheet_to_row_object_array(sheet, {header: 1});
@@ -10182,7 +10893,7 @@
                 const kIdxExport = findIssueKeyColumnIndex(headerRow);
                 const keyColName = kIdxExport >= 0 ? headerNames[kIdxExport] : null;
 
-                /** TicketIntake / SpillOver: source columns + SpillOver only. PROD/RCA appear only on Bug sheet. */
+                /** TicketIntake / SpillOver: source columns + SpillOver only. PROD / Bug category / RCA appear only on Bug sheet. */
                 const intakeHeader = headerNames.slice();
                 if (!intakeHeader.includes('SpillOver')) intakeHeader.push('SpillOver');
 
@@ -10192,11 +10903,9 @@
                 }
 
                 const bugSheetHeader = intakeHeader.slice();
-                for (const t of ['PROD', 'RCA']) {
+                for (const t of ['PROD', 'Bug category', 'RCA']) {
                     if (!bugSheetHeader.includes(t)) bugSheetHeader.push(t);
                 }
-
-                const newWorkbook = XLSX.utils.book_new();
 
                 const dataWithSpillover = [];
                 const bugRows = [];
@@ -10214,15 +10923,13 @@
                         }
                         bugRows.push(
                             Object.assign({}, rowObj, {
-                                PROD: ik ? String(bugProdByKey[ik] || '') : '',
-                                RCA: ik ? String(bugRcaByKey[ik] || '') : ''
+                                PROD: ik ? String(getIssueEditMapValue(bugProdByKey, ik) || '') : '',
+                                'Bug category': ik ? String(getIssueEditMapValue(bugCategoryByKey, ik) || '') : '',
+                                RCA: ik ? String(getIssueEditMapValue(bugRcaByKey, ik) || '') : ''
                             })
                         );
                     }
                 }
-
-                const sheet1 = XLSX.utils.json_to_sheet(dataWithSpillover, { header: intakeHeader });
-                XLSX.utils.book_append_sheet(newWorkbook, sheet1, safeSheetName(`TicketIntake_${baseVersion}`));
 
                 const spilloverRows = dataWithSpillover.filter(row => row.SpillOver === 'Yes');
                 const spilloverWithColumns = spilloverRows.map(row => {
@@ -10232,35 +10939,106 @@
                     }
                     return {
                         ...row,
-                        SpillOverReason: ik ? String(spilloverReasonByKey[ik] || '') : '',
-                        SpillOverCategory: ik ? String(spilloverCategoryByKey[ik] || '') : ''
+                        SpillOverReason: ik ? String(getIssueEditMapValue(spilloverReasonByKey, ik) || '') : '',
+                        SpillOverCategory: ik ? String(getIssueEditMapValue(spilloverCategoryByKey, ik) || '') : ''
                     };
                 });
 
-                const sheet2 = XLSX.utils.json_to_sheet(spilloverWithColumns, { header: spillHeader });
-                XLSX.utils.book_append_sheet(newWorkbook, sheet2, safeSheetName(`SpillOver_${baseVersion}`));
-
-                let sheetBug;
-                if (bugRows.length > 0) {
-                    sheetBug = XLSX.utils.json_to_sheet(bugRows, { header: bugSheetHeader });
-                } else {
-                    const placeholder = {};
-                    bugSheetHeader.forEach(h => {
-                        placeholder[h] = '';
-                    });
-                    sheetBug = XLSX.utils.json_to_sheet([placeholder], { header: bugSheetHeader });
-                }
-                XLSX.utils.book_append_sheet(newWorkbook, sheetBug, safeSheetName(`Bug_${baseVersion}`));
-
+                const graphAoa = buildExportGraphSheetAoa(allData, threshold, headerRow);
                 const fileName = resolveExportDownloadFileName();
-                XLSX.writeFile(newWorkbook, fileName);
+                const bugNote =
+                    issueTypeIdx < 0
+                        ? ' | Bug sheet: no Issue Type column (sheet has placeholder row)'
+                        : ` | Bugs: ${bugRows.length}`;
 
-                const bugNote = issueTypeIdx < 0
-                    ? ' | Bug sheet: no Issue Type column (sheet has placeholder row)'
-                    : ` | Bugs: ${bugRows.length}`;
-                showSuccess(`Downloaded: ${fileName} | SpillOver Yes: ${spilloverRows.length} | No: ${dataWithSpillover.length - spilloverRows.length}${bugNote}`);
+                function notifyExportDone(withPieImages) {
+                    var graphBit =
+                        withPieImages === true
+                            ? ' | Graph sheet: pie chart images + tables'
+                            : ' | Graph sheet: tables only (pie images need ExcelJS)';
+                    showSuccess(
+                        `Downloaded: ${fileName} | SpillOver Yes: ${spilloverRows.length} | No: ${
+                            dataWithSpillover.length - spilloverRows.length
+                        }${bugNote}${graphBit}`
+                    );
+                }
+
+                function runExportFallbackXlsx() {
+                    const newWorkbook = XLSX.utils.book_new();
+                    const sheet1 = XLSX.utils.json_to_sheet(dataWithSpillover, { header: intakeHeader });
+                    XLSX.utils.book_append_sheet(newWorkbook, sheet1, safeSheetName(`TicketIntake_${baseVersion}`));
+                    const sheet2 = XLSX.utils.json_to_sheet(spilloverWithColumns, { header: spillHeader });
+                    XLSX.utils.book_append_sheet(newWorkbook, sheet2, safeSheetName(`SpillOver_${baseVersion}`));
+                    let sheetBug;
+                    if (bugRows.length > 0) {
+                        sheetBug = XLSX.utils.json_to_sheet(bugRows, { header: bugSheetHeader });
+                    } else {
+                        const placeholder = {};
+                        bugSheetHeader.forEach(function (h) {
+                            placeholder[h] = '';
+                        });
+                        sheetBug = XLSX.utils.json_to_sheet([placeholder], { header: bugSheetHeader });
+                    }
+                    XLSX.utils.book_append_sheet(newWorkbook, sheetBug, safeSheetName(`Bug_${baseVersion}`));
+                    const sheetGraph = XLSX.utils.aoa_to_sheet(graphAoa);
+                    sheetGraph['!cols'] = [{ wch: 40 }, { wch: 14 }];
+                    XLSX.utils.book_append_sheet(newWorkbook, sheetGraph, safeSheetName(`Graph_${baseVersion}`));
+                    XLSX.writeFile(newWorkbook, fileName);
+                    notifyExportDone(false);
+                }
+
+                if (typeof ExcelJS !== 'undefined' && typeof saveAs === 'function') {
+                    try {
+                        var wbExport = new ExcelJS.Workbook();
+                        exceljsPopulateSheetFromObjects(
+                            wbExport.addWorksheet(safeSheetName(`TicketIntake_${baseVersion}`)),
+                            intakeHeader,
+                            dataWithSpillover
+                        );
+                        exceljsPopulateSheetFromObjects(
+                            wbExport.addWorksheet(safeSheetName(`SpillOver_${baseVersion}`)),
+                            spillHeader,
+                            spilloverWithColumns
+                        );
+                        var placeholderBug = {};
+                        bugSheetHeader.forEach(function (h) {
+                            placeholderBug[h] = '';
+                        });
+                        var bugExportRows = bugRows.length > 0 ? bugRows : [placeholderBug];
+                        exceljsPopulateSheetFromObjects(
+                            wbExport.addWorksheet(safeSheetName(`Bug_${baseVersion}`)),
+                            bugSheetHeader,
+                            bugExportRows
+                        );
+                        exceljsAddGraphSheetWithPies(wbExport, baseVersion, allData, threshold, headerRow, graphAoa);
+                        wbExport.xlsx
+                            .writeBuffer()
+                            .then(function (buffer) {
+                                saveAs(
+                                    new Blob([buffer], {
+                                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                                    }),
+                                    fileName
+                                );
+                                notifyExportDone(true);
+                            })
+                            .catch(function () {
+                                runExportFallbackXlsx();
+                            });
+                    } catch (excelJsErr) {
+                        runExportFallbackXlsx();
+                    }
+                } else {
+                    runExportFallbackXlsx();
+                }
             } catch (err) {
                 showError('Error processing file: ' + err.message);
+            }
+            }
+            if (exportUid && typeof fetchAndMergeIssueEdits === 'function') {
+                fetchAndMergeIssueEdits(String(exportUid)).then(processExcelBuild).catch(processExcelBuild);
+            } else {
+                processExcelBuild();
             }
         }
 
@@ -10289,12 +11067,13 @@
             spilloverCategoryByKey = {};
             bugProdByKey = {};
             bugRcaByKey = {};
+            bugCategoryByKey = {};
             currentUploadId = null;
             setPhase(false);
             setAssigneesPanelOpen(false);
             renderAssigneesPlaceholder('Run <strong>Proceed</strong>, then open <strong>Assignees</strong> for names and issue keys.');
             renderSpilloverDashboardPlaceholder('Run <strong>Proceed</strong> to list spillover tickets (sprint equals threshold).');
-            renderBugDashboardPlaceholder('Run <strong>Proceed</strong> to list bugs for PROD and RCA.');
+            renderBugDashboardPlaceholder('Run <strong>Proceed</strong> to list bugs for PROD, Bug category, and RCA.');
             document.getElementById('fileDetails').classList.remove('show');
             hideToastBarsImmediate();
             try {
@@ -10474,8 +11253,12 @@
                             ) {
                                 runProceed();
                             }
-                            if (currentUploadId && typeof fetchAndMergeIssueEdits === 'function') {
-                                fetchAndMergeIssueEdits(currentUploadId);
+                            var mergeUid =
+                                typeof resolveExportUploadId === 'function'
+                                    ? resolveExportUploadId()
+                                    : '';
+                            if (mergeUid && typeof fetchAndMergeIssueEdits === 'function') {
+                                fetchAndMergeIssueEdits(mergeUid);
                             }
                         }
 
