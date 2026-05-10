@@ -58,3 +58,5 @@ CREATE TABLE IF NOT EXISTS issue_field_edits (
 CREATE INDEX IF NOT EXISTS idx_issue_field_edits_upload ON issue_field_edits (upload_id);
 
 ALTER TABLE issue_field_edits ADD COLUMN IF NOT EXISTS bug_category TEXT NOT NULL DEFAULT '';
+
+ALTER TABLE issue_field_edits ADD COLUMN IF NOT EXISTS spillover_yes_no TEXT NOT NULL DEFAULT '';

@@ -123,62 +123,6 @@
             padding: 0 0.35rem;
         }
 
-        .sidebar__pin-hint {
-            flex-shrink: 0;
-            margin: 0.35rem 0 0;
-            padding: 0 0.65rem;
-            font-size: 0.65rem;
-            line-height: 1.35;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            color: var(--text-dim);
-            text-align: center;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            pointer-events: none;
-            border-radius: 10px;
-            border: 1px solid transparent;
-            background: transparent;
-            box-shadow: none;
-            transition:
-                opacity 0.36s var(--sidebar-ease),
-                max-height var(--sidebar-dur) var(--sidebar-ease),
-                padding 0.36s var(--sidebar-ease),
-                margin 0.36s var(--sidebar-ease),
-                border-color 0.36s ease,
-                background 0.36s ease,
-                box-shadow 0.36s ease,
-                color 0.36s ease;
-        }
-
-        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__pin-hint {
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-        }
-
-        .app.app--sidebar-hover:not(.app--sidebar-pinned) .sidebar--rail .sidebar__pin-hint {
-            max-height: 4rem;
-            opacity: 1;
-            margin-top: 0.5rem;
-            margin-left: 0.45rem;
-            margin-right: 0.45rem;
-            padding: 0.5rem 0.55rem;
-            pointer-events: auto;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            letter-spacing: 0.03em;
-            color: #e8f1ff;
-            background: linear-gradient(165deg, rgba(59, 130, 246, 0.35), rgba(30, 64, 175, 0.22));
-            border-color: rgba(147, 197, 253, 0.65);
-            box-shadow:
-                0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-                0 4px 18px rgba(37, 99, 235, 0.35);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
-        }
-
         .sidebar__divider {
             flex-shrink: 0;
             display: block;
@@ -443,7 +387,11 @@
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__link-label,
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__folder-label {
             max-width: 0;
+            min-width: 0;
             opacity: 0;
+            margin: 0;
+            padding: 0;
+            border: 0;
             transition-delay: 0s;
             pointer-events: none;
         }
@@ -459,11 +407,14 @@
                 transform 0.2s ease;
         }
 
-        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__kbd,
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__chevron {
             max-width: 0;
             opacity: 0;
             pointer-events: none;
+        }
+
+        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__kbd {
+            display: none !important;
         }
 
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__brand {
@@ -488,6 +439,7 @@
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__link {
             justify-content: center;
             padding: 0.48rem 0.35rem;
+            gap: 0;
         }
 
         .sidebar__link,
@@ -503,30 +455,15 @@
             justify-content: center;
         }
 
-        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__link--spread .sidebar__kbd {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            margin: -1px;
-            padding: 0;
-            border: 0;
-            overflow: hidden;
-            clip-path: inset(50%);
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            flex: none;
-            max-width: none;
-        }
-
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__folder {
             justify-content: center;
             padding: 0.48rem 0.35rem;
         }
 
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__link--spread .sidebar__link-main {
-            flex: 1 1 100%;
+            flex: 1 1 auto;
             justify-content: center;
+            gap: 0;
             min-width: 0;
         }
 
@@ -537,32 +474,68 @@
             min-width: 0;
         }
 
+        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__folder .sidebar__chevron {
+            display: none;
+        }
+
         .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__footer .sidebar__profile-section:not([hidden]) {
             display: none !important;
         }
 
-        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__sign-out {
-            width: 2.1rem;
-            height: 2.1rem;
-            min-height: 0;
-            padding: 0;
-            margin: 0 auto;
-            font-size: 0;
-            color: transparent;
-            overflow: hidden;
-            position: relative;
-            border-radius: 8px;
+        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__footer {
+            padding-left: 0.35rem;
+            padding-right: 0.35rem;
         }
 
-        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__sign-out::after {
-            content: '\2192';
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
+        .sidebar__user-initial {
+            display: none;
+            width: 2.1rem;
+            height: 2.1rem;
+            margin: 0 auto;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm, 6px);
             font-size: 0.85rem;
+            font-weight: 600;
             line-height: 1;
-            color: var(--text-dim);
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            flex-shrink: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__auth-footer:not([hidden]) .sidebar__user-initial {
+            display: flex;
+        }
+
+        .app.app--sidebar-hover .sidebar--rail .sidebar__user-initial,
+        .app.app--sidebar-pinned .sidebar--rail .sidebar__user-initial {
+            display: none !important;
+        }
+
+        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__sign-out {
+            display: none !important;
+        }
+
+        .sidebar-nav-tooltip {
+            position: fixed;
+            z-index: 10050;
+            left: 0;
+            top: 0;
+            max-width: min(18rem, calc(100vw - 1rem));
+            padding: 0.38rem 0.6rem;
+            font-size: 0.74rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: #93c5fd;
+            background: rgba(22, 22, 22, 0.98);
+            border: 1px solid rgba(59, 130, 246, 0.45);
+            border-radius: var(--radius-sm, 6px);
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55);
+            pointer-events: none;
+            white-space: nowrap;
         }
 
         .sidebar__profile-section {
@@ -681,11 +654,20 @@
             font-family: var(--font);
             font-size: 0.65rem;
             font-weight: 600;
-            padding: 0.15rem 0.4rem;
+            padding: 0 0.4rem;
             border-radius: 4px;
             background: rgba(255, 255, 255, 0.06);
             color: var(--text-dim);
             border: 1px solid var(--border);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.35rem;
+            min-height: 18px;
+            line-height: 1;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            align-self: center;
         }
 
         .sidebar__folder {
@@ -742,11 +724,97 @@
             opacity: 0.85;
         }
 
-        .sidebar__footer {
+        .sidebar__bottom {
             margin-top: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar__rail-toggle-wrap {
+            flex-shrink: 0;
+            padding: 0 1rem 0.45rem;
+            box-sizing: border-box;
+        }
+
+        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__rail-toggle-wrap {
+            padding-left: 0.35rem;
+            padding-right: 0.35rem;
+        }
+
+        .sidebar__footer {
+            margin-top: 0;
             flex-shrink: 0;
             padding: 0.55rem 1rem 0.65rem;
             border-top: 1px solid var(--border);
+        }
+
+        .sidebar__rail-toggle-text {
+            display: none;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .app.app--sidebar-pinned .sidebar__rail-toggle-text {
+            display: inline;
+        }
+
+        .app.app--sidebar-pinned .sidebar__rail-toggle {
+            justify-content: flex-start;
+            gap: 0.35rem;
+        }
+
+        .sidebar__rail-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.48rem 0.65rem;
+            margin: 0;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+            transition:
+                background 0.15s ease,
+                color 0.15s ease,
+                padding var(--sidebar-dur) var(--sidebar-ease);
+        }
+
+        .sidebar__rail-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .sidebar__rail-toggle:focus-visible {
+            outline: 2px solid rgba(59, 130, 246, 0.55);
+            outline-offset: 2px;
+        }
+
+        .sidebar__rail-toggle-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            opacity: 0.88;
+        }
+
+        .app:not(.app--sidebar-hover):not(.app--sidebar-pinned) .sidebar--rail .sidebar__rail-toggle {
+            padding: 0.48rem 0.35rem;
+        }
+
+        .app.app--sidebar-pinned .sidebar__rail-toggle-icon--when-collapsed {
+            display: none;
+        }
+
+        .app:not(.app--sidebar-pinned) .sidebar__rail-toggle-icon--when-pinned {
+            display: none;
         }
 
         .sidebar__link-main {
@@ -773,50 +841,93 @@
         .reports-phase[hidden],
         .analytics-phase[hidden],
         .exports-phase[hidden],
-        .ticket-detail-phase[hidden] {
+        .ticket-detail-phase[hidden],
+        .comments-phase[hidden] {
             display: none !important;
         }
 
         .ticket-detail-section {
-            margin-top: 0.5rem;
+            margin-top: 0.35rem;
         }
 
-        .ticket-detail-table-wrap {
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background: var(--surface);
-            overflow: hidden;
+        .ticket-detail-phase .page-head {
+            margin-bottom: 0.5rem;
+            align-items: flex-start;
         }
 
-        .ticket-detail-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
+        .ticket-detail-phase .page-head__title {
+            font-size: 1.2rem;
+            line-height: 1.25;
         }
 
-        .ticket-detail-table th {
-            text-align: left;
-            width: 34%;
-            max-width: 14rem;
-            padding: 0.65rem 1rem;
+        .ticket-detail-phase .ticket-detail__back {
+            flex: 0 0 auto;
+            min-width: 7.5rem;
+            padding: 0.5rem 1.35rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: none;
+            background: rgba(59, 130, 246, 0.16);
+            color: #bfdbfe;
+            border: 1px solid rgba(59, 130, 246, 0.32);
+        }
+
+        .ticket-detail-phase .ticket-detail__back:hover {
+            filter: none;
+            background: rgba(59, 130, 246, 0.26);
+            border-color: rgba(59, 130, 246, 0.42);
+            color: #e0f2fe;
+        }
+
+        /* Ticket detail table: full height — no inner scroll; page scrolls if needed */
+        #ticketDetailTableWrap.spillover-table-wrap--minimal {
+            overflow: visible;
+            max-height: none;
+            border-color: rgba(255, 255, 255, 0.07);
+            background: rgba(0, 0, 0, 0.18);
+        }
+
+        #ticketDetailPhase #ticketDetailTableWrap.spillover-table-wrap {
+            overflow: visible;
+        }
+
+        #ticketDetailPhase .ticket-detail-field-table thead th {
+            background: rgba(0, 0, 0, 0.35);
+            color: var(--text-dim);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        #ticketDetailPhase .ticket-detail-field-table tbody td {
+            transition: background 0.14s ease;
+        }
+
+        #ticketDetailPhase .ticket-detail-field-table tbody tr:nth-child(odd) td {
+            background: transparent;
+        }
+
+        #ticketDetailPhase .ticket-detail-field-table tbody tr:nth-child(even) td {
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        #ticketDetailPhase .ticket-detail-field-table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        #ticketDetailPhase .ticket-detail-field-table tbody td:first-child {
+            max-width: none;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
             font-weight: 500;
             color: var(--text-muted);
-            background: rgba(0, 0, 0, 0.25);
-            border-bottom: 1px solid var(--border);
+            width: 28%;
             vertical-align: top;
         }
 
-        .ticket-detail-table td {
-            padding: 0.65rem 1rem;
-            border-bottom: 1px solid var(--border);
-            color: var(--text);
+        #ticketDetailPhase .ticket-detail-field-table tbody td:last-child {
             word-break: break-word;
-            line-height: 1.45;
-        }
-
-        .ticket-detail-table tr:last-child th,
-        .ticket-detail-table tr:last-child td {
-            border-bottom: none;
+            vertical-align: top;
         }
 
         .assignee-issue--clickable {
@@ -1008,6 +1119,280 @@
             min-width: 11rem;
             max-width: 18rem;
             vertical-align: middle;
+        }
+
+        .spillover-table__display {
+            display: block;
+            font-size: 0.8125rem;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .spillover-table__display--empty {
+            color: var(--text-dim);
+        }
+
+        .spillover-table__edit-cell {
+            width: 5.5rem;
+            vertical-align: middle;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .spillover-table th.spillover-table__actions-col {
+            text-align: center;
+        }
+
+        .spillover-row-edit-btn {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.75rem;
+            transition:
+                color 0.15s ease,
+                background 0.15s ease,
+                border-color 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+        .spillover-table .btn.btn-secondary.spillover-row-edit-btn:hover,
+        .spillover-table .btn.btn-secondary.spillover-row-edit-btn:focus-visible {
+            color: #fecaca;
+            background: rgba(185, 28, 28, 0.38);
+            border-color: #ef4444;
+            box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.45);
+        }
+
+        .spillover-table .btn.btn-secondary.spillover-row-edit-btn:active {
+            color: #fff;
+            background: rgba(127, 29, 29, 0.65);
+            border-color: #dc2626;
+        }
+
+        .spillover-table__spill-cell {
+            width: 3rem;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .spillover-yn {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 0.12rem 0.38rem;
+            border-radius: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .spillover-yn--yes {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .spillover-yn--no {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .spillover-edit-modal--minimal {
+            position: relative;
+        }
+
+        .spillover-edit-modal__close {
+            position: absolute;
+            top: 0.4rem;
+            right: 0.45rem;
+            width: 2rem;
+            height: 2rem;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 1.35rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .spillover-edit-modal__close:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .spillover-edit-modal__key-label {
+            font-family: ui-monospace, monospace;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0 2rem 0.5rem 0;
+            word-break: break-all;
+            line-height: 1.35;
+        }
+
+        .spillover-edit-modal__ticket-meta {
+            margin-bottom: 0.85rem;
+            padding: 0.55rem 0.65rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: rgba(0, 0, 0, 0.28);
+        }
+
+        .spillover-edit-modal__meta-row {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .spillover-edit-modal__meta-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .spillover-edit-modal__meta-label {
+            flex: 0 0 auto;
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .spillover-edit-modal__meta-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        .spillover-edit-modal__summary-block {
+            margin-top: 0.45rem;
+        }
+
+        .spillover-edit-modal__mini-label--summary {
+            margin-bottom: 0.28rem;
+        }
+
+        .spillover-edit-modal__summary-text {
+            margin: 0;
+            font-size: 0.8125rem;
+            line-height: 1.45;
+            color: var(--text-muted);
+            max-height: 7rem;
+            overflow-y: auto;
+            padding: 0.45rem 0.55rem;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .spillover-edit-modal__field--inline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.65rem;
+            margin-bottom: 0.65rem;
+            padding: 0.45rem 0.55rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.22);
+        }
+
+        .spillover-edit-modal__field--inline label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin: 0;
+        }
+
+        .spillover-edit-modal__yesno {
+            min-width: 6.25rem;
+            padding: 0.32rem 1.85rem 0.32rem 0.45rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background-color: #141418;
+            color: var(--text);
+            font-size: 0.8125rem;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.4rem center;
+        }
+
+        .spillover-edit-modal .spillover-category-select,
+        .spillover-edit-modal .bug-category-select {
+            background-color: #141418;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+        }
+
+        .spillover-edit-modal__mini-label {
+            display: block;
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin: 0 0 0.22rem;
+        }
+
+        .spillover-edit-modal--minimal .spillover-edit-modal__reason--minimal {
+            margin: 0 0 0.55rem;
+            min-height: 2.75rem;
+            padding: 0.45rem 0.55rem;
+            font-size: 0.8125rem;
+        }
+
+        .spillover-edit-modal__select--minimal {
+            margin-bottom: 0.25rem;
+        }
+
+        .spillover-edit-modal__actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.45rem;
+            margin-top: 0.75rem;
+            padding-top: 0.65rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .spillover-edit-modal__btn {
+            padding: 0.38rem 0.8rem;
+            font-size: 0.8125rem;
+        }
+
+        .spillover-table--minimal .spillover-table__spill-cell {
+            width: 2.65rem;
+            padding-left: 0.25rem;
+            padding-right: 1.35rem;
+        }
+
+        .spillover-edit-modal .spillover-edit-modal__reason {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0.65rem 0 1rem;
+            padding: 0.55rem 0.65rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.35);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.875rem;
+            line-height: 1.45;
+            resize: vertical;
+            min-height: 4.5rem;
+        }
+
+        .spillover-edit-modal__label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
         }
 
         .spillover-category-select,
@@ -1232,6 +1617,163 @@
         .dash-list-search::placeholder {
             color: var(--text-dim);
             opacity: 1;
+        }
+
+        #spilloverPhase .dash-list-toolbar--minimal {
+            margin-bottom: 0.65rem;
+            padding: 0.5rem 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.28);
+            box-shadow: none;
+        }
+
+        #spilloverPhase .dash-list-toolbar--minimal .dash-list-toolbar__label {
+            margin-bottom: 0.35rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+        }
+
+        #spilloverPhase .dash-list-search-wrap--minimal {
+            padding: 0.12rem 0.55rem;
+            border-radius: 8px;
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        #spilloverPhase .dash-list-search-wrap--minimal .dash-list-search {
+            padding: 0.45rem 0.2rem;
+            font-size: 0.8125rem;
+        }
+
+        #spilloverPhase .dash-list-search-wrap--minimal .dash-list-search__icon {
+            width: 1rem;
+            height: 1rem;
+            opacity: 0.75;
+        }
+
+        #bugPhase .dash-list-toolbar--minimal {
+            margin-bottom: 0.65rem;
+            padding: 0.5rem 0.65rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.28);
+            box-shadow: none;
+        }
+
+        #bugPhase .dash-list-toolbar--minimal .dash-list-toolbar__label {
+            margin-bottom: 0.35rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+        }
+
+        #bugPhase .dash-list-search-wrap--minimal {
+            padding: 0.12rem 0.55rem;
+            border-radius: 8px;
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        #bugPhase .dash-list-search-wrap--minimal .dash-list-search {
+            padding: 0.45rem 0.2rem;
+            font-size: 0.8125rem;
+        }
+
+        #bugPhase .dash-list-search-wrap--minimal .dash-list-search__icon {
+            width: 1rem;
+            height: 1rem;
+            opacity: 0.75;
+        }
+
+        .spillover-edit-modal select.spillover-edit-modal__yesno.bug-edit-modal__prod {
+            min-width: 7.5rem;
+        }
+
+        .panel-dark__sub--minimal {
+            font-size: 0.78rem !important;
+            line-height: 1.45 !important;
+            margin-top: 0.35rem !important;
+            color: var(--text-muted) !important;
+        }
+
+        .spillover-detail__minimal-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin: 0.85rem 0 0.45rem;
+        }
+
+        .spillover-table-wrap--minimal {
+            border-radius: 6px;
+            border-color: rgba(255, 255, 255, 0.07);
+            background: rgba(0, 0, 0, 0.18);
+        }
+
+        .spillover-table--minimal {
+            font-size: 0.8125rem;
+        }
+
+        .spillover-table--minimal th,
+        .spillover-table--minimal td {
+            padding: 0.38rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .spillover-table--minimal th {
+            font-size: 0.6rem;
+            letter-spacing: 0.06em;
+            padding-top: 0.4rem;
+            padding-bottom: 0.4rem;
+            background: rgba(0, 0, 0, 0.25);
+            font-weight: 600;
+        }
+
+        .spillover-table--minimal .spillover-table__reason-cell {
+            min-width: 7rem;
+            max-width: 18rem;
+            padding-left: 0.75rem;
+        }
+
+        .spillover-table--minimal .spillover-table__category-cell {
+            min-width: 6rem;
+            max-width: 12rem;
+        }
+
+        .spillover-table--minimal .spillover-table__display {
+            font-size: 0.78rem;
+            line-height: 1.35;
+        }
+
+        .spillover-table--minimal .spillover-table__name {
+            font-weight: 400;
+            max-width: 9rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .spillover-table--minimal .spillover-table__edit-cell {
+            width: 3rem;
+            padding-left: 0.35rem;
+            padding-right: 0.35rem;
+        }
+
+        .spillover-table--minimal .spillover-row-edit-btn {
+            padding: 0.18rem 0.4rem;
+            font-size: 0.68rem;
+            font-weight: 500;
+        }
+
+        .spillover-summary-details--minimal .spillover-summary__toggle {
+            padding: 0.55rem 0.65rem;
+        }
+
+        .spillover-summary-details--minimal .spillover-summary__tap-hint {
+            display: none;
+        }
+
+        .spillover-summary-details--minimal .spillover-summary__toggle-title {
+            font-size: 0.78rem;
         }
 
         .dash-list-search:focus {
@@ -1782,21 +2324,6 @@
             font-size: 0.625rem;
             letter-spacing: 0.06em;
             color: var(--text-dim);
-        }
-
-        #dashboardPhase > .dash-view__footer-note {
-            margin-top: 2rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 0.6875rem;
-            letter-spacing: 0.03em;
-            color: var(--text-dim);
-            text-align: center;
-            line-height: 1.6;
-        }
-
-        #dashboardPhase > .dash-view__footer-note .kbd {
-            font-size: 0.85em;
         }
 
         #dashboardPhase .dash-view__top-grid {
@@ -2477,6 +3004,12 @@
             padding: 1.2rem 1.35rem 1.1rem;
         }
 
+        .workspace-db-clear-modal.spillover-edit-modal--minimal {
+            max-width: 38rem;
+            width: min(92vw, 38rem);
+            padding: 1.1rem 1.15rem 0.95rem;
+        }
+
         .workspace-db-clear-modal__title {
             margin: 0 0 0.65rem;
             font-size: 1rem;
@@ -2691,16 +3224,6 @@
             min-width: 7rem;
         }
 
-        #setupPhase.uc-setup .uc-foot {
-            margin-top: 2rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            text-align: center;
-            font-size: 0.6875rem;
-            color: var(--text-dim);
-            line-height: 1.55;
-        }
-
         #setupPhase.uc-setup .db-upload-select {
             flex: 1 1 8rem;
         }
@@ -2765,7 +3288,7 @@
         }
         .invite-people-col__head {
             display: flex;
-            align-items: baseline;
+            align-items: center;
             justify-content: space-between;
             gap: 0.5rem;
             margin-bottom: 0.45rem;
@@ -2798,7 +3321,7 @@
         .invite-people-row {
             display: grid;
             grid-template-columns: minmax(0, min(32%, 7.5rem)) minmax(0, 1fr) auto;
-            align-items: baseline;
+            align-items: center;
             gap: 0.4rem 0.5rem;
             font-size: 0.76rem;
             line-height: 1.25;
@@ -2837,14 +3360,63 @@
             color: var(--text-dim);
             line-height: 1.35;
         }
-        .invite-people-foot {
-            margin-top: 0.6rem;
-            font-size: 0.68rem;
-            color: var(--text-dim);
-            line-height: 1.4;
+
+        .invite-settings-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 1.25rem;
+            align-items: flex-end;
         }
-        .invite-help-text {
-            line-height: 1.45;
+
+        .invite-settings-toolbar__field {
+            flex: 1 1 14rem;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .invite-settings-toolbar__field .section-label {
+            margin-bottom: 0;
+        }
+
+        .invite-settings-toolbar__field--upload {
+            flex: 0 1 22rem;
+            max-width: 26rem;
+        }
+
+        #invitePhase .invite-settings-toolbar .invite-settings-toolbar__threshold-input,
+        #invitePhase .invite-settings-toolbar__field--upload .db-upload-select {
+            box-sizing: border-box;
+            height: 2.375rem;
+            min-height: 2.375rem;
+            max-height: 2.375rem;
+            padding: 0 0.65rem;
+            font-size: 0.78rem;
+            line-height: 1.25;
+        }
+
+        #invitePhase .invite-settings-toolbar__field--upload .db-upload-select {
+            width: 100%;
+            font-family: var(--font);
+        }
+
+        .invite-settings-toolbar__field--threshold {
+            flex: 0 1 11rem;
+        }
+
+        .invite-settings-toolbar__threshold-input {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .invite-settings-toolbar__actions {
+            flex: 0 0 auto;
+        }
+
+        .invite-settings-toolbar__actions .btn {
+            flex: 0 0 auto;
+            min-width: 6rem;
         }
 
         .db-load-hint {
@@ -2902,8 +3474,12 @@
         .invite-single-form__group--last {
             padding-bottom: 1.05rem;
         }
-        .invite-single-form__group--last > .field:first-child {
-            margin-bottom: 0.9rem;
+        .invite-single-form__email-label {
+            display: block;
+            margin: 0 0 0.4rem;
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--text-muted);
         }
 
         .invite-single-form .field {
@@ -2912,21 +3488,23 @@
         .panel.db-load-panel.invite-single-form .field label {
             font-size: 0.74rem;
         }
-        .invite-single-form__row--bottom {
+        .invite-single-form__controls {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
-            gap: 0.85rem 1.1rem;
+            gap: 0.65rem 1rem;
             margin-bottom: 0;
         }
-        .invite-single-form__field--grow {
+        .invite-single-form__email-input {
             flex: 1 1 14rem;
             min-width: 10rem;
+            margin: 0;
+            box-sizing: border-box;
         }
         .invite-single-form__field--expires {
             flex: 0 0 auto;
-            width: 8.5rem;
-            min-width: 6.5rem;
+            width: 6.5rem;
+            min-width: 4.25rem;
         }
         .invite-single-form__field--expires input {
             max-width: 100%;
@@ -2934,14 +3512,17 @@
         .invite-single-form__actions {
             flex: 0 0 auto;
         }
-        .invite-single-form__actions .btn {
+        .invite-single-form__create-btn {
+            flex: 0 0 auto;
+            min-width: unset;
             white-space: nowrap;
+            margin: 0;
         }
         @media (max-width: 520px) {
-            .invite-single-form__row--bottom .invite-single-form__actions {
+            .invite-single-form__controls .invite-single-form__actions {
                 width: 100%;
             }
-            .invite-single-form__row--bottom .invite-single-form__actions .btn {
+            .invite-single-form__controls .invite-single-form__actions .invite-single-form__create-btn {
                 width: 100%;
             }
         }
@@ -2997,10 +3578,52 @@
             text-transform: uppercase;
             color: var(--text-dim);
         }
-        .invite-bulk-card__hint {
-            margin: 0 0 0.75rem;
-            line-height: 1.45;
+
+        .invite-bulk-card__expires-label {
+            display: block;
+            margin: 0 0 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
         }
+
+        .invite-bulk-card__controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.65rem 1rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .invite-bulk-card__expires-input {
+            flex: 0 1 6.5rem;
+            min-width: 4.25rem;
+            max-width: 6.5rem;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .invite-bulk-card__actions {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .invite-bulk-card__actions .invite-bulk-card__btn {
+            flex: 0 0 auto;
+            min-width: unset;
+            white-space: nowrap;
+            margin: 0;
+        }
+
+        .invite-bulk-card__expires-preview {
+            margin: 0 0 0.75rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            min-height: 1.2em;
+        }
+
         .invite-bulk-card__btn {
             margin-bottom: 0;
         }
@@ -3015,18 +3638,7 @@
         .invite-bulk-panel-inner {
             min-width: 0;
         }
-        .invite-bulk-panel__toolbar {
-            margin-bottom: 0.35rem;
-        }
-        .invite-bulk-panel__expires {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-        .invite-bulk-panel__hint {
-            margin: 0 0 0.55rem;
-            line-height: 1.45;
-        }
+
         .invite-bulk-table-wrap {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -3381,14 +3993,6 @@
             font-size: 0.78rem;
         }
 
-        .page-foot {
-            margin-top: 2rem;
-            font-size: 0.72rem;
-            color: var(--text-dim);
-            text-align: center;
-            letter-spacing: 0.03em;
-        }
-
         .mobile-topbar,
         .mobile-nav-backdrop {
             display: none;
@@ -3532,9 +4136,6 @@
                 flex: 1 1 auto !important;
                 max-width: none !important;
             }
-            .sidebar.sidebar--rail .sidebar__pin-hint {
-                display: none !important;
-            }
             .sidebar.sidebar--rail .sidebar__kbd {
                 display: inline-block !important;
             }
@@ -3560,6 +4161,12 @@
             }
             .sidebar.sidebar--rail .sidebar__footer .sidebar__profile-section:not([hidden]) {
                 display: block !important;
+            }
+            .sidebar.sidebar--rail .sidebar__rail-toggle-wrap {
+                display: none !important;
+            }
+            .sidebar.sidebar--rail .sidebar__user-initial {
+                display: none !important;
             }
             .sidebar.sidebar--rail .sidebar__sign-out {
                 width: 100%;
@@ -3614,8 +4221,8 @@
 
         .global-search-panel {
             position: relative;
-            width: 100%;
-            max-width: 32rem;
+            width: min(92vw, 46rem);
+            max-width: 46rem;
             border-radius: var(--radius);
             border: 1px solid var(--border);
             background: var(--surface);
@@ -3683,8 +4290,29 @@
             list-style: none;
             margin: 0;
             padding: 0.35rem 0;
-            max-height: min(50vh, 320px);
+            max-height: min(50vh, 380px);
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(234, 179, 8, 0.55) rgba(0, 0, 0, 0.35);
+        }
+
+        .global-search-results::-webkit-scrollbar {
+            width: 9px;
+        }
+
+        .global-search-results::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 6px;
+            margin: 4px 0;
+        }
+
+        .global-search-results::-webkit-scrollbar-thumb {
+            background: rgba(234, 179, 8, 0.55);
+            border-radius: 6px;
+        }
+
+        .global-search-results::-webkit-scrollbar-thumb:hover {
+            background: rgba(250, 204, 21, 0.75);
         }
 
         .global-search__empty {
@@ -4490,7 +5118,6 @@
             .sidebar__chevron,
             .sidebar__link,
             .sidebar__folder,
-            .sidebar__pin-hint,
             .sidebar__divider,
             .toast-stack .toast-msg {
                 transition-duration: 0.01ms !important;
@@ -4516,6 +5143,7 @@
         <div class="message error toast-msg" id="errorMsg"><p id="errorText"></p></div>
     </div>
     <div class="app app--sidebar-pinned">
+        <div id="sidebarNavTooltip" class="sidebar-nav-tooltip" role="tooltip" hidden aria-hidden="true"></div>
         <button type="button" class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-label="Close menu" tabindex="-1"></button>
         <header class="mobile-topbar" aria-label="Mobile navigation">
             <button type="button" class="mobile-topbar__toggle" id="mobileNavToggle" aria-expanded="false" aria-controls="sidebarNavHost" title="Menu">
@@ -4551,14 +5179,14 @@
             </div>
             <div class="sidebar__scroll">
                 <nav class="sidebar__nav" aria-label="Shortcuts">
-                    <a id="navSearch" class="sidebar__link sidebar__link--spread" href="#" onclick="openGlobalSearch(event)" title="Search issues">
+                    <a id="navSearch" class="sidebar__link sidebar__link--spread" href="#" onclick="openGlobalSearch(event)">
                         <span class="sidebar__link-main">
                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                             <span class="sidebar__link-label">Search</span>
                         </span>
                         <kbd class="sidebar__kbd">/</kbd>
                     </a>
-                    <a id="navReports" class="sidebar__link" href="#" onclick="navGoReports(event)" title="Reports">
+                    <a id="navReports" class="sidebar__link" href="#" onclick="navGoReports(event)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                         <span class="sidebar__link-label">Reports</span>
                     </a>
@@ -4567,39 +5195,43 @@
                 <hr class="sidebar__divider" aria-hidden="true" />
 
                 <nav class="sidebar__nav" aria-label="Main">
-                    <a id="navUpload" class="sidebar__link sidebar__link--active" href="#" onclick="navGoSetup(event)" title="Upload &amp; configure">
+                    <a id="navUpload" class="sidebar__link sidebar__link--active" href="#" onclick="navGoSetup(event)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                         <span class="sidebar__link-label">Upload &amp; configure</span>
                     </a>
-                    <a id="navDashboard" class="sidebar__link" href="#" onclick="navGoDashboard(event)" title="Overview · metrics, chart, contributor updates">
+                    <a id="navDashboard" class="sidebar__link" href="#" onclick="navGoDashboard(event)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                         <span class="sidebar__link-label">Dashboard</span>
                     </a>
-                    <a id="navSpillover" class="sidebar__link" href="#" onclick="navGoSpilloverSection(event)" title="Spillover">
+                    <a id="navSpillover" class="sidebar__link" href="#" onclick="navGoSpilloverSection(event)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         <span class="sidebar__link-label">Spillover</span>
                     </a>
-                    <a id="navBug" class="sidebar__link" href="#" onclick="navGoBugSection(event)" title="Bugs">
+                    <a id="navBug" class="sidebar__link" href="#" onclick="navGoBugSection(event)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         <span class="sidebar__link-label">Bugs</span>
                     </a>
-                    <a id="navAnalytics" class="sidebar__link" href="#" onclick="navGoAnalytics(event)" title="Analytics">
+                    <a id="navAnalytics" class="sidebar__link" href="#" onclick="navGoAnalytics(event)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         <span class="sidebar__link-label">Analytics</span>
                     </a>
-                    <a id="navExport" class="sidebar__link" href="#" onclick="navExportExcel(event)" title="Exports">
+                    <a id="navExport" class="sidebar__link" href="#" onclick="navExportExcel(event)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         <span class="sidebar__link-label">Exports</span>
                     </a>
-                    <a id="navInvite" class="sidebar__link" href="#" onclick="navGoInvite(event)" title="Send invite">
+                    <a id="navInvite" class="sidebar__link" href="#" onclick="navGoInvite(event)">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         <span class="sidebar__link-label">Send invite</span>
+                    </a>
+                    <a id="navComments" class="sidebar__link" href="#" onclick="navGoComments(event)">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        <span class="sidebar__link-label">Comments</span>
                     </a>
                 </nav>
 
                 <hr class="sidebar__divider" aria-hidden="true" />
 
-                <button type="button" id="assigneesToggle" class="sidebar__folder" aria-expanded="false" aria-controls="assigneesPanel" title="Assignees">
+                <button type="button" id="assigneesToggle" class="sidebar__folder" aria-expanded="false" aria-controls="assigneesPanel" aria-label="Assignees">
                     <span class="sidebar__folder-inner">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
                         <span class="sidebar__folder-label">Assignees</span>
@@ -4611,9 +5243,45 @@
                         <p class="assignees-empty">Run <strong>Proceed</strong>, then open <strong>Assignees</strong> to browse people by name. Click a name for issues and spillover entry status.</p>
                     </div>
                 </div>
-                <p class="sidebar__pin-hint" aria-live="polite">Tap empty area to lock nav bar.</p>
             </div>
-            <div class="sidebar__footer">
+            <div class="sidebar__bottom">
+                <div class="sidebar__rail-toggle-wrap">
+                    <button
+                        type="button"
+                        id="sidebarRailToggle"
+                        class="sidebar__rail-toggle"
+                        aria-controls="sidebarNavHost"
+                        aria-expanded="true"
+                        aria-label="Collapse nav"
+                    >
+                        <svg
+                            class="sidebar__rail-toggle-icon sidebar__rail-toggle-icon--when-pinned"
+                            width="18"
+                            height="18"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                        </svg>
+                        <svg
+                            class="sidebar__rail-toggle-icon sidebar__rail-toggle-icon--when-collapsed"
+                            width="18"
+                            height="18"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M6 5l7 7-7 7" />
+                        </svg>
+                        <span class="sidebar__rail-toggle-text">Collapse nav</span>
+                    </button>
+                </div>
+                <div class="sidebar__footer">
                 <section
                     id="sidebarProfileSection"
                     class="sidebar__profile-section"
@@ -4622,10 +5290,11 @@
                 >
                     <div id="sidebarProfileName" class="sidebar__profile-line sidebar__profile-line--name"></div>
                     <div id="sidebarProfileEmail" class="sidebar__profile-line"></div>
-                    <div id="sidebarProfileCompany" class="sidebar__profile-line"></div>
                 </section>
                 <div id="sidebarAuthFooter" class="sidebar__auth-footer" hidden>
+                    <div id="sidebarUserInitial" class="sidebar__user-initial" aria-hidden="true"></div>
                     <button type="button" id="sidebarSignOut" class="sidebar__sign-out">Sign out</button>
+                </div>
                 </div>
             </div>
         </aside>
@@ -4751,7 +5420,6 @@
                         </div>
                     </section>
 
-                    <p class="uc-foot">Runs in your browser · Optional database when <code class="kbd">DATABASE_URL</code> is set</p>
                 </div>
 
                 <!-- Step 2: full dashboard (shown after Proceed) -->
@@ -4871,7 +5539,6 @@
                         </section>
                     </div>
 
-                    <p class="page-foot dash-view__footer-note">Analysis runs locally · Optional database sync when <code class="kbd">DATABASE_URL</code> is set.</p>
                 </div>
 
                 <!-- Spillover-only dashboard (ticket chips; separate from main dashboard) -->
@@ -4894,15 +5561,14 @@
                         <div class="panel-dark">
                             <div class="panel-dark__head panel-dark__head--stack">
                                 <div>
-                                    <h2 id="spilloverDashHeading">Tickets</h2>
-                                    <p class="panel-dark__sub">Enter a spillover reason per ticket if needed; values are included when you download Excel from Exports. Tap assignee or issue key to open full row details.</p>
+                                    <h2 id="spilloverDashHeading">Edit spillover</h2>
+                                    <p class="panel-dark__sub panel-dark__sub--minimal">Click a row for details · Use <strong>Edit</strong> (red on hover) to set spillover, reason &amp; category — saved to the DB when uploaded.</p>
                                 </div>
                             </div>
                             <div class="panel-dark__body">
-                                <div class="dash-list-toolbar">
-                                    <label class="dash-list-toolbar__label" for="spilloverDashSearch">Search spillover tickets</label>
-                                    <span class="dash-list-toolbar__hint">Type to filter this table by key, assignee, reason, or category.</span>
-                                    <div class="dash-list-search-wrap">
+                                <div class="dash-list-toolbar dash-list-toolbar--minimal">
+                                    <label class="dash-list-toolbar__label" for="spilloverDashSearch">Filter</label>
+                                    <div class="dash-list-search-wrap dash-list-search-wrap--minimal">
                                         <svg class="dash-list-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                             <circle cx="11" cy="11" r="7" />
                                             <path stroke-linecap="round" d="M20 20l-3-3" />
@@ -4924,7 +5590,6 @@
                         </div>
                     </section>
 
-                    <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
 
                 <!-- Bug tracking: PROD, Bug category, RCA per bug row (exported on Bug sheet) -->
@@ -4947,15 +5612,15 @@
                         <div class="panel-dark">
                             <div class="panel-dark__head panel-dark__head--stack">
                                 <div>
-                                    <h2 id="bugDashHeading">Bugs</h2>
-                                    <p class="panel-dark__sub">Rows are Issue Type = Bug from your sheet. PROD, Bug category, and RCA export as extra columns on the Bug sheet.</p>
+                                    <h2 id="bugDashHeading">Edit bugs</h2>
+                                    <p class="panel-dark__sub">Issue Type = Bug from your sheet. Use <strong>Edit</strong> (red on hover) for PROD, Bug category, and RCA — saved to the database when uploaded; exported on the Bug sheet.</p>
                                 </div>
                             </div>
                             <div class="panel-dark__body">
-                                <div class="dash-list-toolbar">
+                                <div class="dash-list-toolbar dash-list-toolbar--minimal">
                                     <label class="dash-list-toolbar__label" for="bugDashSearch">Search bugs</label>
                                     <span class="dash-list-toolbar__hint">Type to filter by issue key, assignee, PROD, Bug category, or RCA.</span>
-                                    <div class="dash-list-search-wrap">
+                                    <div class="dash-list-search-wrap dash-list-search-wrap--minimal">
                                         <svg class="dash-list-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                             <circle cx="11" cy="11" r="7" />
                                             <path stroke-linecap="round" d="M20 20l-3-3" />
@@ -4977,7 +5642,6 @@
                         </div>
                     </section>
 
-                    <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
 
                 <!-- Assignee: full-page workload & spillover (from sidebar People) -->
@@ -5019,7 +5683,6 @@
                         </div>
                     </section>
 
-                    <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
 
                 <!-- Reports: export-oriented summary -->
@@ -5039,7 +5702,6 @@
                         </div>
                     </header>
                     <div id="reportsDashboardBody" class="dashboard-phase-body"></div>
-                    <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
 
                 <!-- Analytics: sprint velocity + spillover category pies from latest Proceed -->
@@ -5059,7 +5721,6 @@
                         </div>
                     </header>
                     <div id="analyticsDashboardBody" class="dashboard-phase-body"></div>
-                    <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
 
                 <!-- Export preview: exact sheets & columns written to Excel -->
@@ -5138,7 +5799,6 @@
                         </div>
                     </div>
                     <div id="exportPreviewBody"></div>
-                    <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
 
                 <!-- Send invite -->
@@ -5152,30 +5812,28 @@
                     <section class="data-section">
                         <h3 class="data-section__title">Invite settings</h3>
                         <div class="panel db-load-panel">
-                            <p class="section-label">Saved upload</p>
-                            <div class="db-load-row">
-                                <select id="inviteUploadSelect" class="db-upload-select" aria-label="Upload to share" onchange="refreshInvitePeopleInsights()">
-                                    <option value="">— Choose upload —</option>
-                                </select>
-                                <button type="button" class="btn btn-secondary" onclick="refreshDbUploadSelect(); refreshInvitePeopleInsights();" title="Refresh uploads">Refresh</button>
-                            </div>
-                            <p class="db-load-hint invite-help-text" style="margin-top: 0.5rem">
-                                Choose the <strong>saved copy of the same Excel</strong> you use in the app (it must show <strong>Stored in the database</strong> on Upload). That file is what contributors will see.
-                            </p>
-                            <div class="field" style="margin-top: 1rem">
-                                <label for="inviteThresholdInput"
-                                    >Sprint threshold <span class="field-hint">(lists who has spillover — same value as on Upload &amp; configure)</span></label
-                                >
-                                <input
-                                    type="text"
-                                    id="inviteThresholdInput"
-                                    class="export-filename-panel__input"
-                                    placeholder="e.g. 14.1"
-                                    inputmode="decimal"
-                                    autocomplete="off"
-                                    style="max-width: 10rem"
-                                    oninput="scheduleRefreshInvitePeopleInsights()"
-                                />
+                            <div class="invite-settings-toolbar">
+                                <div class="invite-settings-toolbar__field invite-settings-toolbar__field--upload">
+                                    <label class="section-label" for="inviteUploadSelect">Saved upload</label>
+                                    <select id="inviteUploadSelect" class="db-upload-select" aria-label="Upload to share" onchange="refreshInvitePeopleInsights()">
+                                        <option value="">— Choose upload —</option>
+                                    </select>
+                                </div>
+                                <div class="invite-settings-toolbar__field invite-settings-toolbar__field--threshold">
+                                    <label class="section-label" for="inviteThresholdInput">Sprint threshold</label>
+                                    <input
+                                        type="text"
+                                        id="inviteThresholdInput"
+                                        class="export-filename-panel__input invite-settings-toolbar__threshold-input"
+                                        placeholder="e.g. 14.1"
+                                        inputmode="decimal"
+                                        autocomplete="off"
+                                        oninput="scheduleRefreshInvitePeopleInsights()"
+                                    />
+                                </div>
+                                <div class="invite-settings-toolbar__actions">
+                                    <button type="button" class="btn btn-secondary" onclick="refreshDbUploadSelect(); refreshInvitePeopleInsights();" title="Refresh uploads">Refresh</button>
+                                </div>
                             </div>
                             <div id="invitePeopleInsight" class="invite-people-insight" hidden></div>
                         </div>
@@ -5184,22 +5842,34 @@
                         <div class="invite-bulk-section__header">
                             <h3 class="data-section__title invite-bulk-section__title">Per-person links</h3>
                             <p class="invite-bulk-section__lead">
-                                One private link per assignee who has spillover or bug work at your threshold. Copy or email each row only to that person.
+                                One link per assignee with spillover or bugs (at your threshold). Only send each row to that person.
                             </p>
                         </div>
                         <div class="panel db-load-panel invite-bulk-card">
                             <p class="invite-bulk-card__kicker">Bulk invites</p>
-                            <p class="invite-bulk-card__hint db-load-hint">
-                                Uses the <strong>same upload and threshold</strong> as Invite settings. Not one link per issue — one link per name in the lists above.
-                            </p>
-                            <button
-                                type="button"
-                                id="inviteBulkCreateBtn"
-                                class="btn btn-primary invite-bulk-card__btn"
-                                onclick="submitCreateBulkInvites()"
-                            >
-                                Create links for each assignee
-                            </button>
+                            <label class="invite-bulk-card__expires-label" for="inviteBulkExpiresInput">Expires (days)</label>
+                            <div class="invite-bulk-card__controls">
+                                <input
+                                    type="number"
+                                    id="inviteBulkExpiresInput"
+                                    class="export-filename-panel__input invite-bulk-card__expires-input"
+                                    min="1"
+                                    max="365"
+                                    value="30"
+                                    aria-describedby="inviteBulkExpiresPreview"
+                                />
+                                <div class="invite-bulk-card__actions">
+                                    <button
+                                        type="button"
+                                        id="inviteBulkCreateBtn"
+                                        class="btn btn-primary invite-bulk-card__btn"
+                                        onclick="submitCreateBulkInvites()"
+                                    >
+                                        Create links for each assignee
+                                    </button>
+                                </div>
+                            </div>
+                            <p id="inviteBulkExpiresPreview" class="invite-bulk-card__expires-preview" aria-live="polite"></p>
                             <div id="inviteBulkPanel" class="invite-result-panel invite-bulk-panel" hidden></div>
                         </div>
                     </section>
@@ -5275,21 +5945,30 @@
                         </div>
                         <div class="panel db-load-panel invite-single-form">
                             <div class="invite-single-form__group invite-single-form__group--last">
-                                <div class="field">
-                                    <label for="inviteEmailInput">Contributor email <span class="field-hint">(optional · shown on their page)</span></label>
-                                    <input type="email" id="inviteEmailInput" class="export-filename-panel__input" placeholder="name@company.com" autocomplete="off" />
-                                </div>
-                                <div class="invite-single-form__row invite-single-form__row--bottom">
-                                    <div class="field invite-single-form__field--grow">
-                                        <label for="inviteNoteInput">Note <span class="field-hint">(optional)</span></label>
-                                        <input type="text" id="inviteNoteInput" class="export-filename-panel__input" placeholder="e.g. Sprint 14.1 review" autocomplete="off" />
-                                    </div>
+                                <label for="inviteEmailInput" class="invite-single-form__email-label">
+                                    Contributor email <span class="field-hint">(optional · shown on their page)</span>
+                                </label>
+                                <div class="invite-single-form__controls">
+                                    <input
+                                        type="email"
+                                        id="inviteEmailInput"
+                                        class="export-filename-panel__input invite-single-form__email-input"
+                                        placeholder="name@company.com"
+                                        autocomplete="off"
+                                    />
                                     <div class="field invite-single-form__field--expires">
                                         <label for="inviteExpiresInput">Expires (days)</label>
                                         <input type="number" id="inviteExpiresInput" class="export-filename-panel__input" min="1" max="365" value="30" />
                                     </div>
                                     <div class="invite-single-form__actions">
-                                        <button type="button" id="inviteSingleCreateBtn" class="btn btn-primary" onclick="submitCreateInvite()">Create invite link</button>
+                                        <button
+                                            type="button"
+                                            id="inviteSingleCreateBtn"
+                                            class="btn btn-primary invite-single-form__create-btn"
+                                            onclick="submitCreateInvite()"
+                                        >
+                                            Create invite link
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -5319,27 +5998,37 @@
                             </div>
                         </div>
                     </section>
-                    <p class="page-foot">Contributors open <strong>User dashboard</strong> or use the link directly. Data is stored in your database workspace.</p>
+                </div>
+
+                <!-- Comments (placeholder dashboard; behaviour TBD) -->
+                <div id="commentsPhase" class="comments-phase setup-phase" hidden>
+                    <header class="page-head">
+                        <div>
+                            <p class="breadcrumb">Collaboration</p>
+                            <h1 class="page-head__title">Comments</h1>
+                            <p class="page-head__sub">Dashboard shell for comments. Functionality will be connected next.</p>
+                        </div>
+                    </header>
+                    <section class="data-section" aria-label="Comments">
+                        <h3 class="data-section__title">Comments</h3>
+                        <div class="panel db-load-panel">
+                            <p class="db-load-hint" style="margin: 0">No comments yet. This area will list threads and tools once wired up.</p>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- Ticket detail: one row from Excel (opened from Assignees list) -->
                 <div id="ticketDetailPhase" class="ticket-detail-phase" hidden>
                     <header class="page-head">
                         <div>
-                            <p class="breadcrumb">
-                                <a href="#" class="breadcrumb-link" onclick="navGoDashboard(event)">Dashboard</a>
-                                <span class="breadcrumb-sep"> · </span>
-                                <span>Ticket</span>
-                            </p>
+                            <p class="breadcrumb"><span>Ticket</span></p>
                             <h1 id="ticketDetailTitle" class="page-head__title">—</h1>
-                            <p class="page-head__sub">Fields below come only from your uploaded spreadsheet row for this issue.</p>
                         </div>
-                        <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Back to dashboard</button>
+                        <button type="button" class="btn btn-primary ticket-detail__back" onclick="navGoTicketBack(event)">Go back</button>
                     </header>
                     <section class="ticket-detail-section" aria-label="Issue fields from Excel">
-                        <div id="ticketDetailTableWrap" class="ticket-detail-table-wrap"></div>
+                        <div id="ticketDetailTableWrap"></div>
                     </section>
-                    <p class="page-foot">Analysis runs in your browser · Uploads can be saved to the database when you run npm start and set DATABASE_URL</p>
                 </div>
             </div>
         </main>
@@ -5394,6 +6083,99 @@
                     >
                         Continue to download
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="spilloverEditOverlay" class="workspace-db-clear-overlay" hidden>
+            <div class="workspace-db-clear-backdrop" onclick="closeSpilloverEditModal()" aria-hidden="true"></div>
+            <div
+                class="workspace-db-clear-modal spillover-edit-modal spillover-edit-modal--minimal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="spilloverEditModalTitle"
+                onclick="event.stopPropagation()"
+            >
+                <button type="button" class="spillover-edit-modal__close" onclick="closeSpilloverEditModal()" aria-label="Close">&times;</button>
+                <p id="spilloverEditModalTitle" class="spillover-edit-modal__key-label"></p>
+                <div class="spillover-edit-modal__ticket-meta">
+                    <div class="spillover-edit-modal__meta-row">
+                        <span class="spillover-edit-modal__meta-label">Name</span>
+                        <span id="spilloverEditModalName" class="spillover-edit-modal__meta-value"></span>
+                    </div>
+                    <div class="spillover-edit-modal__summary-block">
+                        <span class="spillover-edit-modal__mini-label spillover-edit-modal__mini-label--summary">Summary</span>
+                        <p id="spilloverEditModalSummary" class="spillover-edit-modal__summary-text"></p>
+                    </div>
+                </div>
+                <div class="spillover-edit-modal__field spillover-edit-modal__field--inline">
+                    <label for="spilloverEditYesNo">Spillover</label>
+                    <select id="spilloverEditYesNo" class="spillover-edit-modal__yesno">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <label class="spillover-edit-modal__mini-label" for="spilloverEditReason">Reason</label>
+                <textarea
+                    id="spilloverEditReason"
+                    class="spillover-edit-modal__reason spillover-edit-modal__reason--minimal"
+                    rows="2"
+                    maxlength="4000"
+                    placeholder="Optional — exported on SpillOver sheet"
+                    autocomplete="off"
+                ></textarea>
+                <label class="spillover-edit-modal__mini-label" for="spilloverEditCategory">Category</label>
+                <select id="spilloverEditCategory" class="spillover-category-select spillover-edit-modal__select spillover-edit-modal__select--minimal"></select>
+                <div class="spillover-edit-modal__actions">
+                    <button type="button" class="btn btn-secondary spillover-edit-modal__btn" onclick="closeSpilloverEditModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary spillover-edit-modal__btn" onclick="saveSpilloverEditModal()">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="bugEditOverlay" class="workspace-db-clear-overlay" hidden>
+            <div class="workspace-db-clear-backdrop" onclick="closeBugEditModal()" aria-hidden="true"></div>
+            <div
+                class="workspace-db-clear-modal spillover-edit-modal spillover-edit-modal--minimal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="bugEditModalTitle"
+                onclick="event.stopPropagation()"
+            >
+                <button type="button" class="spillover-edit-modal__close" onclick="closeBugEditModal()" aria-label="Close">&times;</button>
+                <p id="bugEditModalTitle" class="spillover-edit-modal__key-label"></p>
+                <div class="spillover-edit-modal__ticket-meta">
+                    <div class="spillover-edit-modal__meta-row">
+                        <span class="spillover-edit-modal__meta-label">Name</span>
+                        <span id="bugEditModalName" class="spillover-edit-modal__meta-value"></span>
+                    </div>
+                    <div class="spillover-edit-modal__summary-block">
+                        <span class="spillover-edit-modal__mini-label spillover-edit-modal__mini-label--summary">Summary</span>
+                        <p id="bugEditModalSummary" class="spillover-edit-modal__summary-text"></p>
+                    </div>
+                </div>
+                <div class="spillover-edit-modal__field spillover-edit-modal__field--inline">
+                    <label for="bugEditProd">PROD</label>
+                    <select id="bugEditProd" class="spillover-edit-modal__yesno bug-edit-modal__prod">
+                        <option value="">Select…</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <label class="spillover-edit-modal__mini-label" for="bugEditCategory">Bug category</label>
+                <select id="bugEditCategory" class="bug-category-select spillover-edit-modal__select spillover-edit-modal__select--minimal"></select>
+                <label class="spillover-edit-modal__mini-label" for="bugEditRca">RCA (Root Cause Analysis)</label>
+                <textarea
+                    id="bugEditRca"
+                    class="spillover-edit-modal__reason spillover-edit-modal__reason--minimal"
+                    rows="3"
+                    maxlength="4000"
+                    placeholder="Optional — exported on Bug sheet"
+                    autocomplete="off"
+                ></textarea>
+                <div class="spillover-edit-modal__actions">
+                    <button type="button" class="btn btn-secondary spillover-edit-modal__btn" onclick="closeBugEditModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary spillover-edit-modal__btn" onclick="saveBugEditModal()">Save</button>
                 </div>
             </div>
         </div>
@@ -5462,12 +6244,34 @@
                 }
             }
 
+            function syncSidebarUserInitial(nameDd, emailDd, user) {
+                var el = document.getElementById('sidebarUserInitial');
+                if (!el) return;
+                var nameStr = nameDd && nameDd.textContent ? String(nameDd.textContent).trim() : '';
+                var em = user && user.email ? String(user.email).trim() : '';
+                var raw =
+                    nameStr && nameStr !== '\u2014'
+                        ? nameStr
+                        : em
+                          ? em
+                          : '';
+                if (!raw) {
+                    el.textContent = '?';
+                    return;
+                }
+                var ch = raw.charAt(0);
+                if (/[a-z]/i.test(ch)) {
+                    el.textContent = ch.toUpperCase();
+                } else {
+                    el.textContent = ch;
+                }
+            }
+
             function updateSidebarProfileSection(user) {
                 var section = document.getElementById('sidebarProfileSection');
                 var nameDd = document.getElementById('sidebarProfileName');
                 var emailDd = document.getElementById('sidebarProfileEmail');
-                var coDd = document.getElementById('sidebarProfileCompany');
-                if (!section || !nameDd || !emailDd || !coDd) return;
+                if (!section || !nameDd || !emailDd) return;
                 if (!user) {
                     section.hidden = true;
                     return;
@@ -5480,8 +6284,8 @@
                     (em ? em.split('@')[0] : '') ||
                     (user.uid ? user.uid.slice(0, 8) + '\u2026' : '\u2014');
                 nameDd.textContent = name;
-                coDd.textContent = '\u2014';
                 section.hidden = false;
+                syncSidebarUserInitial(nameDd, emailDd, user);
                 if (!window.firebaseDb || !user.uid) return;
                 window.firebaseDb
                     .collection('users')
@@ -5493,12 +6297,9 @@
                         if (fsName) {
                             nameDd.textContent = fsName;
                         }
-                        var co = d && d.company ? String(d.company).trim() : '';
-                        coDd.textContent = co || '\u2014';
+                        syncSidebarUserInitial(nameDd, emailDd, user);
                     })
-                    .catch(function () {
-                        coDd.textContent = '\u2014';
-                    });
+                    .catch(function () {});
             }
 
             function wireSignedInSidebar(user) {
@@ -5559,6 +6360,8 @@
         let spilloverReasonByKey = {};
         /** Issue key → spillover category (dropdown); exported on SpillOver sheet only. */
         let spilloverCategoryByKey = {};
+        /** Issue key → SpillOver Yes/No override for export; omitted = use sheet sprint rule. */
+        let spilloverYesNoByKey = {};
         /** Issue key → PROD (Yes/No) for Bug sheet. */
         let bugProdByKey = {};
         /** Issue key → Bug category (dropdown) for Bug sheet. */
@@ -5682,6 +6485,10 @@
 
         /** Database upload id when file was saved or loaded from DB (used to merge shared issue edits). */
         let currentUploadId = null;
+        /** Main view to restore when leaving ticket detail (set when entering from another view). */
+        let ticketDetailPreviousView = 'dashboard';
+        /** sessionStorage: which main phase to show after reload (same tab). */
+        var MAIN_VIEW_SESSION_KEY = 'jiraSpilloverMainView';
         /** Invalidates in-flight export contributor checks when the user closes the modal during loading. */
         let exportContributorModalReqToken = 0;
         /** Poll contributor activity while Overview dashboard is visible. */
@@ -5919,6 +6726,7 @@
             if (opts.replaceMaps) {
                 spilloverReasonByKey = {};
                 spilloverCategoryByKey = {};
+                spilloverYesNoByKey = {};
                 bugProdByKey = {};
                 bugRcaByKey = {};
                 bugCategoryByKey = {};
@@ -5970,6 +6778,11 @@
                     spilloverCategoryByKey[k],
                     row.spillover_category != null ? row.spillover_category : ''
                 );
+                if (row.spillover_yes_no === 'Yes' || row.spillover_yes_no === 'No') {
+                    spilloverYesNoByKey[k] = row.spillover_yes_no;
+                } else if (row.spilloverYesNo === 'Yes' || row.spilloverYesNo === 'No') {
+                    spilloverYesNoByKey[k] = row.spilloverYesNo;
+                }
                 bugProdByKey[k] = pickMergeStr(bugProdByKey[k], row.prod != null ? row.prod : '');
                 bugRcaByKey[k] = pickMergeStr(bugRcaByKey[k], row.rca != null ? row.rca : '');
                 bugCategoryByKey[k] = pickMergeStr(bugCategoryByKey[k], rowBugCategory(row));
@@ -6045,6 +6858,7 @@
             var navAnalytics = document.getElementById('navAnalytics');
             var navExport = document.getElementById('navExport');
             var navInvite = document.getElementById('navInvite');
+            var navComments = document.getElementById('navComments');
             if (navUpload) {
                 navUpload.classList.toggle('sidebar__link--active', view === 'setup');
             }
@@ -6072,10 +6886,13 @@
             if (navInvite) {
                 navInvite.classList.toggle('sidebar__link--active', view === 'invite');
             }
+            if (navComments) {
+                navComments.classList.toggle('sidebar__link--active', view === 'comments');
+            }
         }
 
         /**
-         * @param {'setup'|'dashboard'|'spillover'|'bug'|'assignee'|'reports'|'analytics'|'export'|'ticket'|'invite'} view
+         * @param {'setup'|'dashboard'|'spillover'|'bug'|'assignee'|'reports'|'analytics'|'export'|'ticket'|'invite'|'comments'} view
          */
         function setMainView(view) {
             var setup = document.getElementById('setupPhase');
@@ -6088,6 +6905,7 @@
             var exportsPh = document.getElementById('exportsPhase');
             var ticket = document.getElementById('ticketDetailPhase');
             var invitePh = document.getElementById('invitePhase');
+            var commentsPh = document.getElementById('commentsPhase');
             if (setup) setup.hidden = view !== 'setup';
             if (dash) dash.hidden = view !== 'dashboard';
             if (spill) spill.hidden = view !== 'spillover';
@@ -6098,6 +6916,7 @@
             if (exportsPh) exportsPh.hidden = view !== 'export';
             if (ticket) ticket.hidden = view !== 'ticket';
             if (invitePh) invitePh.hidden = view !== 'invite';
+            if (commentsPh) commentsPh.hidden = view !== 'comments';
             updateNavForView(view);
             if (view !== 'invite') {
                 stopBulkInviteStatusPoll();
@@ -6112,7 +6931,8 @@
                 view === 'bug' ||
                 view === 'export' ||
                 view === 'reports' ||
-                view === 'invite'
+                view === 'invite' ||
+                view === 'comments'
             ) {
                 startContributorActivityPollIfDashboard();
             } else {
@@ -6139,6 +6959,135 @@
                 }
             }
             scrollToDashboardTop();
+            try {
+                if (view !== 'ticket' && typeof __workspaceRestoring !== 'undefined' && !__workspaceRestoring) {
+                    sessionStorage.setItem(MAIN_VIEW_SESSION_KEY, view);
+                }
+            } catch (ePersistView) {}
+        }
+
+        function normalizeStoredMainView(raw) {
+            if (!raw || typeof raw !== 'string') return null;
+            var allowed = [
+                'setup',
+                'dashboard',
+                'spillover',
+                'bug',
+                'assignee',
+                'reports',
+                'analytics',
+                'export',
+                'invite',
+                'comments'
+            ];
+            if (raw === 'ticket') return 'dashboard';
+            for (var i = 0; i < allowed.length; i++) {
+                if (allowed[i] === raw) return raw;
+            }
+            return null;
+        }
+
+        function canNavigateToMainView(view) {
+            if (view === 'setup') return true;
+            if (!workbookData || !sprintIndices) return false;
+            if (!analysisSheetData || analysisSheetData.length < 2) return false;
+            return true;
+        }
+
+        /**
+         * After Proceed or workspace restore: show the phase the user had open before reload when possible.
+         * @param {'setup'|'dashboard'} fallbackView
+         */
+        function applyStoredMainViewOrFallback(fallbackView) {
+            var raw = null;
+            try {
+                raw = sessionStorage.getItem(MAIN_VIEW_SESSION_KEY);
+            } catch (eG) {}
+            var want = normalizeStoredMainView(raw);
+            if (
+                fallbackView === 'dashboard' &&
+                want === 'setup' &&
+                analysisSheetData &&
+                analysisSheetData.length >= 2
+            ) {
+                want = 'dashboard';
+            }
+            if (!want || !canNavigateToMainView(want)) {
+                want = fallbackView;
+            }
+            if (!canNavigateToMainView(want)) {
+                want = canNavigateToMainView(fallbackView) ? fallbackView : 'setup';
+            }
+
+            if (want === 'reports' && typeof renderReportsDashboard === 'function') {
+                renderReportsDashboard();
+            }
+            if (want === 'analytics' && typeof renderAnalyticsDashboard === 'function') {
+                renderAnalyticsDashboard();
+            }
+            if (want === 'export' && typeof renderExportPreviewDashboard === 'function') {
+                renderExportPreviewDashboard();
+            }
+
+            if (want === 'invite') {
+                hideErrorToastBar();
+                if (typeof refreshDbUploadSelect === 'function') {
+                    refreshDbUploadSelect();
+                }
+                var ctInv = document.getElementById('compareThreshold');
+                var itInv = document.getElementById('inviteThresholdInput');
+                if (itInv && ctInv && String(ctInv.value).trim()) {
+                    itInv.value = String(ctInv.value).trim();
+                }
+                setMainView('invite');
+                setTimeout(function () {
+                    if (typeof refreshInvitePeopleInsights === 'function') {
+                        refreshInvitePeopleInsights();
+                    }
+                    if (typeof resumeBulkInviteStatusPollIfNeeded === 'function') {
+                        resumeBulkInviteStatusPollIfNeeded();
+                    }
+                }, 0);
+                return;
+            }
+
+            setMainView(want);
+        }
+
+        /**
+         * Which main phase is currently visible (for ticket-detail back navigation).
+         * @returns {'setup'|'dashboard'|'spillover'|'bug'|'assignee'|'reports'|'analytics'|'export'|'ticket'|'invite'|'comments'}
+         */
+        function getCurrentMainView() {
+            var commentsPh = document.getElementById('commentsPhase');
+            var invitePh = document.getElementById('invitePhase');
+            var setup = document.getElementById('setupPhase');
+            var dash = document.getElementById('dashboardPhase');
+            var spill = document.getElementById('spilloverPhase');
+            var bug = document.getElementById('bugPhase');
+            var assigneePh = document.getElementById('assigneePhase');
+            var reports = document.getElementById('reportsPhase');
+            var analytics = document.getElementById('analyticsPhase');
+            var exportsPh = document.getElementById('exportsPhase');
+            var ticket = document.getElementById('ticketDetailPhase');
+            if (commentsPh && !commentsPh.hidden) return 'comments';
+            if (invitePh && !invitePh.hidden) return 'invite';
+            if (setup && !setup.hidden) return 'setup';
+            if (dash && !dash.hidden) return 'dashboard';
+            if (spill && !spill.hidden) return 'spillover';
+            if (bug && !bug.hidden) return 'bug';
+            if (assigneePh && !assigneePh.hidden) return 'assignee';
+            if (reports && !reports.hidden) return 'reports';
+            if (analytics && !analytics.hidden) return 'analytics';
+            if (exportsPh && !exportsPh.hidden) return 'export';
+            if (ticket && !ticket.hidden) return 'ticket';
+            return 'dashboard';
+        }
+
+        function navGoTicketBack(ev) {
+            if (ev && ev.preventDefault) ev.preventDefault();
+            var v = ticketDetailPreviousView || 'dashboard';
+            setMainView(v);
         }
 
         function setPhase(showDashboard) {
@@ -6229,6 +7178,16 @@
                 refreshInvitePeopleInsights();
                 resumeBulkInviteStatusPollIfNeeded();
             }, 0);
+        }
+
+        function navGoComments(ev) {
+            if (ev && ev.preventDefault) ev.preventDefault();
+            if (!analysisSheetData || analysisSheetData.length < 2) {
+                showError('Upload a file and run Proceed from Upload & configure before Comments.');
+                return;
+            }
+            hideErrorToastBar();
+            setMainView('comments');
         }
 
         var _inviteInsightTimer = null;
@@ -6641,12 +7600,16 @@
                     .replace(/"/g, '&quot;')
                     .replace(/</g, '&lt;');
             };
-            var expStr = '—';
-            if (expiresAtISO) {
-                try {
-                    expStr = new Date(expiresAtISO).toLocaleString();
-                } catch (e1) {
-                    expStr = String(expiresAtISO);
+            var previewEl = document.getElementById('inviteBulkExpiresPreview');
+            if (previewEl) {
+                if (expiresAtISO) {
+                    try {
+                        previewEl.textContent = 'Expires · ' + new Date(expiresAtISO).toLocaleString();
+                    } catch (e1) {
+                        previewEl.textContent = 'Expires · ' + String(expiresAtISO);
+                    }
+                } else {
+                    previewEl.textContent = '';
                 }
             }
             var rows = '';
@@ -6686,11 +7649,6 @@
             panel.dataset.expiresAt = expiresAtISO ? String(expiresAtISO) : '';
             panel.innerHTML =
                 '<div class="invite-bulk-panel-inner">' +
-                '<div class="invite-bulk-panel__toolbar">' +
-                '<span class="invite-bulk-panel__expires">Expires · ' +
-                esc(expStr) +
-                '</span></div>' +
-                '<p class="db-load-hint invite-bulk-panel__hint">Submission status per person. <strong>Copy</strong> shares the link; <strong>Email</strong> opens a plain-text message. Set <code>PUBLIC_APP_URL</code> when hosting.</p>' +
                 '<div class="invite-bulk-table-wrap">' +
                 '<table class="invite-bulk-table"><thead><tr><th>Assignee</th><th>Email</th><th>Submission</th><th>Link</th><th></th></tr></thead><tbody>' +
                 rows +
@@ -7129,11 +8087,7 @@
                         '<div class="invite-people-col">' +
                         colBg +
                         '</div>' +
-                        '</div>' +
-                        '<p class="invite-people-foot">' +
-                        'Bulk invites: <strong>one link per assignee</strong> on this list (' +
-                        esc(String(_inviteBulkAssigneeNames.length)) +
-                        ' people), not per issue. Spillover total matches the dashboard when this threshold matches <strong>Upload &amp; configure</strong>.</p>';
+                        '</div>';
                 })
                 .catch(function () {
                     _inviteBulkAssigneeNames = [];
@@ -7162,7 +8116,7 @@
                     uploadId: uploadId,
                     inviteeEmail: emailTrim,
                     assigneeScope: '',
-                    note: (document.getElementById('inviteNoteInput') || {}).value || '',
+                    note: '',
                     expiresInDays: parseInt((document.getElementById('inviteExpiresInput') || {}).value, 10) || 30,
                     filterByAssignee: false,
                     threshold: ((document.getElementById('inviteThresholdInput') || {}).value || '').trim()
@@ -7250,8 +8204,8 @@
                 body: JSON.stringify({
                     uploadId: uploadId,
                     assignees: _inviteBulkAssigneeNames,
-                    note: (document.getElementById('inviteNoteInput') || {}).value || '',
-                    expiresInDays: parseInt((document.getElementById('inviteExpiresInput') || {}).value, 10) || 30,
+                    note: '',
+                    expiresInDays: parseInt((document.getElementById('inviteBulkExpiresInput') || {}).value, 10) || 30,
                     threshold: ((document.getElementById('inviteThresholdInput') || {}).value || '').trim()
                 })
             })
@@ -7393,8 +8347,14 @@
                 showError('That issue was not found in the loaded spreadsheet.');
                 return;
             }
+            var curView = getCurrentMainView();
+            if (curView !== 'ticket') {
+                ticketDetailPreviousView = curView;
+            }
             var maxCol = Math.max(headers.length, row.length);
-            var html = '<table class="ticket-detail-table">';
+            var html =
+                '<table class="spillover-table spillover-table--minimal ticket-detail-field-table">' +
+                '<thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody>';
             for (var c = 0; c < maxCol; c++) {
                 var h = headers[c];
                 var label = h == null || String(h).trim() === '' ? 'Column ' + (c + 1) : String(h);
@@ -7407,11 +8367,14 @@
                 } else {
                     display = String(val);
                 }
-                html += '<tr><th>' + escapeHtml(label) + '</th><td>' + escapeHtml(display) + '</td></tr>';
+                html += '<tr><td>' + escapeHtml(label) + '</td><td>' + escapeHtml(display) + '</td></tr>';
             }
-            html += '</table>';
+            html += '</tbody></table>';
             var wrap = document.getElementById('ticketDetailTableWrap');
-            if (wrap) wrap.innerHTML = html;
+            if (wrap) {
+                wrap.className = 'spillover-table-wrap spillover-table-wrap--minimal';
+                wrap.innerHTML = html;
+            }
             var titleEl = document.getElementById('ticketDetailTitle');
             if (titleEl) titleEl.textContent = target;
             setMainView('ticket');
@@ -7691,6 +8654,38 @@
             return html;
         }
 
+        function buildSpilloverCategorySelectHtml(selected) {
+            var sel = selected != null ? String(selected).trim() : '';
+            var selLower = sel.toLowerCase();
+            var html =
+                '<option value="">Select category\u2026</option>';
+            var i;
+            var matched = false;
+            for (i = 0; i < SPILLOVER_CATEGORY_OPTIONS.length; i++) {
+                var v = SPILLOVER_CATEGORY_OPTIONS[i];
+                var vt = String(v).trim();
+                var isSel = sel !== '' && vt.toLowerCase() === selLower;
+                if (isSel) matched = true;
+                html +=
+                    '<option value="' +
+                    escapeHtml(v) +
+                    '"' +
+                    (isSel ? ' selected' : '') +
+                    '>' +
+                    escapeHtml(v) +
+                    '</option>';
+            }
+            if (sel !== '' && !matched) {
+                html +=
+                    '<option value="' +
+                    escapeHtml(sel) +
+                    '" selected>' +
+                    escapeHtml(sel) +
+                    '</option>';
+            }
+            return html;
+        }
+
         function findColumnByNames(headerRow, names) {
             if (!headerRow) return -1;
             var lowered = names.map(function (n) {
@@ -7783,6 +8778,36 @@
             return out;
         }
 
+        function getIssueAssigneeAndSummaryFromAnalysis(issueKey) {
+            var dash = '\u2014';
+            var out = { name: dash, summary: '' };
+            if (!analysisSheetData || analysisSheetData.length < 2 || !issueKey) return out;
+            var headerRow = analysisSheetData[0];
+            var kIdx = findIssueKeyColumnIndex(headerRow);
+            var aIdx = findAssigneeColumnIndex(headerRow);
+            var sIdx = findColumnByNames(headerRow, ['summary', 'issue summary', 'title']);
+            if (kIdx < 0) return out;
+            var nk = normalizeIssueKeyDedupe(issueKey);
+            var i;
+            for (i = 1; i < analysisSheetData.length; i++) {
+                var row = analysisSheetData[i];
+                var k = row[kIdx] == null ? '' : String(row[kIdx]).trim();
+                if (normalizeIssueKeyDedupe(k) !== nk) continue;
+                if (aIdx >= 0) {
+                    var rawName = row[aIdx];
+                    out.name =
+                        rawName == null || String(rawName).trim() === ''
+                            ? 'Unassigned'
+                            : String(rawName).trim();
+                }
+                if (sIdx >= 0 && row[sIdx] != null) {
+                    out.summary = String(row[sIdx]).trim();
+                }
+                break;
+            }
+            return out;
+        }
+
         function openGlobalSearch(ev) {
             if (ev && ev.preventDefault) ev.preventDefault();
             var overlay = document.getElementById('globalSearchOverlay');
@@ -7852,6 +8877,280 @@
             ul.innerHTML = html;
         }
 
+        var spilloverEditModalEscapeHandler = null;
+        var spilloverEditModalIssueKey = '';
+
+        function openSpilloverEditModal(issueKey) {
+            var overlay = document.getElementById('spilloverEditOverlay');
+            var titleEl = document.getElementById('spilloverEditModalTitle');
+            var nameEl = document.getElementById('spilloverEditModalName');
+            var summaryEl = document.getElementById('spilloverEditModalSummary');
+            var ynEl = document.getElementById('spilloverEditYesNo');
+            var reasonEl = document.getElementById('spilloverEditReason');
+            var catEl = document.getElementById('spilloverEditCategory');
+            if (!overlay || !titleEl || !ynEl || !reasonEl || !catEl || !issueKey) return;
+            spilloverEditModalIssueKey = String(issueKey).trim();
+            titleEl.textContent = spilloverEditModalIssueKey;
+            var meta = getIssueAssigneeAndSummaryFromAnalysis(spilloverEditModalIssueKey);
+            if (nameEl) nameEl.textContent = meta.name;
+            if (summaryEl) summaryEl.textContent = meta.summary ? meta.summary : '\u2014';
+            var sheetHas = findSheetHasSpilloverForIssueKey(spilloverEditModalIssueKey);
+            ynEl.value = getResolvedSpilloverYesNo(spilloverEditModalIssueKey, sheetHas);
+            reasonEl.value = String(getIssueEditMapValue(spilloverReasonByKey, spilloverEditModalIssueKey) || '');
+            catEl.innerHTML = buildSpilloverCategorySelectHtml(
+                getIssueEditMapValue(spilloverCategoryByKey, spilloverEditModalIssueKey)
+            );
+            catEl.className =
+                'spillover-category-select spillover-edit-modal__select spillover-edit-modal__select--minimal';
+            overlay.hidden = false;
+            document.body.style.overflow = 'hidden';
+            if (!spilloverEditModalEscapeHandler) {
+                spilloverEditModalEscapeHandler = function (ev) {
+                    if (ev.key === 'Escape') closeSpilloverEditModal();
+                };
+                document.addEventListener('keydown', spilloverEditModalEscapeHandler);
+            }
+            reasonEl.focus();
+        }
+
+        function closeSpilloverEditModal() {
+            var overlay = document.getElementById('spilloverEditOverlay');
+            if (overlay) overlay.hidden = true;
+            document.body.style.overflow = '';
+            spilloverEditModalIssueKey = '';
+            var nameEl = document.getElementById('spilloverEditModalName');
+            var summaryEl = document.getElementById('spilloverEditModalSummary');
+            if (nameEl) nameEl.textContent = '';
+            if (summaryEl) summaryEl.textContent = '';
+            if (spilloverEditModalEscapeHandler) {
+                document.removeEventListener('keydown', spilloverEditModalEscapeHandler);
+                spilloverEditModalEscapeHandler = null;
+            }
+        }
+
+        function saveSpilloverEditModal() {
+            var key = spilloverEditModalIssueKey;
+            if (!key) return;
+            var ynEl = document.getElementById('spilloverEditYesNo');
+            var reasonEl = document.getElementById('spilloverEditReason');
+            var catEl = document.getElementById('spilloverEditCategory');
+            if (!reasonEl || !catEl || !ynEl) return;
+            var sel = String(ynEl.value || '').trim();
+            var sheetHas = findSheetHasSpilloverForIssueKey(key);
+            var spillPayload;
+            if (
+                (sel === 'Yes' && sheetHas) ||
+                (sel === 'No' && !sheetHas)
+            ) {
+                spillPayload = '';
+            } else if (sel === 'Yes' || sel === 'No') {
+                spillPayload = sel;
+            } else {
+                spillPayload = '';
+            }
+
+            function commitLocalAndClose() {
+                if (
+                    (sel === 'Yes' && sheetHas) ||
+                    (sel === 'No' && !sheetHas)
+                ) {
+                    clearIssueEditMapValue(spilloverYesNoByKey, key);
+                } else if (sel === 'Yes' || sel === 'No') {
+                    setIssueEditMapValue(spilloverYesNoByKey, key, sel);
+                }
+                setIssueEditMapValue(spilloverReasonByKey, key, reasonEl.value);
+                setIssueEditMapValue(spilloverCategoryByKey, key, catEl.value);
+                closeSpilloverEditModal();
+                var thEl = document.getElementById('compareThreshold');
+                var th = thEl ? String(thEl.value || '').trim() : '';
+                if (analysisSheetData && th) {
+                    renderSpilloverDashboardList(analysisSheetData, th);
+                }
+                filterSpilloverDashTable();
+                if (typeof schedulePersistWorkspace === 'function') {
+                    schedulePersistWorkspace();
+                }
+            }
+
+            var uid =
+                typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            if (!uid) {
+                commitLocalAndClose();
+                return;
+            }
+
+            ensureApiBaseProbed()
+                .then(function () {
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(base + '/api/uploads/' + encodeURIComponent(uid) + '/issue', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            issueKey: key,
+                            kind: 'spill',
+                            spilloverReason: reasonEl.value != null ? String(reasonEl.value) : '',
+                            spilloverCategory: catEl.value != null ? String(catEl.value) : '',
+                            spilloverYesNo: spillPayload
+                        })
+                    });
+                })
+                .then(function (r) {
+                    return parseHttpJsonResponse(r);
+                })
+                .then(function (out) {
+                    if (!out.ok) {
+                        var detail =
+                            (out.body && out.body.error) ||
+                            (out.status === 404
+                                ? 'Upload not found on the server. Upload the file again or pick a stored upload that still exists.'
+                                : 'Save failed (HTTP ' + out.status + ').');
+                        showError(detail);
+                        return;
+                    }
+                    commitLocalAndClose();
+                })
+                .catch(function (err) {
+                    var hint =
+                        err && err.name === 'AbortError'
+                            ? 'Request timed out.'
+                            : err && err.message
+                              ? String(err.message)
+                              : 'Network error.';
+                    showError(
+                        hint +
+                            ' Run npm start and open this app from that URL (not Live Server unless ?api= points at Node), or add ?api=http://localhost:PORT.'
+                    );
+                });
+        }
+
+        var bugEditModalEscapeHandler = null;
+        var bugEditModalIssueKey = '';
+
+        function openBugEditModal(issueKey) {
+            var overlay = document.getElementById('bugEditOverlay');
+            var titleEl = document.getElementById('bugEditModalTitle');
+            var nameEl = document.getElementById('bugEditModalName');
+            var summaryEl = document.getElementById('bugEditModalSummary');
+            var prodEl = document.getElementById('bugEditProd');
+            var catEl = document.getElementById('bugEditCategory');
+            var rcaEl = document.getElementById('bugEditRca');
+            if (!overlay || !titleEl || !prodEl || !catEl || !rcaEl || !issueKey) return;
+            bugEditModalIssueKey = String(issueKey).trim();
+            titleEl.textContent = bugEditModalIssueKey;
+            var meta = getIssueAssigneeAndSummaryFromAnalysis(bugEditModalIssueKey);
+            if (nameEl) nameEl.textContent = meta.name;
+            if (summaryEl) summaryEl.textContent = meta.summary ? meta.summary : '\u2014';
+            prodEl.value = String(getIssueEditMapValue(bugProdByKey, bugEditModalIssueKey) || '');
+            catEl.innerHTML = buildBugCategorySelectHtml(
+                getIssueEditMapValue(bugCategoryByKey, bugEditModalIssueKey)
+            );
+            catEl.className =
+                'bug-category-select spillover-edit-modal__select spillover-edit-modal__select--minimal';
+            rcaEl.value = String(getIssueEditMapValue(bugRcaByKey, bugEditModalIssueKey) || '');
+            overlay.hidden = false;
+            document.body.style.overflow = 'hidden';
+            if (!bugEditModalEscapeHandler) {
+                bugEditModalEscapeHandler = function (ev) {
+                    if (ev.key === 'Escape') closeBugEditModal();
+                };
+                document.addEventListener('keydown', bugEditModalEscapeHandler);
+            }
+            rcaEl.focus();
+        }
+
+        function closeBugEditModal() {
+            var overlay = document.getElementById('bugEditOverlay');
+            if (overlay) overlay.hidden = true;
+            document.body.style.overflow = '';
+            bugEditModalIssueKey = '';
+            var nameEl = document.getElementById('bugEditModalName');
+            var summaryEl = document.getElementById('bugEditModalSummary');
+            if (nameEl) nameEl.textContent = '';
+            if (summaryEl) summaryEl.textContent = '';
+            if (bugEditModalEscapeHandler) {
+                document.removeEventListener('keydown', bugEditModalEscapeHandler);
+                bugEditModalEscapeHandler = null;
+            }
+        }
+
+        function saveBugEditModal() {
+            var key = bugEditModalIssueKey;
+            if (!key) return;
+            var prodEl = document.getElementById('bugEditProd');
+            var catEl = document.getElementById('bugEditCategory');
+            var rcaEl = document.getElementById('bugEditRca');
+            if (!prodEl || !catEl || !rcaEl) return;
+
+            function commitLocalAndClose() {
+                setIssueEditMapValue(bugProdByKey, key, prodEl.value);
+                setIssueEditMapValue(bugCategoryByKey, key, catEl.value);
+                setIssueEditMapValue(bugRcaByKey, key, rcaEl.value);
+                closeBugEditModal();
+                if (analysisSheetData && analysisSheetData.length >= 2) {
+                    renderBugDashboardList(analysisSheetData);
+                }
+                filterBugDashTable();
+                if (typeof schedulePersistWorkspace === 'function') {
+                    schedulePersistWorkspace();
+                }
+            }
+
+            var uid =
+                typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            if (!uid) {
+                commitLocalAndClose();
+                return;
+            }
+
+            var spillSr = String(getIssueEditMapValue(spilloverReasonByKey, key) || '');
+            var spillSc = String(getIssueEditMapValue(spilloverCategoryByKey, key) || '');
+
+            ensureApiBaseProbed()
+                .then(function () {
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(base + '/api/uploads/' + encodeURIComponent(uid) + '/issue', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            issueKey: key,
+                            kind: 'bug',
+                            prod: prodEl.value != null ? String(prodEl.value) : '',
+                            bugCategory: catEl.value != null ? String(catEl.value) : '',
+                            rca: rcaEl.value != null ? String(rcaEl.value) : '',
+                            spilloverReason: spillSr,
+                            spilloverCategory: spillSc
+                        })
+                    });
+                })
+                .then(function (r) {
+                    return parseHttpJsonResponse(r);
+                })
+                .then(function (out) {
+                    if (!out.ok) {
+                        var detail =
+                            (out.body && out.body.error) ||
+                            (out.status === 404
+                                ? 'Upload not found on the server. Upload the file again or pick a stored upload that still exists.'
+                                : 'Save failed (HTTP ' + out.status + ').');
+                        showError(detail);
+                        return;
+                    }
+                    commitLocalAndClose();
+                })
+                .catch(function (err) {
+                    var hint =
+                        err && err.name === 'AbortError'
+                            ? 'Request timed out.'
+                            : err && err.message
+                              ? String(err.message)
+                              : 'Network error.';
+                    showError(
+                        hint +
+                            ' Run npm start and open this app from that URL (not Live Server unless ?api= points at Node), or add ?api=http://localhost:PORT.'
+                    );
+                });
+        }
+
         function filterSpilloverDashTable() {
             var input = document.getElementById('spilloverDashSearch');
             var list = document.getElementById('spilloverDashboardList');
@@ -7866,13 +9165,15 @@
                 var tr = bodyRows[i];
                 var nameEl = tr.querySelector('.spillover-table__name');
                 var keyEl = tr.querySelector('.spillover-table__key');
-                var reasonInp = tr.querySelector('.spillover-reason-input');
-                var catSel = tr.querySelector('.spillover-category-select');
+                var reasonEl = tr.querySelector('.spillover-table__reason-display');
+                var catEl = tr.querySelector('.spillover-table__category-display');
+                var spillEl = tr.querySelector('.spillover-table__spill-display');
                 var name = nameEl ? String(nameEl.textContent || '') : '';
                 var key = keyEl ? String(keyEl.textContent || '') : '';
-                var reason = reasonInp ? String(reasonInp.value || '') : '';
-                var cat = catSel ? String(catSel.value || '') : '';
-                var hay = (name + ' ' + key + ' ' + reason + ' ' + cat).toLowerCase();
+                var reason = reasonEl ? String(reasonEl.textContent || '') : '';
+                var cat = catEl ? String(catEl.textContent || '') : '';
+                var spill = spillEl ? String(spillEl.textContent || '') : '';
+                var hay = (name + ' ' + key + ' ' + spill + ' ' + reason + ' ' + cat).toLowerCase();
                 var show = !q || hay.indexOf(q) !== -1;
                 tr.style.display = show ? '' : 'none';
             }
@@ -7891,14 +9192,14 @@
                 var tr = bodyRows[i];
                 var nameEl = tr.querySelector('.spillover-table__name');
                 var keyEl = tr.querySelector('.spillover-table__key');
-                var prodSel = tr.querySelector('.bug-prod-select');
-                var catSel = tr.querySelector('.bug-category-select');
-                var rcaInp = tr.querySelector('.bug-rca-input');
+                var prodEl = tr.querySelector('.bug-dash__prod-display');
+                var catEl = tr.querySelector('.bug-dash__cat-display');
+                var rcaEl = tr.querySelector('.bug-dash__rca-display');
                 var name = nameEl ? String(nameEl.textContent || '') : '';
                 var key = keyEl ? String(keyEl.textContent || '') : '';
-                var prod = prodSel ? String(prodSel.value || '') : '';
-                var cat = catSel ? String(catSel.value || '') : '';
-                var rca = rcaInp ? String(rcaInp.value || '') : '';
+                var prod = prodEl ? String(prodEl.textContent || '') : '';
+                var cat = catEl ? String(catEl.textContent || '') : '';
+                var rca = rcaEl ? String(rcaEl.textContent || '') : '';
                 var hay = (name + ' ' + key + ' ' + prod + ' ' + cat + ' ' + rca).toLowerCase();
                 var show = !q || hay.indexOf(q) !== -1;
                 tr.style.display = show ? '' : 'none';
@@ -7969,7 +9270,7 @@
             }
             var warn =
                 aIdx < 0
-                    ? '<p class="preview-hint" style="margin-bottom:0.85rem">No <strong>Assignee</strong> column in the export — the assignee column shows a dash.</p>'
+                    ? '<p class="preview-hint" style="margin-bottom:0.85rem">No <strong>Assignee</strong> column in the export — the Name column shows a dash.</p>'
                     : '';
             var summaryEntries = [];
             for (var nm in assigneeCounts) {
@@ -7983,28 +9284,27 @@
             });
             var totalSpillovers = rows.length;
             var summaryHtml =
-                '<details class="spillover-summary-details">' +
+                '<details class="spillover-summary-details spillover-summary-details--minimal">' +
                 '<summary class="spillover-summary__toggle">' +
                 '<div class="spillover-summary__toggle-inner">' +
                 '<div class="spillover-summary__toggle-left">' +
-                '<span class="spillover-summary__toggle-title">Summary by assignee</span>' +
-                '<span class="spillover-summary__tap-hint">(Tap to show the list of data)</span>' +
+                '<span class="spillover-summary__toggle-title">By assignee</span>' +
                 '</div>' +
                 '<span class="spillover-summary__toggle-meta">' +
                 '<span class="spillover-summary__total-badge">' +
                 '<span class="spillover-summary__total-num">' +
                 String(totalSpillovers) +
                 '</span>' +
-                '<span>total spillovers</span>' +
+                '<span>tickets</span>' +
                 '</span>' +
                 '<span class="spillover-summary__chev" aria-hidden="true">\u25bc</span>' +
                 '</span>' +
                 '</div>' +
                 '</summary>' +
                 '<div class="spillover-summary__panel">' +
-                '<div class="spillover-table-wrap">' +
-                '<table class="spillover-table spillover-table--summary">' +
-                '<thead><tr><th scope="col">Assignee</th><th scope="col">Spillover count</th></tr></thead><tbody>';
+                '<div class="spillover-table-wrap spillover-table-wrap--minimal">' +
+                '<table class="spillover-table spillover-table--summary spillover-table--minimal">' +
+                '<thead><tr><th scope="col">Name</th><th scope="col">Count</th></tr></thead><tbody>';
             for (var s = 0; s < summaryEntries.length; s++) {
                 summaryHtml +=
                     '<tr><td class="spillover-table__name">' +
@@ -8017,58 +9317,71 @@
             var html =
                 warn +
                 summaryHtml +
-                '<h3 class="spillover-detail__heading">All tickets</h3>' +
-                '<div class="spillover-table-wrap"><table class="spillover-table">' +
-                '<thead><tr><th scope="col">Assignee</th><th scope="col">Issue key</th><th scope="col">Spillover reason</th><th scope="col">Spillover category</th></tr></thead><tbody>';
+                '<p class="spillover-detail__minimal-label">Spillover list</p>' +
+                '<div class="spillover-table-wrap spillover-table-wrap--minimal"><table class="spillover-table spillover-table--minimal">' +
+                '<thead><tr><th scope="col">Name</th><th scope="col">Key</th><th scope="col" class="spillover-table__spill-cell" title="Spillover (export)">Sp.</th><th scope="col">Reason</th><th scope="col">Category</th><th scope="col" class="spillover-table__actions-col">Edit</th></tr></thead><tbody>';
             for (var r = 0; r < rows.length; r++) {
                 var k = rows[r].key;
                 var keyAttr = escapeHtml(k);
+                var spillResolved = getResolvedSpilloverYesNo(k, true);
+                var spillBadgeClass =
+                    spillResolved === 'Yes'
+                        ? 'spillover-yn spillover-yn--yes spillover-table__spill-display'
+                        : 'spillover-yn spillover-yn--no spillover-table__spill-display';
                 var reasonVal = String(getIssueEditMapValue(spilloverReasonByKey, k) || '');
                 var catVal = String(getIssueEditMapValue(spilloverCategoryByKey, k) || '');
-                var catHtml =
-                    '<td class="spillover-table__category-cell">' +
-                    '<select class="spillover-category-select" data-issue-key="' +
-                    keyAttr +
-                    '" title="Spillover category (SpillOver sheet only)">' +
-                    '<option value="">Select category\u2026</option>';
-                for (var ci = 0; ci < SPILLOVER_CATEGORY_OPTIONS.length; ci++) {
-                    var optLabel = SPILLOVER_CATEGORY_OPTIONS[ci];
-                    var selected = catVal === optLabel ? ' selected' : '';
-                    catHtml +=
-                        '<option value="' +
-                        escapeHtml(optLabel) +
-                        '"' +
-                        selected +
-                        '>' +
-                        escapeHtml(optLabel) +
-                        '</option>';
-                }
-                catHtml += '</select></td>';
+                var reasonTrim = reasonVal.trim();
+                var catTrim = catVal.trim();
+                var reasonDisp =
+                    reasonTrim === ''
+                        ? '<span class="spillover-table__display spillover-table__display--empty">\u2014</span>'
+                        : '<span class="spillover-table__reason-display spillover-table__display">' +
+                          escapeHtml(reasonVal) +
+                          '</span>';
+                var catDisp =
+                    catTrim === ''
+                        ? '<span class="spillover-table__display spillover-table__display--empty">\u2014</span>'
+                        : '<span class="spillover-table__category-display spillover-table__display">' +
+                          escapeHtml(catVal) +
+                          '</span>';
                 html +=
                     '<tr class="spillover-table__row" tabindex="0" data-issue-key="' +
                     keyAttr +
-                    '" title="Open full ticket details (click outside reason/category fields)">' +
+                    '" title="Open full ticket details">' +
                     '<td class="spillover-table__name">' +
                     escapeHtml(rows[r].name) +
                     '</td>' +
                     '<td class="spillover-table__key-cell">' +
-                    '<span class="spillover-table__tick" aria-hidden="true">\u2713</span>' +
                     '<span class="spillover-table__key">' +
                     escapeHtml(k) +
                     '</span></td>' +
+                    '<td class="spillover-table__spill-cell">' +
+                    '<span class="' +
+                    spillBadgeClass +
+                    '">' +
+                    escapeHtml(spillResolved) +
+                    '</span></td>' +
                     '<td class="spillover-table__reason-cell">' +
-                    '<input type="text" class="spillover-reason-input" data-issue-key="' +
-                    keyAttr +
-                    '" value="' +
-                    escapeHtml(String(reasonVal)) +
-                    '" placeholder="Enter spillover reason\u2026" autocomplete="off" title="Spillover reason (included in Excel download)" />' +
+                    reasonDisp +
                     '</td>' +
-                    catHtml +
+                    '<td class="spillover-table__category-cell">' +
+                    catDisp +
+                    '</td>' +
+                    '<td class="spillover-table__edit-cell">' +
+                    '<button type="button" class="btn btn-secondary spillover-row-edit-btn" data-issue-key="' +
+                    keyAttr +
+                    '">Edit</button></td>' +
                     '</tr>';
             }
             html += '</tbody></table></div>';
             container.innerHTML = html;
             filterSpilloverDashTable();
+        }
+
+        function bugDashProdCellLabel(raw) {
+            var s = String(raw || '').trim();
+            if (s === 'Yes' || s === 'No') return s;
+            return '\u2014';
         }
 
         function renderBugDashboardList(allData) {
@@ -8130,8 +9443,9 @@
 
             var html =
                 warn +
-                '<div class="spillover-table-wrap"><table class="spillover-table">' +
-                '<thead><tr><th scope="col">Assignee</th><th scope="col">Issue key</th><th scope="col">PROD</th><th scope="col">Bug category</th><th scope="col">RCA (Root Cause Analysis)</th></tr></thead><tbody>';
+                '<p class="spillover-detail__minimal-label">Bug list</p>' +
+                '<div class="spillover-table-wrap spillover-table-wrap--minimal"><table class="spillover-table spillover-table--minimal">' +
+                '<thead><tr><th scope="col">Name</th><th scope="col">Key</th><th scope="col">PROD</th><th scope="col">Category</th><th scope="col">RCA</th><th scope="col" class="spillover-table__actions-col">Edit</th></tr></thead><tbody>';
 
             for (var r = 0; r < rows.length; r++) {
                 var k = rows[r].key;
@@ -8139,8 +9453,27 @@
                 var prodVal = String(getIssueEditMapValue(bugProdByKey, k) || '');
                 var catVal = String(getIssueEditMapValue(bugCategoryByKey, k) || '');
                 var rcaVal = String(getIssueEditMapValue(bugRcaByKey, k) || '');
-                var yesSel = prodVal === 'Yes' ? ' selected' : '';
-                var noSel = prodVal === 'No' ? ' selected' : '';
+                var prodLabel = bugDashProdCellLabel(prodVal);
+                var catTrim = catVal.trim();
+                var rcaTrim = rcaVal.trim();
+                var prodInner =
+                    prodLabel === '\u2014'
+                        ? '<span class="spillover-table__display spillover-table__display--empty bug-dash__prod-display">\u2014</span>'
+                        : '<span class="spillover-table__display bug-dash__prod-display">' +
+                          escapeHtml(prodLabel) +
+                          '</span>';
+                var catDisp =
+                    catTrim === ''
+                        ? '<span class="spillover-table__display spillover-table__display--empty bug-dash__cat-display">\u2014</span>'
+                        : '<span class="spillover-table__display bug-dash__cat-display">' +
+                          escapeHtml(catVal) +
+                          '</span>';
+                var rcaDisp =
+                    rcaTrim === ''
+                        ? '<span class="spillover-table__display spillover-table__display--empty bug-dash__rca-display">\u2014</span>'
+                        : '<span class="spillover-table__display bug-dash__rca-display">' +
+                          escapeHtml(rcaVal) +
+                          '</span>';
                 html +=
                     '<tr class="spillover-table__row bug-table__row" tabindex="0" data-issue-key="' +
                     keyAttr +
@@ -8149,35 +9482,22 @@
                     escapeHtml(rows[r].name) +
                     '</td>' +
                     '<td class="spillover-table__key-cell">' +
-                    '<span class="spillover-table__tick" aria-hidden="true">\u2713</span>' +
                     '<span class="spillover-table__key">' +
                     escapeHtml(k) +
                     '</span></td>' +
                     '<td class="spillover-table__category-cell">' +
-                    '<select class="bug-prod-select" data-issue-key="' +
-                    keyAttr +
-                    '" title="PROD — exported on Bug sheet">' +
-                    '<option value="">Select\u2026</option>' +
-                    '<option value="Yes"' +
-                    yesSel +
-                    '>Yes</option>' +
-                    '<option value="No"' +
-                    noSel +
-                    '>No</option>' +
-                    '</select></td>' +
-                    '<td class="spillover-table__category-cell">' +
-                    '<select class="bug-category-select" data-issue-key="' +
-                    keyAttr +
-                    '" title="Bug category — exported on Bug sheet">' +
-                    buildBugCategorySelectHtml(catVal) +
-                    '</select></td>' +
-                    '<td class="spillover-table__rca-cell">' +
-                    '<input type="text" class="spillover-reason-input bug-rca-input" data-issue-key="' +
-                    keyAttr +
-                    '" value="' +
-                    escapeHtml(String(rcaVal)) +
-                    '" placeholder="Root cause analysis\u2026" autocomplete="off" title="RCA — exported on Bug sheet" />' +
+                    prodInner +
                     '</td>' +
+                    '<td class="spillover-table__category-cell">' +
+                    catDisp +
+                    '</td>' +
+                    '<td class="spillover-table__reason-cell">' +
+                    rcaDisp +
+                    '</td>' +
+                    '<td class="spillover-table__edit-cell">' +
+                    '<button type="button" class="btn btn-secondary spillover-row-edit-btn bug-row-edit-btn" data-issue-key="' +
+                    keyAttr +
+                    '">Edit</button></td>' +
                     '</tr>';
             }
             html += '</tbody></table></div>';
@@ -8274,88 +9594,56 @@
         (function initSpilloverDashboardClicks() {
             var list = document.getElementById('spilloverDashboardList');
             if (!list) return;
-            list.addEventListener('input', function (e) {
-                var inp = e.target.closest('.spillover-reason-input');
-                if (!inp) return;
-                var key = inp.getAttribute('data-issue-key');
-                if (key) setIssueEditMapValue(spilloverReasonByKey, key, inp.value);
-                filterSpilloverDashTable();
-            });
-            list.addEventListener('change', function (e) {
-                var sel = e.target.closest('.spillover-category-select');
-                if (!sel) return;
-                var key = sel.getAttribute('data-issue-key');
-                if (key) setIssueEditMapValue(spilloverCategoryByKey, key, sel.value);
-                filterSpilloverDashTable();
-            });
             list.addEventListener('click', function (e) {
-                if (e.target.closest('.spillover-reason-input')) return;
-                if (e.target.closest('.spillover-category-select')) return;
-                if (e.target.closest('.spillover-table__reason-cell')) return;
-                if (e.target.closest('.spillover-table__category-cell')) return;
+                var editBtn = e.target.closest('.spillover-row-edit-btn');
+                if (editBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var ek = editBtn.getAttribute('data-issue-key');
+                    if (ek) openSpilloverEditModal(ek);
+                    return;
+                }
                 var row = e.target.closest('.spillover-table__row');
                 if (!row) return;
                 var key = row.getAttribute('data-issue-key');
                 if (key) openTicketDetail(key);
             });
             list.addEventListener('keydown', function (e) {
-                if (e.target.closest('.spillover-reason-input')) return;
-                if (e.target.closest('.spillover-category-select')) return;
                 if (e.key !== 'Enter' && e.key !== ' ') return;
+                if (e.target.closest && e.target.closest('.spillover-row-edit-btn')) return;
                 var row = e.target.closest('.spillover-table__row');
                 if (!row) return;
                 e.preventDefault();
-                var key = row.getAttribute('data-issue-key');
-                if (key) openTicketDetail(key);
+                var keyK = row.getAttribute('data-issue-key');
+                if (keyK) openTicketDetail(keyK);
             });
         })();
 
         (function initBugDashboardClicks() {
             var list = document.getElementById('bugDashboardList');
             if (!list) return;
-            list.addEventListener('input', function (e) {
-                var inp = e.target.closest('.bug-rca-input');
-                if (!inp) return;
-                var key = inp.getAttribute('data-issue-key');
-                if (key) setIssueEditMapValue(bugRcaByKey, key, inp.value);
-                filterBugDashTable();
-            });
-            list.addEventListener('change', function (e) {
-                var prodSel = e.target.closest('.bug-prod-select');
-                if (prodSel) {
-                    var pk = prodSel.getAttribute('data-issue-key');
-                    if (pk) setIssueEditMapValue(bugProdByKey, pk, prodSel.value);
-                    filterBugDashTable();
+            list.addEventListener('click', function (e) {
+                var editBtn = e.target.closest('.bug-row-edit-btn');
+                if (editBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var ek = editBtn.getAttribute('data-issue-key');
+                    if (ek) openBugEditModal(ek);
                     return;
                 }
-                var catSel = e.target.closest('.bug-category-select');
-                if (catSel) {
-                    var ck = catSel.getAttribute('data-issue-key');
-                    if (ck) setIssueEditMapValue(bugCategoryByKey, ck, catSel.value);
-                    filterBugDashTable();
-                }
-            });
-            list.addEventListener('click', function (e) {
-                if (e.target.closest('.bug-rca-input')) return;
-                if (e.target.closest('.bug-prod-select')) return;
-                if (e.target.closest('.bug-category-select')) return;
-                if (e.target.closest('.spillover-table__rca-cell')) return;
-                if (e.target.closest('.spillover-table__category-cell')) return;
                 var row = e.target.closest('.bug-table__row');
                 if (!row) return;
                 var key = row.getAttribute('data-issue-key');
                 if (key) openTicketDetail(key);
             });
             list.addEventListener('keydown', function (e) {
-                if (e.target.closest('.bug-rca-input')) return;
-                if (e.target.closest('.bug-prod-select')) return;
-                if (e.target.closest('.bug-category-select')) return;
+                if (e.target.closest && e.target.closest('.bug-row-edit-btn')) return;
                 if (e.key !== 'Enter' && e.key !== ' ') return;
                 var row = e.target.closest('.bug-table__row');
                 if (!row) return;
                 e.preventDefault();
-                var key = row.getAttribute('data-issue-key');
-                if (key) openTicketDetail(key);
+                var keyK = row.getAttribute('data-issue-key');
+                if (keyK) openTicketDetail(keyK);
             });
         })();
 
@@ -8373,34 +9661,137 @@
                 var app = document.querySelector('.app');
                 var open = btn.getAttribute('aria-expanded') === 'true';
                 var willOpen = !open;
-                if (
-                    willOpen &&
-                    app &&
-                    !app.classList.contains('app--sidebar-hover') &&
-                    !app.classList.contains('app--sidebar-pinned')
-                ) {
+                if (willOpen && app && !app.classList.contains('app--sidebar-pinned')) {
                     app.classList.add('app--sidebar-pinned');
                 }
                 setAssigneesPanelOpen(willOpen);
             });
         })();
 
+        (function initSidebarCollapsedNavTooltips() {
+            var app = document.querySelector('.app');
+            var sb = document.querySelector('.sidebar.sidebar--rail');
+            var tip = document.getElementById('sidebarNavTooltip');
+            if (!app || !sb || !tip) return;
+
+            var mqMobile = window.matchMedia('(max-width: 900px)');
+
+            function collapsedRail() {
+                if (mqMobile.matches) return false;
+                return !app.classList.contains('app--sidebar-pinned');
+            }
+
+            function labelFor(el) {
+                if (!el) return '';
+                if (el.id === 'sidebarRailToggle') {
+                    return app.classList.contains('app--sidebar-pinned') ? 'Collapse nav' : 'Expand nav';
+                }
+                if (el.id === 'assigneesToggle') {
+                    var fl = el.querySelector('.sidebar__folder-label');
+                    return fl ? fl.textContent.trim() : 'Assignees';
+                }
+                var lab = el.querySelector('.sidebar__link-label');
+                if (lab) return lab.textContent.trim();
+                var t = el.getAttribute('title');
+                return t ? String(t).replace(/\s+/g, ' ').trim() : '';
+            }
+
+            function hide() {
+                tip.hidden = true;
+                tip.textContent = '';
+                tip.setAttribute('aria-hidden', 'true');
+            }
+
+            function move(e) {
+                if (tip.hidden) return;
+                var padX = 14;
+                var padY = 12;
+                tip.style.left = e.clientX + padX + 'px';
+                tip.style.top = e.clientY + padY + 'px';
+                requestAnimationFrame(function () {
+                    if (tip.hidden) return;
+                    var r = tip.getBoundingClientRect();
+                    var vw = window.innerWidth;
+                    var vh = window.innerHeight;
+                    var left = r.left;
+                    var top = r.top;
+                    if (r.right > vw - 8) left = vw - r.width - 8;
+                    if (r.bottom > vh - 8) top = vh - r.height - 8;
+                    if (left < 8) left = 8;
+                    if (top < 8) top = 8;
+                    tip.style.left = left + 'px';
+                    tip.style.top = top + 'px';
+                });
+            }
+
+            function show(e) {
+                if (!collapsedRail()) {
+                    hide();
+                    return;
+                }
+                var text = labelFor(e.currentTarget);
+                if (!text) return;
+                tip.textContent = text;
+                tip.hidden = false;
+                tip.setAttribute('aria-hidden', 'false');
+                move(e);
+            }
+
+            function onLeave() {
+                hide();
+            }
+
+            var targets = sb.querySelectorAll('.sidebar__nav a.sidebar__link, #assigneesToggle, #sidebarRailToggle');
+            for (var ti = 0; ti < targets.length; ti++) {
+                targets[ti].addEventListener('mouseenter', show);
+                targets[ti].addEventListener('mousemove', move);
+                targets[ti].addEventListener('mouseleave', onLeave);
+            }
+
+            new MutationObserver(function () {
+                if (app.classList.contains('app--sidebar-pinned')) hide();
+            }).observe(app, { attributes: true, attributeFilter: ['class'] });
+
+            if (mqMobile.addEventListener) {
+                mqMobile.addEventListener('change', hide);
+            } else if (mqMobile.addListener) {
+                mqMobile.addListener(hide);
+            }
+            window.addEventListener('blur', hide);
+        })();
+
         (function initSidebarRail() {
             var app = document.querySelector('.app');
             var sb = document.querySelector('.sidebar.sidebar--rail');
             if (!app || !sb) return;
-            sb.addEventListener('mouseenter', function () {
-                app.classList.add('app--sidebar-hover');
-            });
-            sb.addEventListener('mouseleave', function () {
-                app.classList.remove('app--sidebar-hover');
-                if (!app.classList.contains('app--sidebar-pinned')) {
-                    setAssigneesPanelOpen(false);
-                }
-            });
+
+            function syncSidebarRailToggleUi() {
+                var btn = document.getElementById('sidebarRailToggle');
+                if (!btn) return;
+                var pinned = app.classList.contains('app--sidebar-pinned');
+                btn.setAttribute('aria-expanded', pinned ? 'true' : 'false');
+                btn.setAttribute('aria-label', pinned ? 'Collapse nav' : 'Expand nav');
+            }
+
+            var railToggle = document.getElementById('sidebarRailToggle');
+            if (railToggle) {
+                railToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var wasPinned = app.classList.contains('app--sidebar-pinned');
+                    app.classList.toggle('app--sidebar-pinned');
+                    if (wasPinned && !app.classList.contains('app--sidebar-pinned')) {
+                        setAssigneesPanelOpen(false);
+                    }
+                    syncSidebarRailToggleUi();
+                });
+                syncSidebarRailToggleUi();
+            }
+
             sb.addEventListener('click', function (e) {
+                if (window.matchMedia('(max-width: 900px)').matches) return;
                 if (e.target.closest('a.sidebar__link')) return;
                 if (e.target.closest('button#assigneesToggle')) return;
+                if (e.target.closest('#sidebarRailToggle')) return;
                 if (e.target.closest('.assignees-list')) return;
                 if (e.target.closest('.assignee-issue--clickable')) return;
                 if (e.target.closest('#sidebarSignOut')) return;
@@ -8409,7 +9800,12 @@
                 if (wasPinned && !app.classList.contains('app--sidebar-pinned')) {
                     setAssigneesPanelOpen(false);
                 }
+                syncSidebarRailToggleUi();
             });
+
+            new MutationObserver(function () {
+                syncSidebarRailToggleUi();
+            }).observe(app, { attributes: true, attributeFilter: ['class'] });
         })();
 
         (function initAssigneesRowClicks() {
@@ -8750,19 +10146,20 @@
                     raw = allData[i];
                     totalRows++;
                     spillRaw = hasSpilloverRaw(raw, threshold);
-                    if (spillRaw) spillYes++;
                     if (isBugRow(raw, issueTypeIdx)) bugCount++;
 
                     rowObj = rowToNamedObject(raw, headerNames);
-                    rowObj['SpillOver'] = spillRaw ? 'Yes' : 'No';
+                    ik = '';
+                    if (keyColName && rowObj[keyColName] != null && String(rowObj[keyColName]).trim() !== '') {
+                        ik = String(rowObj[keyColName]).trim();
+                    }
+                    var resolvedSpill = getResolvedSpilloverYesNo(ik, spillRaw);
+                    if (resolvedSpill === 'Yes') spillYes++;
+                    rowObj['SpillOver'] = resolvedSpill;
                     if (intakePreview.length < PREVIEW_CAP) {
                         intakePreview.push(rowObj);
                     }
-                    if (spillRaw && spillPreview.length < PREVIEW_CAP) {
-                        ik = '';
-                        if (keyColName && rowObj[keyColName] != null && String(rowObj[keyColName]).trim() !== '') {
-                            ik = String(rowObj[keyColName]).trim();
-                        }
+                    if (resolvedSpill === 'Yes' && spillPreview.length < PREVIEW_CAP) {
                         spillPreview.push(
                             Object.assign({}, rowObj, {
                                 SpillOverReason: ik ? String(getIssueEditMapValue(spilloverReasonByKey, ik) || '') : '',
@@ -10021,6 +11418,7 @@
                 lastRunStats = null;
                 spilloverReasonByKey = {};
                 spilloverCategoryByKey = {};
+                spilloverYesNoByKey = {};
                 bugProdByKey = {};
                 bugRcaByKey = {};
                 bugCategoryByKey = {};
@@ -10129,7 +11527,34 @@
             map[normalizeIssueKeyDedupe(rawKey)] = val;
         }
 
-        /** Excel/sheet floats: treat values as equal when within this epsilon (e.g. 14.1 vs 14.1000001). */
+        function clearIssueEditMapValue(map, rawKey) {
+            if (rawKey == null || String(rawKey).trim() === '') return;
+            delete map[normalizeIssueKeyDedupe(rawKey)];
+        }
+
+        function findSheetHasSpilloverForIssueKey(issueKey) {
+            if (!analysisSheetData || analysisSheetData.length < 2 || !issueKey) return false;
+            var th = getProceedThresholdForDashboards();
+            if (!th || !sprintIndices || !sprintIndices.length) return false;
+            var headerRow = analysisSheetData[0];
+            var kIdx = findIssueKeyColumnIndex(headerRow);
+            if (kIdx < 0) return false;
+            var nk = normalizeIssueKeyDedupe(issueKey);
+            var i;
+            for (i = 1; i < analysisSheetData.length; i++) {
+                var row = analysisSheetData[i];
+                var k = row[kIdx] == null ? '' : String(row[kIdx]).trim();
+                if (normalizeIssueKeyDedupe(k) !== nk) continue;
+                return hasSpilloverRaw(row, th);
+            }
+            return false;
+        }
+
+        function getResolvedSpilloverYesNo(issueKey, sheetHasSpillover) {
+            var o = getIssueEditMapValue(spilloverYesNoByKey, issueKey);
+            if (o === 'Yes' || o === 'No') return o;
+            return sheetHasSpillover ? 'Yes' : 'No';
+        }
         const SPRINT_THRESHOLD_EPS = 1e-6;
 
         function sprintCellMatchesThreshold(cellValue, thresholdStr) {
@@ -10379,6 +11804,9 @@
             }
             clearBulkInvitePanelStorage();
             try {
+                sessionStorage.removeItem(MAIN_VIEW_SESSION_KEY);
+            } catch (eRmView) {}
+            try {
                 _inviteBulkAssigneeNames = [];
             } catch (eIgn) {}
             globalSearchRows = null;
@@ -10395,12 +11823,12 @@
             var imeta = document.getElementById('inviteMetaText');
             if (imeta) imeta.textContent = '';
 
-            var inviteNote = document.getElementById('inviteNoteInput');
             var inviteExp = document.getElementById('inviteExpiresInput');
+            var inviteBulkExp = document.getElementById('inviteBulkExpiresInput');
             var inviteEmail = document.getElementById('inviteEmailInput');
             var inviteTh = document.getElementById('inviteThresholdInput');
-            if (inviteNote) inviteNote.value = '';
             if (inviteExp) inviteExp.value = '30';
+            if (inviteBulkExp) inviteBulkExp.value = '30';
             if (inviteEmail) inviteEmail.value = '';
             if (inviteTh) inviteTh.value = '';
 
@@ -10411,6 +11839,9 @@
 
             resetInviteSendButtonsDefault();
             resetForm();
+            if (typeof updateInviteBulkExpiresPreview === 'function') {
+                updateInviteBulkExpiresPreview();
+            }
             refreshContributorActivity();
             refreshDashSubmissionSummary();
             refreshInvitePeopleInsights();
@@ -10491,7 +11922,8 @@
                 });
         }
 
-        function runProceed() {
+        function runProceed(opts) {
+            opts = opts || {};
             const threshold = document.getElementById('compareThreshold').value.trim();
             const baseVersion = document.getElementById('baseVersion').value.trim();
 
@@ -10631,7 +12063,7 @@
                 if (mergeAfterProceed && typeof fetchAndMergeIssueEdits === 'function') {
                     fetchAndMergeIssueEdits(String(mergeAfterProceed), { refreshEvenIfNoEdits: true });
                 }
-                setMainView('dashboard');
+                applyStoredMainViewOrFallback('dashboard');
 
                 let summaryExtra = '';
                 if (issueTypeIdx >= 0) {
@@ -10643,9 +12075,11 @@
                         ' · Story ' +
                         typeCounts.story;
                 }
-                showSuccess('Analysis complete.' + summaryExtra + ' Use Exports → Download Excel to save.', {
-                    dashboardOnly: true
-                });
+                if (!opts.skipSuccessToast) {
+                    showSuccess('Analysis complete.' + summaryExtra + ' Use Exports → Download Excel to save.', {
+                        dashboardOnly: true
+                    });
+                }
                 if (typeof schedulePersistWorkspace === 'function') {
                     schedulePersistWorkspace({ proceedCompleted: true });
                 }
@@ -10914,7 +12348,11 @@
                     const raw = allData[i];
                     const rowObj = rowToNamedObject(raw, headerNames);
                     const spill = hasSpilloverRaw(raw, threshold);
-                    rowObj['SpillOver'] = spill ? 'Yes' : 'No';
+                    let ik = '';
+                    if (keyColName && rowObj[keyColName] != null && String(rowObj[keyColName]).trim() !== '') {
+                        ik = String(rowObj[keyColName]).trim();
+                    }
+                    rowObj['SpillOver'] = getResolvedSpilloverYesNo(ik, spill);
                     dataWithSpillover.push(rowObj);
                     if (isBugRow(raw, issueTypeIdx)) {
                         let ik = '';
@@ -11065,6 +12503,7 @@
             lastRunStats = null;
             spilloverReasonByKey = {};
             spilloverCategoryByKey = {};
+            spilloverYesNoByKey = {};
             bugProdByKey = {};
             bugRcaByKey = {};
             bugCategoryByKey = {};
@@ -11244,6 +12683,7 @@
                         __workspaceRestoredOnce = true;
 
                         function afterRestore() {
+                            var ranProceed = false;
                             if (
                                 meta.proceedCompleted &&
                                 bvIn &&
@@ -11251,7 +12691,11 @@
                                 String(bvIn.value).trim() &&
                                 String(thIn.value).trim()
                             ) {
-                                runProceed();
+                                runProceed({ skipSuccessToast: true });
+                                ranProceed = true;
+                            }
+                            if (!ranProceed) {
+                                applyStoredMainViewOrFallback('setup');
                             }
                             var mergeUid =
                                 typeof resolveExportUploadId === 'function'
@@ -11416,8 +12860,31 @@
             }
         }
 
+        /** Live “Expires · …” from bulk days field (single line above the table). */
+        function updateInviteBulkExpiresPreview() {
+            var inp = document.getElementById('inviteBulkExpiresInput');
+            var previewEl = document.getElementById('inviteBulkExpiresPreview');
+            var raw = inp ? String(inp.value || '').trim() : '';
+            var days = parseInt(raw, 10);
+            if (isNaN(days) || days < 1) days = 30;
+            days = Math.min(365, Math.max(1, days));
+            var d = new Date();
+            d.setDate(d.getDate() + days);
+            var txt = 'Expires · ' + d.toLocaleString();
+            if (previewEl) previewEl.textContent = txt;
+        }
+
+        function initInviteBulkExpiresWire() {
+            var inp = document.getElementById('inviteBulkExpiresInput');
+            if (!inp) return;
+            inp.addEventListener('input', updateInviteBulkExpiresPreview);
+            inp.addEventListener('change', updateInviteBulkExpiresPreview);
+            updateInviteBulkExpiresPreview();
+        }
+
         initMobileNav();
         initDashboardTopPanels();
+        initInviteBulkExpiresWire();
         setupWorkspacePersistenceHooks();
         renderChartPlaceholder();
     </script>

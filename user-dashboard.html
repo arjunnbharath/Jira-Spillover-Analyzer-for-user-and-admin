@@ -348,11 +348,6 @@
         .contrib-nav-section__label:first-child {
             margin-top: 0;
         }
-        .contrib-nav-section__label--ruled {
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid var(--sidebar-border);
-        }
         .contrib-sidebar__nav {
             display: flex;
             flex-direction: column;
@@ -361,11 +356,35 @@
             margin-bottom: 0.35rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        /* Avoid double rule: nav already has a bottom border above Category */
-        #contribCategorySection > .contrib-nav-section__label.contrib-nav-section__label--ruled:first-child {
-            margin-top: 0;
-            padding-top: 0.45rem;
-            border-top: none;
+        /* Less space between the nav underline and the Discussion label */
+        .contrib-sidebar__nav + .contrib-nav-section__label {
+            margin-top: 0.45rem;
+        }
+        /* Same gap between the rule below Discussion and the Category label */
+        #contribCategorySection > .contrib-nav-section__label:first-child {
+            margin-top: 0.45rem;
+        }
+        /* Full-width rules matching .contrib-sidebar__nav underline (same color & span) */
+        .contrib-sidebar__rule {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 0;
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .contrib-sidebar__rule--after-discussion {
+            margin-top: 0.35rem;
+            margin-bottom: 0.35rem;
+        }
+        /* When Category block is hidden, only one line between Discussion and Issues (avoid double rule) */
+        #contribCategorySection[hidden] + #contribSidebarRuleBeforeIssues {
+            display: none;
+        }
+        #contribSidebarRuleBeforeIssues {
+            margin-top: 0.35rem;
+            margin-bottom: 0.35rem;
         }
         .contrib-sidenav__btn {
             appearance: none;
@@ -399,6 +418,11 @@
             font-weight: 600;
         }
         .contrib-bug-category-guide-nav--active {
+            color: #f8fafc !important;
+            background: var(--sidebar-active) !important;
+            font-weight: 600;
+        }
+        .contrib-comments-nav--active {
             color: #f8fafc !important;
             background: var(--sidebar-active) !important;
             font-weight: 600;
@@ -485,7 +509,7 @@
         .contrib-issues-nav__btn {
             width: 100%;
             margin: 0;
-            padding: 0.45rem 0.35rem;
+            padding: 0.32rem 0.35rem;
             border: none;
             border-radius: var(--radius-sm);
             background: transparent;
@@ -496,7 +520,8 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.35rem;
+            gap: 0.22rem;
+            min-width: 0;
             transition: background 0.15s;
         }
         .contrib-issues-nav__btn:hover {
@@ -506,29 +531,33 @@
             outline: 2px solid rgba(255, 255, 255, 0.45);
             outline-offset: 0;
         }
-        .contrib-issues-nav__key code {
-            font-family: ui-monospace, 'Consolas', monospace;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: #f1f5f9;
-        }
-        .contrib-issues-nav__prog {
-            font-size: 0.6875rem;
-            line-height: 1.35;
-            color: #a8a8a8;
+        .contrib-issues-nav__key {
             width: 100%;
         }
+        .contrib-issues-nav__key code {
+            font-family: ui-monospace, 'Consolas', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #b8c2d4;
+        }
+        .contrib-issues-nav__prog {
+            font-size: 0.65rem;
+            line-height: 1.35;
+            color: #aeb6c4;
+            width: 100%;
+            white-space: normal;
+        }
         .contrib-issues-nav__prog .contrib-status-sep {
-            opacity: 0.85;
+            opacity: 0.78;
         }
         .contrib-issues-nav__prog .contrib-status--ok {
-            color: #4ade80;
+            color: #7bc48a;
         }
         .contrib-issues-nav__prog .contrib-status--pending {
-            color: #fbbf24;
+            color: #c9ae5e;
         }
         .contrib-issues-nav__prog .contrib-status--err {
-            color: #f87171;
+            color: #d49191;
         }
         .contrib-issues-nav__empty {
             font-size: 0.75rem;
@@ -661,6 +690,15 @@
             width: 1.35rem;
             height: 1.35rem;
             flex-shrink: 0;
+        }
+        .contrib-nav-menu-toggle__icon--close {
+            display: none;
+        }
+        .contrib-nav-menu-toggle[aria-expanded="true"] .contrib-nav-menu-toggle__icon--menu {
+            display: none;
+        }
+        .contrib-nav-menu-toggle[aria-expanded="true"] .contrib-nav-menu-toggle__icon--close {
+            display: block;
         }
         .contrib-nav-backdrop {
             display: none;
@@ -1264,6 +1302,11 @@
                 padding: 0.35rem 0 0.85rem;
                 margin: 0 0 0.15rem;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            }
+            /* Keep menu toggle above the sliding drawer so hamburger / X stays visible & clickable */
+            body.contrib-session.contrib-nav-open .contrib-mobile-bar {
+                position: relative;
+                z-index: 270;
             }
             .contrib-sidebar {
                 position: fixed;
@@ -1956,8 +1999,20 @@
                 <div class="contrib-sidebar__scroll">
                     <p class="contrib-nav-section__label">Your tasks</p>
                     <nav id="contribNavTabs" class="contrib-sidebar__nav" role="tablist" aria-label="Spillover and bugs"></nav>
+                    <p class="contrib-nav-section__label">Discussion</p>
+                    <button
+                        type="button"
+                        class="contrib-sidenav__link contrib-sidenav__link--button"
+                        id="contribWriteCommentNavBtn"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        Write a comment
+                    </button>
+                    <div class="contrib-sidebar__rule contrib-sidebar__rule--after-discussion" aria-hidden="true"></div>
                     <div id="contribCategorySection" hidden>
-                        <p class="contrib-nav-section__label contrib-nav-section__label--ruled">Category</p>
+                        <p class="contrib-nav-section__label">Category</p>
                         <div id="contribSpillCategoryGuideWrap">
                             <button
                                 type="button"
@@ -1983,7 +2038,8 @@
                             </button>
                         </div>
                     </div>
-                    <p class="contrib-nav-section__label contrib-nav-section__label--ruled">Issues</p>
+                    <div id="contribSidebarRuleBeforeIssues" class="contrib-sidebar__rule" aria-hidden="true"></div>
+                    <p class="contrib-nav-section__label">Issues</p>
                     <ul id="contribIssuesNavList" class="contrib-issues-nav-list" aria-label="Issue keys and progress"></ul>
                 </div>
                 <div class="contrib-sidebar__footer">
@@ -2004,8 +2060,29 @@
                         aria-controls="contribSidebar"
                         aria-label="Open menu"
                     >
-                        <svg class="contrib-nav-menu-toggle__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <svg
+                            class="contrib-nav-menu-toggle__icon contrib-nav-menu-toggle__icon--menu"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                        >
                             <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+                        </svg>
+                        <svg
+                            class="contrib-nav-menu-toggle__icon contrib-nav-menu-toggle__icon--close"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                        >
+                            <path
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
                         </svg>
                     </button>
                     <div class="contrib-mobile-bar__brand">
@@ -2034,6 +2111,12 @@
                     <div id="banner" class="banner contrib-banner" hidden aria-hidden="true"></div>
                     <section id="panelSpill" class="contrib-panel-dash" aria-labelledby="contribPanelSpillTitle" hidden></section>
                     <section id="panelBug" class="contrib-panel-dash" aria-labelledby="contribPanelBugTitle" hidden></section>
+                    <section id="panelComments" class="contrib-panel-dash" aria-labelledby="contribPanelCommentsTitle" hidden>
+                        <h2 id="contribPanelCommentsTitle" class="contrib-panel-dash__title">DISCUSSION</h2>
+                        <p class="contrib-panel-dash__hint">
+                            Write a comment for this invite session. Thread and notifications will appear here when available.
+                        </p>
+                    </section>
                     <section
                         id="panelCategoryGuide"
                         class="contrib-panel-dash"
@@ -3516,7 +3599,31 @@
             });
         }
 
+        function setupContribCommentsNavButton() {
+            var btn = document.getElementById('contribWriteCommentNavBtn');
+            if (!btn || btn.dataset.contribCommentsWired === '1') return;
+            btn.dataset.contribCommentsWired = '1';
+            btn.addEventListener('click', function () {
+                var panelSpill = document.getElementById('panelSpill');
+                var panelBug = document.getElementById('panelBug');
+                var panelCat = document.getElementById('panelCategoryGuide');
+                var panelBugCat = document.getElementById('panelBugCategoryGuide');
+                setContribPanelVisibility(
+                    panelSpill,
+                    panelBug,
+                    panelCat,
+                    panelBugCat,
+                    contribNavVisibility.showSpill,
+                    contribNavVisibility.showBug,
+                    { activePanel: 'comments' }
+                );
+                refreshMixedInviteHeader();
+            });
+        }
+
         function getActiveContribPanel() {
+            var panelComments = document.getElementById('panelComments');
+            if (panelComments && !panelComments.hidden) return 'comments';
             var bugGuideBtn = document.getElementById('contribBugCategoryGuideNavBtn');
             var bugWrap = document.getElementById('contribBugCategoryNavWrap');
             var catSection = document.getElementById('contribCategorySection');
@@ -3555,6 +3662,38 @@
         function setContribPanelVisibility(panelSpill, panelBug, panelCat, panelBugCat, showSpill, showBug, opts) {
             opts = opts || {};
             var active = opts.activePanel || 'spill';
+            var panelCommentsEl = document.getElementById('panelComments');
+            var commentsNavBtn = document.getElementById('contribWriteCommentNavBtn');
+
+            if (active === 'comments') {
+                if (panelCommentsEl) panelCommentsEl.hidden = false;
+                if (commentsNavBtn) {
+                    commentsNavBtn.classList.add('contrib-comments-nav--active');
+                    commentsNavBtn.setAttribute('aria-current', 'page');
+                }
+                if (panelCat) panelCat.hidden = true;
+                if (panelBugCat) panelBugCat.hidden = true;
+                if (panelSpill) panelSpill.hidden = true;
+                if (panelBug) panelBug.hidden = true;
+                setCategoryGuideNavActive(false);
+                setBugCategoryGuideNavActive(false);
+                var navComm = document.getElementById('contribNavTabs');
+                if (navComm) {
+                    var tabsComm = navComm.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                    for (var tc = 0; tc < tabsComm.length; tc++) {
+                        tabsComm[tc].classList.remove('contrib-sidenav__btn--active');
+                        tabsComm[tc].setAttribute('aria-selected', 'false');
+                    }
+                }
+                return;
+            }
+
+            if (panelCommentsEl) panelCommentsEl.hidden = true;
+            if (commentsNavBtn) {
+                commentsNavBtn.classList.remove('contrib-comments-nav--active');
+                commentsNavBtn.removeAttribute('aria-current');
+            }
+
             if (active === 'categories' && !showSpill) active = showBug ? 'bug' : 'spill';
             if (active === 'bugCategories' && !showBug) active = showSpill ? 'spill' : 'bug';
             var both = showSpill && showBug;
@@ -3715,6 +3854,13 @@
                 if (panelCatEmpty) panelCatEmpty.hidden = true;
                 var panelBugCatEmpty = document.getElementById('panelBugCategoryGuide');
                 if (panelBugCatEmpty) panelBugCatEmpty.hidden = true;
+                var panelCommentsEmpty = document.getElementById('panelComments');
+                if (panelCommentsEmpty) panelCommentsEmpty.hidden = true;
+                var commentsNavBtnEmpty = document.getElementById('contribWriteCommentNavBtn');
+                if (commentsNavBtnEmpty) {
+                    commentsNavBtnEmpty.classList.remove('contrib-comments-nav--active');
+                    commentsNavBtnEmpty.removeAttribute('aria-current');
+                }
                 if (panelSpill) {
                     panelSpill.hidden = false;
                     panelSpill.innerHTML =
@@ -3781,6 +3927,14 @@
                     }
                     setBugCategoryGuideNavActive(true);
                     setCategoryGuideNavActive(false);
+                } else if (opts.activePanel === 'comments') {
+                    var navBtnsCm = tabsEl.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                    for (var cm = 0; cm < navBtnsCm.length; cm++) {
+                        navBtnsCm[cm].classList.remove('contrib-sidenav__btn--active');
+                        navBtnsCm[cm].setAttribute('aria-selected', 'false');
+                    }
+                    setCategoryGuideNavActive(false);
+                    setBugCategoryGuideNavActive(false);
                 } else {
                     setCategoryGuideNavActive(false);
                     setBugCategoryGuideNavActive(false);
@@ -3850,6 +4004,7 @@
             setupContribNavTabsDelegation();
             setupContribCategoryGuideNavButton();
             setupContribBugCategoryGuideNavButton();
+            setupContribCommentsNavButton();
             renderIssuesNavList(issues, editsByKey);
         }
 
@@ -4474,6 +4629,12 @@
             var bugCatGuideNavBtn = document.getElementById('contribBugCategoryGuideNavBtn');
             if (bugCatGuideNavBtn) {
                 bugCatGuideNavBtn.addEventListener('click', function () {
+                    setNavOpen(false);
+                });
+            }
+            var commentsNavBtnMob = document.getElementById('contribWriteCommentNavBtn');
+            if (commentsNavBtnMob) {
+                commentsNavBtnMob.addEventListener('click', function () {
                     setNavOpen(false);
                 });
             }

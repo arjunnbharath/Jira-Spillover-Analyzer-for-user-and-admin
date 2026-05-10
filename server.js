@@ -1012,7 +1012,7 @@ app.get('/api/uploads/:id/issue-edits', async (req, res) => {
   try {
     await ensureSchema(client);
     const r = await client.query(
-      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category, updated_at
+      `SELECT issue_key, spillover_reason, spillover_category, spillover_yes_no, prod, rca, bug_category, updated_at
        FROM issue_field_edits WHERE upload_id = $1
        ORDER BY issue_key ASC`,
       [id]
@@ -1057,7 +1057,7 @@ app.get('/api/uploads/:id/issue-edits/recent', async (req, res) => {
     }
 
     const r = await client.query(
-      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category, updated_at
+      `SELECT issue_key, spillover_reason, spillover_category, spillover_yes_no, prod, rca, bug_category, updated_at
        FROM issue_field_edits WHERE upload_id = $1
        ORDER BY updated_at DESC NULLS LAST
        LIMIT $2`,
@@ -1679,6 +1679,7 @@ function coerceInviteEditRowForJson(row) {
     issue_key: t(r.issue_key),
     spillover_reason: t(r.spillover_reason),
     spillover_category: t(r.spillover_category),
+    spillover_yes_no: t(r.spillover_yes_no),
     prod: t(r.prod),
     rca: t(r.rca),
     bug_category: t(r.bug_category),
@@ -1707,6 +1708,7 @@ function mergeIssueEditRowsForInvite(rows) {
         issue_key: n,
         spillover_reason: row.spillover_reason,
         spillover_category: row.spillover_category,
+        spillover_yes_no: row.spillover_yes_no,
         prod: row.prod,
         rca: row.rca,
         bug_category: row.bug_category,
@@ -1718,6 +1720,7 @@ function mergeIssueEditRowsForInvite(rows) {
       issue_key: n,
       spillover_reason: pickField(prev, row, 'spillover_reason'),
       spillover_category: pickField(prev, row, 'spillover_category'),
+      spillover_yes_no: pickField(prev, row, 'spillover_yes_no'),
       prod: pickField(prev, row, 'prod'),
       rca: pickField(prev, row, 'rca'),
       bug_category: pickField(prev, row, 'bug_category'),
@@ -1757,7 +1760,7 @@ app.get('/api/invite/:token/session', async (req, res) => {
     const { issues, headers } = await buildIssuesForInvite(client, inv);
 
     const edits = await client.query(
-      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category, updated_at
+      `SELECT issue_key, spillover_reason, spillover_category, spillover_yes_no, prod, rca, bug_category, updated_at
        FROM issue_field_edits WHERE upload_id = $1`,
       [inv.upload_id]
     );
@@ -1807,6 +1810,183 @@ function pickBugCategoryFromBody(body) {
   return '';
 }
 
+function normalizeSpilloverYesNoInput(v) {
+  const s = String(v ?? '').trim();
+  if (s === 'Yes' || s === 'No') return s;
+  return '';
+}
+
+/** Upsert one row in issue_field_edits (analyst upload save or contributor invite save). */
+async function upsertIssueFieldEditForUpload(client, uploadId, body) {
+  const issueKey = String(body.issueKey || '').trim();
+  if (!issueKey) {
+    const err = new Error('issueKey required');
+    err.statusCode = 400;
+    throw err;
+  }
+  const ikNorm = normalizeIssueKeyDedupe(issueKey);
+  let sr = String(body.spilloverReason ?? '');
+  let sc = String(body.spilloverCategory ?? '');
+  let prod = String(body.prod ?? '');
+  let rca = String(body.rca ?? '');
+  let bugCategory = pickBugCategoryFromBody(body);
+  const kind = String(body.kind || '').trim();
+
+  const rawSyn =
+    body.spilloverYesNo !== undefined && body.spilloverYesNo !== null
+      ? body.spilloverYesNo
+      : body.spillover_yes_no;
+  let syn = normalizeSpilloverYesNoInput(rawSyn);
+
+  const existingRes = await client.query(
+    `SELECT issue_key, spillover_reason, spillover_category, spillover_yes_no, prod, rca, bug_category
+     FROM issue_field_edits WHERE upload_id = $1`,
+    [uploadId]
+  );
+  const rowsSameKey = existingRes.rows.filter(
+    (r) => normalizeIssueKeyDedupe(r.issue_key) === ikNorm
+  );
+  let ex = rowsSameKey.find((r) => r.issue_key === ikNorm) || rowsSameKey[0] || null;
+
+  if (rowsSameKey.length > 1) {
+    if (!String(bugCategory ?? '').trim()) {
+      for (const r of rowsSameKey) {
+        const b = String(r.bug_category ?? '').trim();
+        if (b) {
+          bugCategory = b;
+          break;
+        }
+      }
+    }
+    const canonical = rowsSameKey.find((r) => r.issue_key === ikNorm) || rowsSameKey[0];
+    const orphanKeys = rowsSameKey
+      .filter((r) => r.issue_key !== canonical.issue_key)
+      .map((r) => r.issue_key);
+    if (orphanKeys.length) {
+      await client.query(
+        `DELETE FROM issue_field_edits WHERE upload_id = $1 AND issue_key = ANY($2::text[])`,
+        [uploadId, orphanKeys]
+      );
+    }
+    ex = canonical;
+  }
+
+  const synProvided =
+    Object.prototype.hasOwnProperty.call(body, 'spilloverYesNo') ||
+    Object.prototype.hasOwnProperty.call(body, 'spillover_yes_no');
+
+  if (ex) {
+    if (kind === 'spill') {
+      if (!String(prod ?? '').trim()) prod = String(ex.prod ?? '');
+      if (!String(rca ?? '').trim()) rca = String(ex.rca ?? '');
+      if (!String(bugCategory ?? '').trim()) bugCategory = String(ex.bug_category ?? '');
+      if (!synProvided) syn = normalizeSpilloverYesNoInput(ex.spillover_yes_no);
+    } else if (kind === 'bug') {
+      if (!String(sr ?? '').trim()) sr = String(ex.spillover_reason ?? '');
+      if (!String(sc ?? '').trim()) sc = String(ex.spillover_category ?? '');
+      if (!String(bugCategory ?? '').trim()) bugCategory = String(ex.bug_category ?? '');
+      if (!synProvided) syn = normalizeSpilloverYesNoInput(ex.spillover_yes_no);
+    } else if (!synProvided) {
+      syn = normalizeSpilloverYesNoInput(ex.spillover_yes_no);
+    }
+  }
+
+  if (ex) {
+    let upd = await client.query(
+      `UPDATE issue_field_edits SET
+         spillover_reason = $1,
+         spillover_category = $2,
+         spillover_yes_no = $3,
+         prod = $4,
+         rca = $5,
+         bug_category = COALESCE(NULLIF(BTRIM(COALESCE($6::text, '')), ''), bug_category),
+         updated_at = NOW()
+       WHERE upload_id = $7 AND issue_key = $8
+       RETURNING bug_category`,
+      [sr, sc, syn, prod, rca, bugCategory, uploadId, ex.issue_key]
+    );
+    if (upd.rowCount === 0) {
+      const alt = await client.query(
+        `SELECT issue_key FROM issue_field_edits WHERE upload_id = $1`,
+        [uploadId]
+      );
+      const hit = alt.rows.find((r) => normalizeIssueKeyDedupe(r.issue_key) === ikNorm);
+      if (hit) {
+        upd = await client.query(
+          `UPDATE issue_field_edits SET
+             spillover_reason = $1,
+             spillover_category = $2,
+             spillover_yes_no = $3,
+             prod = $4,
+             rca = $5,
+             bug_category = COALESCE(NULLIF(BTRIM(COALESCE($6::text, '')), ''), bug_category),
+             updated_at = NOW()
+           WHERE upload_id = $7 AND issue_key = $8
+           RETURNING bug_category`,
+          [sr, sc, syn, prod, rca, bugCategory, uploadId, hit.issue_key]
+        );
+      }
+    }
+    if (upd.rowCount === 0) {
+      const err = new Error(
+        process.env.NODE_ENV === 'development'
+          ? 'UPDATE issue_field_edits matched no rows (issue_key / upload mismatch)'
+          : 'Could not save issue fields'
+      );
+      err.statusCode = 500;
+      throw err;
+    }
+    const persisted =
+      upd.rows[0] != null ? String(upd.rows[0].bug_category ?? '').trim() : '';
+    return { bug_category: persisted };
+  }
+
+  const ins = await client.query(
+    `INSERT INTO issue_field_edits
+      (upload_id, issue_key, spillover_reason, spillover_category, spillover_yes_no, prod, rca, bug_category, updated_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+     RETURNING bug_category`,
+    [uploadId, ikNorm, sr, sc, syn, prod, rca, bugCategory]
+  );
+  const persisted = ins.rows[0] ? String(ins.rows[0].bug_category ?? '') : '';
+  return { bug_category: persisted };
+}
+
+app.put('/api/uploads/:id/issue', async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({
+      error: 'DATABASE_URL is not set. Add your database connection URI to .env',
+    });
+  }
+  const id = String(req.params.id || '').trim();
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).json({ error: 'Invalid upload id' });
+  }
+
+  const client = await p.connect();
+  try {
+    await ensureSchema(client);
+    const check = await client.query(`SELECT id FROM file_uploads WHERE id = $1`, [id]);
+    if (!check.rows.length) {
+      return res.status(404).json({ error: 'Upload not found' });
+    }
+    const result = await upsertIssueFieldEditForUpload(client, id, req.body || {});
+    res.json({ ok: true, bug_category: result.bug_category });
+  } catch (e) {
+    const code = e.statusCode || 500;
+    if (code === 400) {
+      return res.status(400).json({ error: e.message || 'Bad request' });
+    }
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
 app.put('/api/invite/:token/issue', async (req, res) => {
   const p = getPool();
   if (!p) {
@@ -1833,118 +2013,13 @@ app.put('/api/invite/:token/issue', async (req, res) => {
     }
 
     const uploadId = got.invite.upload_id;
-    const ikNorm = normalizeIssueKeyDedupe(issueKey);
-    let sr = String(body.spilloverReason ?? '');
-    let sc = String(body.spilloverCategory ?? '');
-    let prod = String(body.prod ?? '');
-    let rca = String(body.rca ?? '');
-    let bugCategory = pickBugCategoryFromBody(body);
-    const kind = String(body.kind || '').trim();
-
-    const existingRes = await client.query(
-      `SELECT issue_key, spillover_reason, spillover_category, prod, rca, bug_category
-       FROM issue_field_edits WHERE upload_id = $1`,
-      [uploadId]
-    );
-    const rowsSameKey = existingRes.rows.filter(
-      (r) => normalizeIssueKeyDedupe(r.issue_key) === ikNorm
-    );
-    let ex = rowsSameKey.find((r) => r.issue_key === ikNorm) || rowsSameKey[0] || null;
-
-    if (rowsSameKey.length > 1) {
-      if (!String(bugCategory ?? '').trim()) {
-        for (const r of rowsSameKey) {
-          const b = String(r.bug_category ?? '').trim();
-          if (b) {
-            bugCategory = b;
-            break;
-          }
-        }
-      }
-      const canonical = rowsSameKey.find((r) => r.issue_key === ikNorm) || rowsSameKey[0];
-      const orphanKeys = rowsSameKey
-        .filter((r) => r.issue_key !== canonical.issue_key)
-        .map((r) => r.issue_key);
-      if (orphanKeys.length) {
-        await client.query(
-          `DELETE FROM issue_field_edits WHERE upload_id = $1 AND issue_key = ANY($2::text[])`,
-          [uploadId, orphanKeys]
-        );
-      }
-      ex = canonical;
-    }
-
-    if (ex) {
-      if (kind === 'spill') {
-        if (!String(prod ?? '').trim()) prod = String(ex.prod ?? '');
-        if (!String(rca ?? '').trim()) rca = String(ex.rca ?? '');
-        // Keep bug fields from the client when provided; only fall back to DB when missing (do not wipe bug saves).
-        if (!String(bugCategory ?? '').trim()) bugCategory = String(ex.bug_category ?? '');
-      } else if (kind === 'bug') {
-        if (!String(sr ?? '').trim()) sr = String(ex.spillover_reason ?? '');
-        if (!String(sc ?? '').trim()) sc = String(ex.spillover_category ?? '');
-        // Avoid wiping bug_category when the client omits it (same idea as spill saves merging rows).
-        if (!String(bugCategory ?? '').trim()) bugCategory = String(ex.bug_category ?? '');
-      }
-    }
-
-    if (ex) {
-      let upd = await client.query(
-        `UPDATE issue_field_edits SET
-           spillover_reason = $1,
-           spillover_category = $2,
-           prod = $3,
-           rca = $4,
-           bug_category = COALESCE(NULLIF(BTRIM(COALESCE($5::text, '')), ''), bug_category),
-           updated_at = NOW()
-         WHERE upload_id = $6 AND issue_key = $7
-         RETURNING bug_category`,
-        [sr, sc, prod, rca, bugCategory, uploadId, ex.issue_key]
-      );
-      if (upd.rowCount === 0) {
-        const alt = await client.query(
-          `SELECT issue_key FROM issue_field_edits WHERE upload_id = $1`,
-          [uploadId]
-        );
-        const hit = alt.rows.find((r) => normalizeIssueKeyDedupe(r.issue_key) === ikNorm);
-        if (hit) {
-          upd = await client.query(
-            `UPDATE issue_field_edits SET
-               spillover_reason = $1,
-               spillover_category = $2,
-               prod = $3,
-               rca = $4,
-               bug_category = COALESCE(NULLIF(BTRIM(COALESCE($5::text, '')), ''), bug_category),
-               updated_at = NOW()
-             WHERE upload_id = $6 AND issue_key = $7
-             RETURNING bug_category`,
-            [sr, sc, prod, rca, bugCategory, uploadId, hit.issue_key]
-          );
-        }
-      }
-      if (upd.rowCount === 0) {
-        return res.status(500).json({
-          error:
-            process.env.NODE_ENV === 'development'
-              ? 'UPDATE issue_field_edits matched no rows (issue_key / upload mismatch)'
-              : 'Could not save issue fields',
-        });
-      }
-      const persisted =
-        upd.rows[0] != null ? String(upd.rows[0].bug_category ?? '').trim() : '';
-      res.json({ ok: true, bug_category: persisted });
-    } else {
-      const ins = await client.query(
-        `INSERT INTO issue_field_edits
-          (upload_id, issue_key, spillover_reason, spillover_category, prod, rca, bug_category, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-         RETURNING bug_category`,
-        [uploadId, ikNorm, sr, sc, prod, rca, bugCategory]
-      );
-      const persisted = ins.rows[0] ? String(ins.rows[0].bug_category ?? '') : '';
-      res.json({ ok: true, bug_category: persisted });
-    }
+    const result = await upsertIssueFieldEditForUpload(client, uploadId, body);
+    res.json({ ok: true, bug_category: result.bug_category });
   } catch (e) {
+    const code = e.statusCode || 500;
+    if (code === 400) {
+      return res.status(400).json({ error: e.message || 'Bad request' });
+    }
     console.error(e);
     res.status(500).json({
       error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
