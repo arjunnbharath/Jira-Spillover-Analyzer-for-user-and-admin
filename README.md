@@ -1,67 +1,173 @@
-# Jira Spillover Analyzer — Dashboard
+# Jira Spillover Analyzer
 
-A **single-file, client-side** web app for analyzing Jira Excel exports, flagging **spillover** work by sprint values, tracking **bugs** (PROD / RCA), and exporting an enriched **multi-sheet workbook**—all in the browser, with **no server** and no data upload.
+Web application for **uploading Jira Excel exports**, analyzing **sprint spillover**, tracking **bugs** (PROD / RCA / category), managing **assignees**, sending **contributor invites**, and merging edits back into a shared dataset backed by **PostgreSQL**.  
+The **admin / analyst** UI is `analyzer.html`; **contributors** open token links and use `user-dashboard.html`.
 
-| | |
-|---|---|
-| **Entry point** | `velocity.html` (open in a modern browser) |
-| **Stack** | HTML, CSS, JavaScript |
-| **Libraries (CDN)** | [SheetJS (xlsx)](https://sheetjs.com/), [FileSaver](https://github.com/eligrey/FileSaver.js) |
-| **Fonts** | Inter (Google Fonts) |
+**Production hosting:** the app is deployed on **Vercel** (static HTML plus the Express API via `api/index.js`). **Firebase is not used for hosting** — only **Firebase Authentication** (and optional Firestore client usage) for analyst sign-in (`firebase-config.js`, `auth.html`). Do not add Firebase Hosting CI workflows unless you intentionally deploy static files there too.
 
 ---
 
-## Features
+## Overview
 
-- **Upload & configure** — Load `.xlsx` / `.xls` (e.g. Jira export), set **base version** and **sprint threshold**, then **Proceed** to analyze.
-- **Spillover rule** — A row is **SpillOver = Yes** when **any** “Sprint” column value **equals** the threshold (e.g. `14.1` matches `14.1`, not `14.2`). Float matching uses a small epsilon for Excel rounding.
-- **Dashboard** — Summary metrics, **cumulative spillover chart**, and **issue type** breakdown (when an **Issue Type** column exists).
-- **Assignees** — Sidebar list of assignees and issue keys; click to open **ticket detail** (full row from the sheet).
-- **Spillover** — List of spillover issues; per-row **Spillover reason** and **category** (dropdown: Defect Blocker, Dependency, Scope Creep, Owner Specific, Estimation, Carryover Work). Exported on the **SpillOver** sheet only.
-- **Bugs** — Bug rows with **PROD** (Yes/No) and **RCA** (text). **PROD** and **RCA** appear **only** on the **Bug** sheet in the export—not on TicketIntake or SpillOver.
-- **Reports** — Sprint & export report: stats, column detection, issue mix, enrichment progress.
-- **Analytics** — Spillover split, issue-type bars, top assignees.
-- **Exports** — **Export preview**: every output sheet with **column chips** (app-added columns highlighted) and **scrollable table previews** (first rows) before download.
-- **Search** — Quick search by issue key, assignee, summary (`/` keyboard shortcut when not typing in a field).
-- **Export** — One-click **Download** / **Export** produces a structured Excel file (see below).
+| Role | Interface | Authentication |
+|------|-----------|------------------|
+| **Analyst / admin** | `analyzer.html` (also served at `/`) | **Firebase Auth** only (see `firebase-config.js`, `auth.html`) |
+| **Contributor** | `user-dashboard.html` | Invite **token** in URL; optional `?api=` for API base |
+
+The **Express** server (`server.js`) exposes REST APIs under `/api/*`, parses uploads with **SheetJS (xlsx)**, persists rows and edits in **Postgres**, and can send invite mail via **SMTP** or **MailerSend**.
+
+For diagrams (system context, deployment, API, ER sketch), open **`docs/ARCHITECTURE.html`** in a browser (Mermaid; use Print → Save as PDF if needed).
 
 ---
 
-## How to run
+## Tech stack
 
-1. Clone or download this repository.
-2. Open **`velocity.html`** in **Chrome, Edge, or Firefox** (local file or any static host).
-3. No `npm install`, no build step.
-
-> **Note:** Browsers may restrict `file://` in some cases; if anything fails, serve the folder with a simple static server (e.g. `npx serve .`) and open the served URL.
-
----
-
-## Workflow
-
-1. **Choose file** — Pick your Jira / spreadsheet export.
-2. **Base version** — e.g. `14.0` (used in sheet names and output filename).
-3. **Sprint threshold** — Value that any Sprint cell must **match** for SpillOver Yes (e.g. `14.1`).
-4. **Proceed** — Loads analysis, opens the main dashboard, and populates Spillover, Bugs, Reports, Analytics, and Export preview.
-5. **Optional** — Fill spillover reasons/categories and bug PROD/RCA, then use **Export** or **Download Excel** from the **Exports** page or other headers.
+| Layer | Technology |
+|-------|------------|
+| Runtime | **Node.js** ≥ 18 |
+| Server | **Express** 4, **CORS**, **Multer** (uploads) |
+| Database | **PostgreSQL** via `pg` (pool); works with Neon, Vercel Postgres, or any Postgres |
+| Excel | **xlsx** (read/write workbooks and CSV) |
+| Email | **Nodemailer** (SMTP or MailerSend API) |
+| Client | Static HTML/CSS/JS; **Firebase client** for analyst **sign-in only** (not hosting) |
+| Deploy | **Vercel** — app + API (`vercel.json` + `api/index.js` serverless entry) |
 
 ---
 
-## Output Excel file
+## Prerequisites
 
-Default filename pattern:
+- **Node.js** 18 or newer  
+- **PostgreSQL** database and a **`DATABASE_URL`** connection string  
+- **Firebase** web app config for **Auth** if analysts sign in (`firebase-config.js`) — not required for hosting  
+- Optional: SMTP or MailerSend for outbound invite emails  
 
-`SprintVelocity_{baseVersion}&{baseVersion+0.1}.xlsx`
+---
 
-### Sheets
+## Quick start (local)
 
-| Sheet | Contents |
-|--------|----------|
-| **TicketIntake_{version}** | All data rows with original columns + **`SpillOver`** (Yes/No). **No PROD/RCA** here. |
-| **SpillOver_{version}** | Only rows where **SpillOver = Yes**, plus **`SpillOverReason`** and **`SpillOverCategory`**. **No PROD/RCA** here. |
-| **Bug_{version}** | Rows where **Issue Type = Bug**, same columns as intake for those rows + **`SpillOver`** + **`PROD`** + **`RCA`** (last two are bug-only). If there are no bugs, a **placeholder** row is still written so the sheet exists. |
+1. **Clone** the repository and install dependencies:
 
-**Sprint columns** are detected from the header row: columns whose header is **Sprint** (from a fixed starting column index in the parser—see `getSprintColumnsIndices` in the source).
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment** — create a `.env` file in the project root (see [Environment variables](#environment-variables)).
+
+3. **Database** — ensure Postgres is reachable. On first run the server can apply `db/schema.sql` when tables are missing; you may also run the SQL manually against your database.
+
+4. **Start the server**:
+
+   ```bash
+   npm start
+   ```
+
+   Default URL: **`http://localhost:3000`** (or `PORT` from `.env`).
+
+5. **Health check**:
+
+   ```http
+   GET /api/health
+   ```
+
+   Confirms the process is up and whether `DATABASE_URL` is configured.
+
+---
+
+## Environment variables
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `DATABASE_URL` | **Yes** (for uploads / invites / edits) | PostgreSQL connection string (`postgresql://…`) |
+| `PORT` | No | HTTP port locally (default **3000**) |
+| `PUBLIC_APP_URL` | No | Canonical public origin for invite links and `?api=` (e.g. `https://your-app.vercel.app`). If unset, derived from request headers or `VERCEL_URL` on Vercel |
+| `UPLOAD_MAX_BYTES` | No | Max upload size in bytes (default **52 MB**) |
+| `NODE_ENV` | No | `development` surfaces more error detail on some API errors |
+| `INVITE_APP_NAME` | No | Display name used in invite email content |
+
+### Email (invites)
+
+Either **SMTP** or **MailerSend** can be configured.
+
+**SMTP**
+
+| Variable | Purpose |
+|----------|---------|
+| `SMTP_HOST` | If unset, SMTP transport is not built |
+| `SMTP_PORT` | Default **587** |
+| `SMTP_SECURE` | `true` for TLS on dedicated port |
+| `SMTP_USER` / `SMTP_PASS` | Auth when required |
+| `SMTP_FROM` | From address (falls back with other `MAIL_FROM` variants) |
+
+**MailerSend**
+
+| Variable | Purpose |
+|----------|---------|
+| `MAILERSEND_API_TOKEN` or `MAILERSEND_API_KEY` | API token |
+| `MAILERSEND_FROM_EMAIL` / `MAILERSEND_FROM_NAME` or `MAILERSEND_FROM` | Sender |
+
+---
+
+## REST API (summary)
+
+All routes are JSON unless noted. Prefix: **`/api`**.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/health` | Liveness and DB configuration flag |
+| `POST` | `/api/upload` | Multipart file upload; parses XLSX/CSV and stores rows |
+| `GET` | `/api/uploads` | List uploads |
+| `GET` | `/api/uploads/:id/data` | Upload row data |
+| `GET` | `/api/uploads/:id/issue-edits` | Issue-level edits for an upload |
+| `GET` | `/api/uploads/:id/issue-edits/recent` | Recent edits (polling / sync helpers) |
+| `GET` | `/api/uploads/:id/people-insights` | People / assignee-oriented insights |
+| `POST` | `/api/uploads/:id/invite-submit-status` | Invite submission status updates |
+| `PUT` | `/api/uploads/:id/issue` | Analyst-side issue patch (upload + issue key) |
+| `POST` | `/api/invites` | Create invite |
+| `POST` | `/api/invites/bulk` | Bulk invites |
+| `PATCH` | `/api/invites/email` | Update invite email metadata |
+| `POST` | `/api/invites/send-by-tokens` | Send mail for selected tokens |
+| `GET` | `/api/invite/:token/session` | Contributor session payload for a token |
+| `PUT` | `/api/invite/:token/issue` | Contributor save for one issue |
+| `POST` | `/api/database/clear-all` | Destructive clear (protect in production) |
+
+Static HTML routes (same Express app): **`/`** → `analyzer.html`; **`/auth.html`**, **`/user-dashboard.html`**.
+
+---
+
+## Database model (PostgreSQL)
+
+Tables are defined in **`db/schema.sql`**. Core entities:
+
+- **`file_uploads`** — Upload metadata (name, timestamps, row counts, headers, sheet info).
+- **`file_upload_rows`** — Per-row **`cells` JSONB** keyed by column name.
+- **`invites`** — Per-upload invite links (**`token` UUID**), optional assignee filter, expiry, **`sprint_threshold`**, etc.
+- **`issue_field_edits`** — Composite key **`(upload_id, issue_key)`** with spillover reason/category, bug PROD/RCA/category, **`updated_at`**.
+
+The server applies schema migrations / missing tables on startup where implemented; running `schema.sql` manually is still safe for a fresh database.
+
+---
+
+## Frontend entry points
+
+| File | Role |
+|------|------|
+| **`analyzer.html`** | Main analyst UI: workspace uploads, Proceed/analysis, spillover & bug sections, reports, analytics, export, invites |
+| **`auth.html`** | Firebase Auth sign-in; supports `next` redirect |
+| **`user-dashboard.html`** | Contributor workspace: token load, Spillover/Bugs tabs, optional Discussion placeholder, issue list |
+| **`firebase-config.js`** | Firebase web client configuration |
+| **`js/firebase-bootstrap.js`** | Firebase app / Firestore bootstrap |
+| **`templates/contributor-invite-email.html`** | HTML template for invite emails |
+
+---
+
+## Deployment (Vercel)
+
+Production runs on **Vercel** only. **Firebase Hosting** is not part of this setup.
+
+- **`vercel.json`** rewrites traffic to **`api/index.js`**, which **`require`s `server.js`**.
+- **`includeFiles`** bundles HTML, `firebase-config.js`, `images/**`, `js/**`, `templates/**`, `db/**` with the function.
+- Set **`DATABASE_URL`**, **`PUBLIC_APP_URL`** (recommended), and email variables in the Vercel project settings.
+- **`maxDuration`** is **60** seconds for long uploads.
 
 ---
 
@@ -69,43 +175,69 @@ Default filename pattern:
 
 ```
 .
-├── velocity.html   # Full application (UI + logic + styles)
-└── README.md       # This file
+├── analyzer.html              # Analyst UI
+├── auth.html                  # Sign-in
+├── user-dashboard.html        # Contributor UI
+├── firebase-config.js
+├── server.js                  # Express app + API + static
+├── package.json
+├── vercel.json
+├── api/
+│   └── index.js               # Vercel serverless entry
+├── db/
+│   └── schema.sql             # Postgres schema
+├── docs/
+│   └── ARCHITECTURE.html      # Mermaid architecture doc
+├── images/
+├── js/
+│   └── firebase-bootstrap.js
+└── templates/
+    └── contributor-invite-email.html
 ```
 
-Other files in the folder (if any) are optional / unrelated unless documented separately.
+---
+
+## Analyst workflow (short)
+
+1. Sign in (if Firebase is configured) and open the **analyzer**.
+2. **Upload** a Jira export (`.xlsx` / `.csv`).
+3. Set **base version**, **sprint threshold**, and **Proceed** to run analysis.
+4. Use **Spillover**, **Bugs**, **Reports**, **Analytics**, and **Export** as needed.
+5. Create **invites** so contributors can complete rows scoped by assignee/token.
+
+## Contributor workflow (short)
+
+1. Open the invite link (points to **`user-dashboard.html`** with a token; may include **`?api=`** if the API host differs).
+2. Load the workspace; edit **Spillover** and **Bug** fields per issue; **Save** syncs via **`PUT /api/invite/:token/issue`**.
 
 ---
 
-## Privacy & security
+## Troubleshooting
 
-- All processing runs **in your browser**.
-- The file is read with the **File API**; nothing is sent to a server by this app.
-- CDNs are used only for **xlsx**, **FileSaver**, and **Google Fonts** (see `<script>` / `<link>` tags in `velocity.html`).
-
----
-
-## Browser support
-
-- Modern browsers with **ES6+** (e.g. `const` / `let`, `Object.assign`, template usage as in the file).
-- **JavaScript enabled** (required).
+| Symptom | Things to check |
+|---------|------------------|
+| `503` on upload / API errors | **`DATABASE_URL`** missing or invalid; run **`GET /api/health`** |
+| Invite links wrong host | Set **`PUBLIC_APP_URL`** (and HTTPS) in production |
+| Email not sent | **`SMTP_HOST`** or MailerSend token; from-address env vars |
+| Vercel static files 404 | Confirm **`includeFiles`** in `vercel.json` matches paths |
+| GitHub Action: `firebase.json` not found | This repo does **not** use Firebase Hosting; remove or disable Firebase Hosting workflows — hosting is **Vercel** only |
 
 ---
 
-## Customization
+## Documentation
 
-- Styling: CSS variables and classes at the top of `velocity.html`.
-- Behavior: search for functions such as `runProceed`, `processExcel`, `hasSpilloverRaw`, `computeExportPlan` in `velocity.html`.
+- **`docs/ARCHITECTURE.html`** — System context, local vs Vercel, API diagram, ER sketch, sequences, env table.
 
 ---
 
 ## License
 
-Add a `LICENSE` file in the repository if you need a formal license; this README does not specify one by default.
+No license file is included in this repository by default. Add a **`LICENSE`** file if you need explicit terms.
 
 ---
 
 ## Credits
 
-- [SheetJS](https://sheetjs.com/) for Excel read/write.
-- [FileSaver.js](https://github.com/eligrey/FileSaver.js) for client-side download.
+- **Express**, **pg**, **Multer**, **SheetJS (xlsx)**, **Nodemailer**  
+- **Firebase** (Google) for optional **Authentication** (not Firebase Hosting)  
+- **Neon / Vercel** or any compatible **PostgreSQL** host  
