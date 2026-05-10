@@ -9658,6 +9658,7 @@
             var btn = document.getElementById('assigneesToggle');
             if (!btn) return;
             btn.addEventListener('click', function () {
+                document.dispatchEvent(new CustomEvent('analyzer:cancelSidebarAutoCollapse'));
                 var app = document.querySelector('.app');
                 var open = btn.getAttribute('aria-expanded') === 'true';
                 var willOpen = !open;
@@ -9765,6 +9766,14 @@
             var sb = document.querySelector('.sidebar.sidebar--rail');
             if (!app || !sb) return;
 
+            var autoCollapseTimer = null;
+            function clearSidebarAutoCollapse() {
+                if (autoCollapseTimer != null) {
+                    clearTimeout(autoCollapseTimer);
+                    autoCollapseTimer = null;
+                }
+            }
+
             function syncSidebarRailToggleUi() {
                 var btn = document.getElementById('sidebarRailToggle');
                 if (!btn) return;
@@ -9773,10 +9782,21 @@
                 btn.setAttribute('aria-label', pinned ? 'Collapse nav' : 'Expand nav');
             }
 
+            autoCollapseTimer = window.setTimeout(function () {
+                autoCollapseTimer = null;
+                if (!app.classList.contains('app--sidebar-pinned')) return;
+                app.classList.remove('app--sidebar-pinned');
+                setAssigneesPanelOpen(false);
+                syncSidebarRailToggleUi();
+            }, 10000);
+
+            document.addEventListener('analyzer:cancelSidebarAutoCollapse', clearSidebarAutoCollapse);
+
             var railToggle = document.getElementById('sidebarRailToggle');
             if (railToggle) {
                 railToggle.addEventListener('click', function (e) {
                     e.stopPropagation();
+                    clearSidebarAutoCollapse();
                     var wasPinned = app.classList.contains('app--sidebar-pinned');
                     app.classList.toggle('app--sidebar-pinned');
                     if (wasPinned && !app.classList.contains('app--sidebar-pinned')) {
@@ -9795,6 +9815,7 @@
                 if (e.target.closest('.assignees-list')) return;
                 if (e.target.closest('.assignee-issue--clickable')) return;
                 if (e.target.closest('#sidebarSignOut')) return;
+                clearSidebarAutoCollapse();
                 var wasPinned = app.classList.contains('app--sidebar-pinned');
                 app.classList.toggle('app--sidebar-pinned');
                 if (wasPinned && !app.classList.contains('app--sidebar-pinned')) {
