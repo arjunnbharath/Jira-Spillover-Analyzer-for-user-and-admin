@@ -14,7 +14,7 @@ The **admin / analyst** UI is `analyzer.html`; **contributors** open token links
 | **Analyst / admin** | `analyzer.html` (also served at `/`) | **Firebase Auth** only (see `firebase-config.js`, `auth.html`) |
 | **Contributor** | `user-dashboard.html` | Invite **token** in URL; optional `?api=` for API base |
 
-The **Express** server (`server.js`) exposes REST APIs under `/api/*`, parses uploads with **SheetJS (xlsx)**, persists rows and edits in **Postgres**, and can send invite mail via **SMTP** or **MailerSend**.
+The **Express** app (`express-app.js`) exposes REST APIs under `/api/*`, parses uploads with **SheetJS (xlsx)**, persists rows and edits in **Postgres**, and can send invite mail via **SMTP** or **MailerSend**.
 
 For diagrams (system context, deployment, API, ER sketch), open **`docs/ARCHITECTURE.html`** in a browser (Mermaid; use Print → Save as PDF if needed).
 
@@ -164,7 +164,7 @@ The server applies schema migrations / missing tables on startup where implement
 
 Production runs on **Vercel** only. **Firebase Hosting** is not part of this setup.
 
-- **`vercel.json`** rewrites traffic to **`api/index.js`**, which **`require`s `server.js`**.
+- **`vercel.json`** rewrites traffic to **`api/index.js`**, which **`require`s `express-app.js`** (not named `server.js`, so Vercel does not register two Express handlers).
 - **`includeFiles`** bundles HTML, `firebase-config.js`, `images/**`, `js/**`, `templates/**`, `db/**` with the function.
 - Set **`DATABASE_URL`**, **`PUBLIC_APP_URL`** (recommended), and email variables in the Vercel project settings.
 - **`maxDuration`** is **60** seconds for long uploads.
@@ -179,7 +179,7 @@ Production runs on **Vercel** only. **Firebase Hosting** is not part of this set
 ├── auth.html                  # Sign-in
 ├── user-dashboard.html        # Contributor UI
 ├── firebase-config.js
-├── server.js                  # Express app + API + static
+├── express-app.js             # Express app + API + static
 ├── package.json
 ├── vercel.json
 ├── api/

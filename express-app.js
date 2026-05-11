@@ -734,7 +734,7 @@ function rootStaticFromDisk(root) {
     const rel = pathname.slice(1);
     if (!rel || rel.includes('..')) return next();
     if (blockedPrefix.test(rel)) return next();
-    if (/^(server\.js|package\.json|package-lock\.json)$/i.test(rel)) return next();
+    if (/^(express-app\.js|package\.json|package-lock\.json)$/i.test(rel)) return next();
 
     const absFile = path.resolve(resolvedRoot, rel);
     const relFromRoot = path.relative(resolvedRoot, absFile);

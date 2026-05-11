@@ -3,8 +3,8 @@
   "private": true,
   "description": "Static analyzer UI + optional upload API for a database",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node express-app.js",
+    "dev": "node express-app.js"
   },
   "engines": {
     "node": ">=18"
