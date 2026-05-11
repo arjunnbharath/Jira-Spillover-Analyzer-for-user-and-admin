@@ -1190,9 +1190,9 @@
         }
 
         .spillover-yn--no {
-            background: rgba(148, 163, 184, 0.1);
-            color: var(--text-muted);
-            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: rgba(220, 38, 38, 0.14);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.35);
         }
 
         .spillover-edit-modal--minimal {
@@ -4784,73 +4784,52 @@
         }
 
         .export-filename-panel {
-            margin-bottom: 1.35rem;
-            padding: 0;
-            border-radius: var(--radius);
-            background: linear-gradient(165deg, rgba(28, 28, 28, 0.98) 0%, rgba(16, 16, 16, 0.99) 100%);
-            border: 1px solid var(--panel-edge, rgba(255, 255, 255, 0.06));
+            margin-bottom: 1rem;
+            padding: 0.65rem 0.85rem 0.7rem;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             width: 100%;
             max-width: min(52rem, 100%);
             box-sizing: border-box;
-            box-shadow: var(--panel-shadow, 0 8px 32px rgba(0, 0, 0, 0.42));
-            overflow: hidden;
+            box-shadow: none;
         }
 
-        .export-filename-panel__header {
-            padding: 1rem 1.15rem 0.85rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .export-filename-panel__head-row {
+        .export-filename-panel__toolbar-label {
             display: flex;
+            align-items: center;
+            gap: 0.45rem;
             flex-wrap: wrap;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 0.35rem 0.75rem;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.45rem;
         }
 
         .export-filename-panel__label {
-            display: block;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            text-transform: none;
-            color: var(--text);
             margin: 0;
-        }
-
-        .export-filename-panel__format-tag {
-            font-size: 0.65rem;
+            font-size: 0.6875rem;
             font-weight: 600;
             letter-spacing: 0.06em;
             text-transform: uppercase;
-            color: #93c5fd;
-            background: rgba(59, 130, 246, 0.12);
-            border: 1px solid rgba(59, 130, 246, 0.35);
-            padding: 0.2rem 0.45rem;
-            border-radius: 4px;
-            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
-        }
-
-        .export-filename-panel__sub {
-            margin: 0;
-            font-size: 0.8rem;
             color: var(--text-muted);
-            line-height: 1.5;
-            max-width: 44rem;
         }
 
-        .export-filename-panel__body {
-            padding: 1rem 1.15rem 1.1rem;
+        .export-filename-panel__format-tag {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.22);
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
         }
 
         .export-filename-panel__row {
             display: flex;
             flex-direction: row;
             align-items: stretch;
-            gap: 0.65rem;
+            gap: 0.5rem;
         }
 
         .export-filename-panel__input {
@@ -4858,7 +4837,7 @@
             min-width: 0;
             width: auto;
             box-sizing: border-box;
-            padding: 0.62rem 0.85rem;
+            padding: 0.5rem 0.7rem;
             font-size: 0.8125rem;
             font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
             color: var(--text);
@@ -4883,9 +4862,9 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.45rem;
-            padding: 0.62rem 1.15rem;
-            font-size: 0.8125rem;
+            gap: 0.4rem;
+            padding: 0.5rem 0.95rem;
+            font-size: 0.78rem;
             font-weight: 600;
             white-space: nowrap;
             border-radius: var(--radius-sm);
@@ -4914,62 +4893,37 @@
             opacity: 0.95;
         }
 
-        @media (max-width: 560px) {
-            .export-filename-panel__row {
-                flex-direction: column;
-            }
-
-            .export-filename-panel__btn {
-                width: 100%;
-            }
-
-            .export-filename-panel__use-suggested {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        .export-filename-panel__suggestion {
-            margin-top: 0.85rem;
-            padding: 0.65rem 0.75rem;
-            border-radius: var(--radius-sm);
-            background: rgba(234, 179, 8, 0.08);
-            border: 1px solid rgba(234, 179, 8, 0.22);
+        .export-filename-panel__suggest-inline {
             display: flex;
+            align-items: center;
+            gap: 0.45rem 0.65rem;
             flex-wrap: wrap;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 0.55rem 0.75rem;
+            margin-top: 0.5rem;
+            padding-top: 0.45rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .export-filename-panel__suggestion-main {
-            flex: 1 1 14rem;
-            min-width: 0;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            gap: 0.4rem 0.65rem;
-        }
-
-        .export-filename-panel__suggestion-label {
+        .export-filename-panel__suggest-k {
+            flex-shrink: 0;
             font-size: 0.65rem;
             font-weight: 600;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
-            color: #fcd34d;
+            color: var(--text-dim);
         }
 
         .export-filename-panel__use-suggested {
             flex-shrink: 0;
             margin: 0;
-            padding: 0.35rem 0.65rem;
-            font-size: 0.72rem;
+            margin-left: auto;
+            padding: 0.28rem 0.55rem;
+            font-size: 0.68rem;
             font-weight: 600;
             font-family: inherit;
-            color: #fde68a;
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(234, 179, 8, 0.35);
-            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
             cursor: pointer;
             white-space: nowrap;
             transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
@@ -4979,14 +4933,14 @@
         }
 
         .export-filename-panel__use-suggested:hover {
-            background: rgba(234, 179, 8, 0.12);
-            border-color: rgba(234, 179, 8, 0.5);
-            color: #fffbeb;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.18);
+            color: var(--text);
         }
 
         .export-filename-panel__use-suggested:focus-visible {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.45);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
         }
 
         .export-filename-panel__use-suggested:disabled {
@@ -4994,26 +4948,42 @@
             cursor: not-allowed;
         }
 
-        .export-filename-panel__hint {
-            margin: 0;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
         .export-filename-panel__code {
-            font-size: 0.78rem;
-            color: #fde68a;
+            font-size: 0.75rem;
+            color: #cbd5e1;
             word-break: break-all;
             font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
             font-weight: 500;
-            flex: 1 1 12rem;
+            flex: 1 1 10rem;
             min-width: 0;
         }
 
-        .export-filename-panel__suggestion-main .export-filename-panel__code {
-            flex: 1 1 100%;
+        .export-filename-panel__micro {
+            margin: 0.35rem 0 0;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            line-height: 1.35;
+        }
+
+        @media (max-width: 560px) {
+            .export-filename-panel__row {
+                flex-direction: column;
+            }
+
+            .export-filename-panel__btn {
             width: 100%;
+            }
+
+            .export-filename-panel__suggest-inline {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .export-filename-panel__use-suggested {
+                width: 100%;
+                margin-left: 0;
+                justify-content: center;
+            }
         }
 
         .export-hero-filename {
@@ -5159,7 +5129,7 @@
                         decoding="async"
                     />
                 </div>
-                <span class="mobile-topbar__title">Jira Spillover Analyzer</span>
+            <span class="mobile-topbar__title">Jira Spillover Analyzer</span>
             </div>
         </header>
         <aside class="sidebar sidebar--rail" id="sidebarNavHost" aria-label="Primary navigation">
@@ -5280,8 +5250,8 @@
                         </svg>
                         <span class="sidebar__rail-toggle-text">Collapse nav</span>
                     </button>
-                </div>
-                <div class="sidebar__footer">
+            </div>
+            <div class="sidebar__footer">
                 <section
                     id="sidebarProfileSection"
                     class="sidebar__profile-section"
@@ -5552,9 +5522,6 @@
                             </p>
                             <h1 class="page-head__title">Spillover tickets</h1>
                         </div>
-                        <div class="page-head__actions">
-                            <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Main dashboard</button>
-                        </div>
                     </header>
 
                     <section class="spillover-dash-section" aria-labelledby="spilloverDashHeading">
@@ -5602,9 +5569,6 @@
                                 <span>Bugs</span>
                             </p>
                             <h1 class="page-head__title">Bug tracking</h1>
-                        </div>
-                        <div class="page-head__actions">
-                            <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Main dashboard</button>
                         </div>
                     </header>
 
@@ -5658,9 +5622,6 @@
                             <h1 id="assigneeDetailTitle" class="page-head__title">—</h1>
                             <p id="assigneeDetailSub" class="page-head__sub"></p>
                         </div>
-                        <div class="page-head__actions">
-                            <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Main dashboard</button>
-                        </div>
                     </header>
 
                     <section class="spillover-dash-section" aria-labelledby="assigneeDetailSectionHeading">
@@ -5697,9 +5658,6 @@
                             <h1 class="page-head__title">Sprint &amp; export report</h1>
                             <p class="page-head__sub">Snapshot of your latest analysis: volumes, column detection, export readiness, and enrichment progress.</p>
                         </div>
-                        <div class="page-head__actions">
-                            <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Main dashboard</button>
-                        </div>
                     </header>
                     <div id="reportsDashboardBody" class="dashboard-phase-body"></div>
                 </div>
@@ -5716,9 +5674,6 @@
                             <h1 class="page-head__title">Sprint analytics</h1>
                             <p class="page-head__sub">Ticket intake vs spillover rows, and spillover category mix from your latest <strong>Proceed</strong> run.</p>
                         </div>
-                        <div class="page-head__actions">
-                            <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Main dashboard</button>
-                        </div>
                     </header>
                     <div id="analyticsDashboardBody" class="dashboard-phase-body"></div>
                 </div>
@@ -5734,9 +5689,6 @@
                             </p>
                             <h1 class="page-head__title">Export preview</h1>
                         </div>
-                        <div class="page-head__actions">
-                            <button type="button" class="btn btn-secondary" onclick="navGoDashboard(event)">Main dashboard</button>
-                        </div>
                     </header>
                     <div
                         id="exportFilenamePanel"
@@ -5745,19 +5697,12 @@
                         role="region"
                         aria-labelledby="exportFilenameHeading"
                     >
-                        <div class="export-filename-panel__header">
-                            <div class="export-filename-panel__head-row">
+                        <div class="export-filename-panel__toolbar-label">
                                 <label class="export-filename-panel__label" for="exportFileNameInput" id="exportFilenameHeading"
-                                    >Workbook file name</label
+                                >Export file name</label
                                 >
-                                <span class="export-filename-panel__format-tag" title="Saved as an Excel workbook">.xlsx</span>
+                            <span class="export-filename-panel__format-tag" title="Excel workbook">.xlsx</span>
                             </div>
-                            <p class="export-filename-panel__sub">
-                                Your browser saves the export under this name. Use the <strong>.xlsx</strong> extension (it is added or fixed if
-                                needed). Characters that are not allowed in Windows file names are replaced with underscores automatically.
-                            </p>
-                        </div>
-                        <div class="export-filename-panel__body">
                             <div class="export-filename-panel__row">
                                 <input
                                     type="text"
@@ -5765,7 +5710,8 @@
                                     class="export-filename-panel__input"
                                     autocomplete="off"
                                     spellcheck="false"
-                                    placeholder="e.g. SFMC_JiraSpilloverAnalyzer_14.0&amp;14.1.xlsx"
+                                placeholder="SFMC_JiraSpilloverAnalyzer_14.0&amp;14.1.xlsx"
+                                title=".xlsx is added if missing. Invalid Windows file name characters become underscores."
                                 />
                                 <button
                                     type="button"
@@ -5777,26 +5723,26 @@
                                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                     </svg>
-                                    Download Excel
+                                Download
                                 </button>
                             </div>
-                            <div class="export-filename-panel__suggestion">
-                                <div class="export-filename-panel__suggestion-main">
-                                    <span class="export-filename-panel__suggestion-label">Suggested name</span>
-                                    <code id="exportFileNameSuggestion" class="export-filename-panel__code"></code>
-                                </div>
+                        <div class="export-filename-panel__suggest-inline">
+                            <span class="export-filename-panel__suggest-k">Suggested</span>
+                            <code id="exportFileNameSuggestion" class="export-filename-panel__code" aria-live="polite"></code>
                                 <button
                                     type="button"
                                     id="exportUseSuggestedBtn"
                                     class="export-filename-panel__use-suggested"
                                     onclick="applySuggestedExportFileName()"
-                                    title="Copy suggested file name into the field above"
+                                title="Fill the field with the suggested name"
                                     disabled
                                 >
-                                    Use suggested
+                                Use
                                 </button>
                             </div>
-                        </div>
+                        <p class="export-filename-panel__micro">
+                            <span title="The .xlsx extension is added or corrected if needed. Characters not allowed in Windows file names are replaced with underscores.">.xlsx enforced; invalid characters become _</span>
+                        </p>
                     </div>
                     <div id="exportPreviewBody"></div>
                 </div>
@@ -5815,21 +5761,21 @@
                             <div class="invite-settings-toolbar">
                                 <div class="invite-settings-toolbar__field invite-settings-toolbar__field--upload">
                                     <label class="section-label" for="inviteUploadSelect">Saved upload</label>
-                                    <select id="inviteUploadSelect" class="db-upload-select" aria-label="Upload to share" onchange="refreshInvitePeopleInsights()">
-                                        <option value="">— Choose upload —</option>
-                                    </select>
-                                </div>
+                                <select id="inviteUploadSelect" class="db-upload-select" aria-label="Upload to share" onchange="refreshInvitePeopleInsights()">
+                                    <option value="">— Choose upload —</option>
+                                </select>
+                            </div>
                                 <div class="invite-settings-toolbar__field invite-settings-toolbar__field--threshold">
                                     <label class="section-label" for="inviteThresholdInput">Sprint threshold</label>
-                                    <input
-                                        type="text"
-                                        id="inviteThresholdInput"
+                                <input
+                                    type="text"
+                                    id="inviteThresholdInput"
                                         class="export-filename-panel__input invite-settings-toolbar__threshold-input"
-                                        placeholder="e.g. 14.1"
-                                        inputmode="decimal"
-                                        autocomplete="off"
-                                        oninput="scheduleRefreshInvitePeopleInsights()"
-                                    />
+                                    placeholder="e.g. 14.1"
+                                    inputmode="decimal"
+                                    autocomplete="off"
+                                    oninput="scheduleRefreshInvitePeopleInsights()"
+                                />
                                 </div>
                                 <div class="invite-settings-toolbar__actions">
                                     <button type="button" class="btn btn-secondary" onclick="refreshDbUploadSelect(); refreshInvitePeopleInsights();" title="Refresh uploads">Refresh</button>
@@ -5859,14 +5805,14 @@
                                     aria-describedby="inviteBulkExpiresPreview"
                                 />
                                 <div class="invite-bulk-card__actions">
-                                    <button
-                                        type="button"
-                                        id="inviteBulkCreateBtn"
-                                        class="btn btn-primary invite-bulk-card__btn"
-                                        onclick="submitCreateBulkInvites()"
-                                    >
-                                        Create links for each assignee
-                                    </button>
+                            <button
+                                type="button"
+                                id="inviteBulkCreateBtn"
+                                class="btn btn-primary invite-bulk-card__btn"
+                                onclick="submitCreateBulkInvites()"
+                            >
+                                Create links for each assignee
+                            </button>
                                 </div>
                             </div>
                             <p id="inviteBulkExpiresPreview" class="invite-bulk-card__expires-preview" aria-live="polite"></p>
@@ -6778,10 +6724,13 @@
                     spilloverCategoryByKey[k],
                     row.spillover_category != null ? row.spillover_category : ''
                 );
-                if (row.spillover_yes_no === 'Yes' || row.spillover_yes_no === 'No') {
-                    spilloverYesNoByKey[k] = row.spillover_yes_no;
-                } else if (row.spilloverYesNo === 'Yes' || row.spilloverYesNo === 'No') {
-                    spilloverYesNoByKey[k] = row.spilloverYesNo;
+                var synRaw =
+                    row.spillover_yes_no !== undefined && row.spillover_yes_no !== null
+                        ? row.spillover_yes_no
+                        : row.spilloverYesNo;
+                var synTrim = String(synRaw == null ? '' : synRaw).trim();
+                if (synTrim === 'Yes' || synTrim === 'No') {
+                    spilloverYesNoByKey[k] = synTrim;
                 }
                 bugProdByKey[k] = pickMergeStr(bugProdByKey[k], row.prod != null ? row.prod : '');
                 bugRcaByKey[k] = pickMergeStr(bugRcaByKey[k], row.rca != null ? row.rca : '');
@@ -7602,10 +7551,10 @@
             };
             var previewEl = document.getElementById('inviteBulkExpiresPreview');
             if (previewEl) {
-                if (expiresAtISO) {
-                    try {
+            if (expiresAtISO) {
+                try {
                         previewEl.textContent = 'Expires · ' + new Date(expiresAtISO).toLocaleString();
-                    } catch (e1) {
+                } catch (e1) {
                         previewEl.textContent = 'Expires · ' + String(expiresAtISO);
                     }
                 } else {
@@ -8967,6 +8916,17 @@
                     renderSpilloverDashboardList(analysisSheetData, th);
                 }
                 filterSpilloverDashTable();
+                if (typeof renderExportPreviewDashboard === 'function') {
+                    renderExportPreviewDashboard();
+                }
+                if (typeof lastRunStats !== 'undefined' && lastRunStats) {
+                    if (typeof renderReportsDashboard === 'function') {
+                        renderReportsDashboard();
+                    }
+                    if (typeof renderAnalyticsDashboard === 'function') {
+                        renderAnalyticsDashboard();
+                    }
+                }
                 if (typeof schedulePersistWorkspace === 'function') {
                     schedulePersistWorkspace();
                 }
@@ -9800,10 +9760,10 @@
                     var wasPinned = app.classList.contains('app--sidebar-pinned');
                     app.classList.toggle('app--sidebar-pinned');
                     if (wasPinned && !app.classList.contains('app--sidebar-pinned')) {
-                        setAssigneesPanelOpen(false);
-                    }
+                    setAssigneesPanelOpen(false);
+                }
                     syncSidebarRailToggleUi();
-                });
+            });
                 syncSidebarRailToggleUi();
             }
 
@@ -10170,10 +10130,10 @@
                     if (isBugRow(raw, issueTypeIdx)) bugCount++;
 
                     rowObj = rowToNamedObject(raw, headerNames);
-                    ik = '';
-                    if (keyColName && rowObj[keyColName] != null && String(rowObj[keyColName]).trim() !== '') {
-                        ik = String(rowObj[keyColName]).trim();
-                    }
+                        ik = '';
+                        if (keyColName && rowObj[keyColName] != null && String(rowObj[keyColName]).trim() !== '') {
+                            ik = String(rowObj[keyColName]).trim();
+                        }
                     var resolvedSpill = getResolvedSpilloverYesNo(ik, spillRaw);
                     if (resolvedSpill === 'Yes') spillYes++;
                     rowObj['SpillOver'] = resolvedSpill;
@@ -10540,9 +10500,11 @@
             var bugsCat = countMapNonEmpty(bugCategoryByKey);
             var bugsRca = countMapNonEmpty(bugRcaByKey);
             var bugsTotal = st.typeCounts ? st.typeCounts.bug : 0;
-            var spillTotal = st.spillYes;
             var total = st.totalRows;
-            var pctSpill = total > 0 ? Math.round((100 * st.spillYes) / total) : 0;
+            var displaySpillYes = plan ? plan.spillYes : st.spillYes;
+            var displaySpillNo = plan ? Math.max(0, plan.totalRows - plan.spillYes) : st.spillNo;
+            var spillTotal = displaySpillYes;
+            var pctSpill = total > 0 ? Math.round((100 * displaySpillYes) / total) : 0;
             var tc = st.typeCounts || {};
             var storyEpic = (tc.story || 0) + (tc.epic || 0);
             var fileEl = document.getElementById('fileName');
@@ -10581,14 +10543,14 @@
                 total +
                 '</div><div class="report-stat-card__sub">Data rows in sheet</div></div>' +
                 '<div class="report-stat-card"><div class="report-stat-card__label">SpillOver Yes</div><div class="report-stat-card__value">' +
-                st.spillYes +
+                displaySpillYes +
                 '</div><div class="report-stat-card__sub">' +
                 pctSpill +
                 '% · Sprint = ' +
                 escapeHtml(th || '\u2014') +
                 '</div></div>' +
                 '<div class="report-stat-card"><div class="report-stat-card__label">SpillOver No</div><div class="report-stat-card__value">' +
-                st.spillNo +
+                displaySpillNo +
                 '</div></div>' +
                 '<div class="report-stat-card"><div class="report-stat-card__label">Bugs</div><div class="report-stat-card__value">' +
                 (tc.bug != null ? tc.bug : '\u2014') +
@@ -10730,13 +10692,39 @@
             return s === '' ? 'Uncategorized' : s;
         }
 
+        /**
+         * Sprint-velocity style counts using resolved SpillOver (Yes/No overrides), same as export intake.
+         */
+        function countResolvedSpillVelocity(rows, threshold, headerRow) {
+            var kIdx = findIssueKeyColumnIndex(headerRow);
+            var total = 0;
+            var spillYes = 0;
+            var i;
+            for (i = 1; i < rows.length; i++) {
+                total++;
+                var row = rows[i];
+                var raw = hasSpilloverRaw(row, threshold);
+                var ik = '';
+                if (kIdx >= 0 && row[kIdx] != null && String(row[kIdx]).trim() !== '') {
+                    ik = String(row[kIdx]).trim();
+                }
+                if (getResolvedSpilloverYesNo(ik, raw) === 'Yes') spillYes++;
+            }
+            return { totalRows: total, spillYes: spillYes, spillNo: total - spillYes };
+        }
+
         function computeSpillCategoryBuckets(rows, threshold, headerRow) {
             var catIdx = findSpilloverCategoryColumnIndex(headerRow);
             var issueKeyIdx = findIssueKeyColumnIndex(headerRow);
             var buckets = {};
             for (var i = 1; i < rows.length; i++) {
                 var row = rows[i];
-                if (!hasSpilloverRaw(row, threshold)) continue;
+                var spillRaw = hasSpilloverRaw(row, threshold);
+                var ik = '';
+                if (issueKeyIdx >= 0 && row[issueKeyIdx] != null && String(row[issueKeyIdx]).trim() !== '') {
+                    ik = String(row[issueKeyIdx]).trim();
+                }
+                if (getResolvedSpilloverYesNo(ik, spillRaw) !== 'Yes') continue;
                 var lab = '';
                 if (catIdx >= 0 && row[catIdx] != null && String(row[catIdx]).trim() !== '') {
                     lab = String(row[catIdx]).trim();
@@ -10754,13 +10742,10 @@
          * Summary tables for the Excel Graph sheet — same numbers as Analytics (velocity + spill category breakdown).
          */
         function buildExportGraphSheetAoa(allData, threshold, headerRow) {
-            var noSpill = 0;
-            var spillRows = 0;
+            var vel = countResolvedSpillVelocity(allData, threshold, headerRow);
+            var noSpill = vel.spillNo;
+            var spillRows = vel.spillYes;
             var ri;
-            for (ri = 1; ri < allData.length; ri++) {
-                if (hasSpilloverRaw(allData[ri], threshold)) spillRows++;
-                else noSpill++;
-            }
             var buckets = computeSpillCategoryBuckets(allData, threshold, headerRow);
             var entries = [];
             var bk;
@@ -10889,13 +10874,10 @@
         var EXCELJS_GRAPH_DATA_START_ROW = 24;
 
         function exceljsAddGraphSheetWithPies(workbook, baseVersion, allData, threshold, headerRow, graphAoa) {
-            var noSpill = 0;
-            var spillRows = 0;
+            var vel = countResolvedSpillVelocity(allData, threshold, headerRow);
+            var noSpill = vel.spillNo;
+            var spillRows = vel.spillYes;
             var i;
-            for (i = 1; i < allData.length; i++) {
-                if (hasSpilloverRaw(allData[i], threshold)) spillRows++;
-                else noSpill++;
-            }
             var velSlices = [
                 { value: noSpill, color: '#4472C4' },
                 { value: spillRows, color: '#ED7D31' }
@@ -11061,21 +11043,22 @@
                 return;
             }
             var th = lastRunStats.threshold;
-            var intake = lastRunStats.spillNo;
-            var spillRows = lastRunStats.spillYesRows;
+            var hdr = analysisSheetData[0];
+            var velResolved = countResolvedSpillVelocity(analysisSheetData, th, hdr);
+            var intake = velResolved.spillNo;
+            var spillRows = velResolved.spillYes;
             var bvEl = document.getElementById('baseVersion');
             var bv = bvEl ? String(bvEl.value || '').trim() : '';
             var velTitle = 'Sprint velocity' + (bv ? ' · ' + bv : '');
             var velSub =
-                'Rows without spillover vs rows at threshold ' +
+                'Ticket intake vs resolved SpillOver Yes at threshold ' +
                 String(th) +
-                ' (same counts as Proceed).';
+                ' (sprint match and your Spillover Yes/No edits).';
             var velSlices = [
                 { label: 'Ticket intake', value: intake, color: '#4472C4' },
                 { label: 'Ticket spillover', value: spillRows, color: '#ED7D31' }
             ];
 
-            var hdr = analysisSheetData[0];
             var buckets = computeSpillCategoryBuckets(analysisSheetData, th, hdr);
             var catEntries = [];
             var k;
@@ -11102,9 +11085,9 @@
             }
             var catTitle = 'Spillover category';
             var catSub =
-                'Spillover rows only — uses your sheet column when present, otherwise category saved in the Spillover workflow.';
+                'Resolved SpillOver Yes only — sheet column when present, otherwise category from the Spillover workflow.';
             var catEmpty =
-                spillCatTotal === 0 ? 'No rows matched the spillover rule for this run.' : '';
+                spillCatTotal === 0 ? 'No resolved SpillOver Yes rows (threshold + edits).' : '';
 
             root.innerHTML =
                 '<div class="dash-row ana-analytics-row">' +
@@ -11573,7 +11556,10 @@
 
         function getResolvedSpilloverYesNo(issueKey, sheetHasSpillover) {
             var o = getIssueEditMapValue(spilloverYesNoByKey, issueKey);
-            if (o === 'Yes' || o === 'No') return o;
+            if (o != null && String(o).trim() !== '') {
+                var t = String(o).trim();
+                if (t === 'Yes' || t === 'No') return t;
+            }
             return sheetHasSpillover ? 'Yes' : 'No';
         }
         const SPRINT_THRESHOLD_EPS = 1e-6;
@@ -12097,9 +12083,9 @@
                         typeCounts.story;
                 }
                 if (!opts.skipSuccessToast) {
-                    showSuccess('Analysis complete.' + summaryExtra + ' Use Exports → Download Excel to save.', {
-                        dashboardOnly: true
-                    });
+                showSuccess('Analysis complete.' + summaryExtra + ' Use Exports → Download Excel to save.', {
+                    dashboardOnly: true
+                });
                 }
                 if (typeof schedulePersistWorkspace === 'function') {
                     schedulePersistWorkspace({ proceedCompleted: true });
@@ -12426,23 +12412,23 @@
                     const newWorkbook = XLSX.utils.book_new();
                     const sheet1 = XLSX.utils.json_to_sheet(dataWithSpillover, { header: intakeHeader });
                     XLSX.utils.book_append_sheet(newWorkbook, sheet1, safeSheetName(`TicketIntake_${baseVersion}`));
-                    const sheet2 = XLSX.utils.json_to_sheet(spilloverWithColumns, { header: spillHeader });
-                    XLSX.utils.book_append_sheet(newWorkbook, sheet2, safeSheetName(`SpillOver_${baseVersion}`));
-                    let sheetBug;
-                    if (bugRows.length > 0) {
-                        sheetBug = XLSX.utils.json_to_sheet(bugRows, { header: bugSheetHeader });
-                    } else {
-                        const placeholder = {};
+                const sheet2 = XLSX.utils.json_to_sheet(spilloverWithColumns, { header: spillHeader });
+                XLSX.utils.book_append_sheet(newWorkbook, sheet2, safeSheetName(`SpillOver_${baseVersion}`));
+                let sheetBug;
+                if (bugRows.length > 0) {
+                    sheetBug = XLSX.utils.json_to_sheet(bugRows, { header: bugSheetHeader });
+                } else {
+                    const placeholder = {};
                         bugSheetHeader.forEach(function (h) {
-                            placeholder[h] = '';
-                        });
-                        sheetBug = XLSX.utils.json_to_sheet([placeholder], { header: bugSheetHeader });
-                    }
-                    XLSX.utils.book_append_sheet(newWorkbook, sheetBug, safeSheetName(`Bug_${baseVersion}`));
+                        placeholder[h] = '';
+                    });
+                    sheetBug = XLSX.utils.json_to_sheet([placeholder], { header: bugSheetHeader });
+                }
+                XLSX.utils.book_append_sheet(newWorkbook, sheetBug, safeSheetName(`Bug_${baseVersion}`));
                     const sheetGraph = XLSX.utils.aoa_to_sheet(graphAoa);
                     sheetGraph['!cols'] = [{ wch: 40 }, { wch: 14 }];
                     XLSX.utils.book_append_sheet(newWorkbook, sheetGraph, safeSheetName(`Graph_${baseVersion}`));
-                    XLSX.writeFile(newWorkbook, fileName);
+                XLSX.writeFile(newWorkbook, fileName);
                     notifyExportDone(false);
                 }
 
