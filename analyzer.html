@@ -59,8 +59,8 @@
             display: flex;
             min-height: 100vh;
             /* Rail = gutter for main; aside grows on hover; main offset grows only when pinned */
-            --sidebar-rail: 60px;
-            --sidebar-expanded: 272px;
+            --sidebar-rail: 68px;
+            --sidebar-expanded: 248px;
             --sidebar-aside-w: var(--sidebar-rail);
             --sidebar-main-offset: var(--sidebar-rail);
             --sidebar-ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -347,7 +347,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.2rem;
-            max-width: 220px;
+            max-width: 228px;
             opacity: 1;
             overflow: hidden;
             transform: translate3d(0, 0, 0);
@@ -844,6 +844,425 @@
         .ticket-detail-phase[hidden],
         .comments-phase[hidden] {
             display: none !important;
+        }
+
+        /* —— Analyzer Comments: people cards + author modal —— */
+        .analyzer-comments {
+            margin-top: 0.75rem;
+        }
+        .analyzer-comments--cards-only {
+            margin-top: 0.5rem;
+        }
+        .analyzer-comments-dashboard-status {
+            font-size: 0.8125rem;
+            min-height: 1.25em;
+            margin: 0 0 0.75rem 0;
+            color: var(--text-muted);
+        }
+        .analyzer-comments-dashboard-status.analyzer-comments__status--err {
+            color: #f87171;
+        }
+        .comments-phase .page-head {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .analyzer-add-comment-modal {
+            max-width: 26rem;
+            width: min(92vw, 26rem);
+        }
+        .analyzer-add-comment-modal .analyzer-add-comment__field {
+            margin-bottom: 1rem;
+        }
+        .analyzer-add-comment-modal label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        .analyzer-add-comment-modal select,
+        .analyzer-add-comment-modal textarea {
+            width: 100%;
+            font: inherit;
+            font-size: 0.875rem;
+            padding: 0.55rem 0.65rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+        }
+        .analyzer-add-comment-modal textarea {
+            min-height: 6rem;
+            resize: vertical;
+        }
+        .analyzer-comments__status--err {
+            color: #f87171;
+        }
+        .analyzer-comments__textarea {
+            width: 100%;
+            min-height: 5.5rem;
+            resize: vertical;
+            padding: 0.65rem 0.75rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            font: inherit;
+            font-size: 0.875rem;
+            line-height: 1.45;
+            margin-bottom: 0.65rem;
+        }
+        .analyzer-comments__textarea:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.45);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+        }
+        .analyzer-comments__composer-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .analyzer-comments-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.35rem 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .analyzer-comments-author {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .analyzer-comments-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .analyzer-comments-issue {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--accent, #2563eb);
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 4px;
+            padding: 0.1rem 0.4rem;
+            margin-left: 0.25rem;
+        }
+        .analyzer-comments-body {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .analyzer-comments-actions {
+            margin-top: 0.65rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .analyzer-comments-reply-form {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px dashed var(--border-subtle);
+        }
+        .analyzer-comments-reply-form[hidden] {
+            display: none !important;
+        }
+
+        .analyzer-comments-people-wrap {
+            margin-bottom: 0;
+            padding: 1.15rem 1.1rem 1.35rem;
+            border-radius: 12px;
+            background: #0a0a0c;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+        .analyzer-comments-participants-heading {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin: 0 0 1rem 0;
+        }
+        .acm-people-board {
+            min-height: 2rem;
+        }
+        .acm-people-board-empty {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #9ca3af;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+        }
+        .acm-people-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+            gap: 0.85rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .acm-person-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 7.75rem;
+            padding: 0.75rem 0.8rem 0.65rem;
+            border-radius: 10px;
+            background: #131316;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+        }
+        .acm-person-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .acm-person-card:focus-visible {
+            outline: 2px solid rgba(56, 189, 248, 0.55);
+            outline-offset: 2px;
+        }
+        .acm-person-card__top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.35rem;
+        }
+        .acm-person-card__roleRow {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            min-width: 0;
+        }
+        .acm-person-card__accent {
+            width: 3px;
+            height: 18px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .acm-person-card--client .acm-person-card__accent {
+            background: #ea580c;
+        }
+        .acm-person-card--lead .acm-person-card__accent {
+            background: #38bdf8;
+        }
+        .acm-person-card__role {
+            font-size: 0.625rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #9ca3af;
+        }
+        .acm-person-card__more {
+            flex-shrink: 0;
+            margin: -0.2rem -0.15rem 0 0;
+            padding: 0.2rem 0.4rem;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+        }
+        .acm-person-card__more:hover {
+            color: #e5e7eb;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .acm-person-card__name {
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+        .acm-person-card__first {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: #9ca3af;
+            line-height: 1.25;
+        }
+        .acm-person-card__last {
+            display: block;
+            margin-top: 0.15rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fafafa;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+        .acm-person-card__count {
+            margin-top: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #6b7280;
+            letter-spacing: 0.02em;
+        }
+        .analyzer-comment-author-overlay {
+            z-index: 1150;
+        }
+        /* People-who-commented → chat-style thread */
+        .analyzer-author-chat.workspace-db-clear-modal {
+            position: relative;
+            max-width: 26rem;
+            width: min(94vw, 26rem);
+            height: min(82vh, 34rem);
+            max-height: min(82vh, 34rem);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            background: linear-gradient(165deg, #141418 0%, #0c0c0f 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+        }
+        .analyzer-author-chat .analyzer-author-chat__close {
+            position: absolute;
+            top: 0.55rem;
+            right: 0.45rem;
+            z-index: 3;
+        }
+        .analyzer-author-chat__header {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 2.5rem 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.25);
+        }
+        .analyzer-author-chat__avatar {
+            flex-shrink: 0;
+            width: 2.65rem;
+            height: 2.65rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: #f8fafc;
+            background: linear-gradient(135deg, #334155 0%, #0ea5e9 100%);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.25);
+        }
+        .analyzer-author-chat__headtext {
+            min-width: 0;
+            flex: 1;
+        }
+        .analyzer-author-chat__title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f9fafb;
+            line-height: 1.25;
+            word-break: break-word;
+        }
+        .analyzer-author-chat__subtitle {
+            margin: 0.2rem 0 0 0;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #9ca3af;
+            letter-spacing: 0.02em;
+        }
+        .analyzer-author-chat__messages {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0.85rem 0.75rem 1rem;
+            background: radial-gradient(120% 80% at 50% 0%, rgba(56, 189, 248, 0.06) 0%, transparent 55%),
+                #0a0a0d;
+            scroll-behavior: smooth;
+        }
+        .acm-chat-thread {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .acm-chat-msg {
+            display: flex;
+            justify-content: flex-start;
+        }
+        .acm-chat-msg__bubble {
+            max-width: 92%;
+            border-radius: 14px 14px 14px 4px;
+            padding: 0.55rem 0.7rem 0.5rem;
+            background: #1a2332;
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+        .acm-chat-msg__meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.35rem 0.5rem;
+            margin-bottom: 0.35rem;
+        }
+        .acm-chat-msg__time {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+        .acm-chat-msg__bubble .analyzer-comments-issue {
+            font-size: 0.62rem;
+            padding: 0.12rem 0.4rem;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.12);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.22);
+        }
+        .acm-chat-msg__text {
+            font-size: 0.8125rem;
+            line-height: 1.45;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .acm-chat-msg__actions {
+            margin-top: 0.45rem;
+            padding-top: 0.4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .acm-chat-msg__actions .btn {
+            font-size: 0.7rem;
+            padding: 0.28rem 0.65rem;
+            border-radius: 999px;
+        }
+        .acm-chat-msg .analyzer-comments-reply-form {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .acm-chat-msg .analyzer-comments__textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #0f1419;
+            color: #f1f5f9;
+            font-size: 0.8rem;
+            padding: 0.45rem 0.55rem;
+            resize: vertical;
+            min-height: 3.25rem;
+        }
+        .acm-chat-msg .analyzer-comments__composer-actions {
+            margin-top: 0.45rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.4rem;
         }
 
         .ticket-detail-section {
@@ -5946,19 +6365,30 @@
                     </section>
                 </div>
 
-                <!-- Comments (placeholder dashboard; behaviour TBD) -->
+                <!-- Comments: people who commented (cards + modal only) -->
                 <div id="commentsPhase" class="comments-phase setup-phase" hidden>
                     <header class="page-head">
                         <div>
                             <p class="breadcrumb">Collaboration</p>
                             <h1 class="page-head__title">Comments</h1>
-                            <p class="page-head__sub">Dashboard shell for comments. Functionality will be connected next.</p>
+                            <p class="page-head__sub">
+                                People who commented on this upload. <strong>Open a card</strong> to read the thread and reply.
+                            </p>
+                        </div>
+                        <div class="page-head__actions">
+                            <button type="button" id="analyzerCommentsBtnAdd" class="btn btn-primary">Add comment</button>
                         </div>
                     </header>
-                    <section class="data-section" aria-label="Comments">
-                        <h3 class="data-section__title">Comments</h3>
-                        <div class="panel db-load-panel">
-                            <p class="db-load-hint" style="margin: 0">No comments yet. This area will list threads and tools once wired up.</p>
+                    <section
+                        class="data-section analyzer-comments analyzer-comments--cards-only"
+                        aria-label="People who commented"
+                    >
+                        <p id="analyzerCommentsStatus" class="analyzer-comments-dashboard-status" role="status" aria-live="polite"></p>
+                        <div class="analyzer-comments-people-wrap">
+                            <div class="analyzer-comments-participants" aria-label="People who commented">
+                                <h2 class="analyzer-comments-participants-heading">People who commented</h2>
+                                <div id="analyzerCommentsParticipants" class="acm-people-board"></div>
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -6002,6 +6432,75 @@
                     spellcheck="false"
                 />
                 <ul id="globalSearchResults" class="global-search-results"></ul>
+            </div>
+        </div>
+
+        <div id="analyzerAddCommentOverlay" class="workspace-db-clear-overlay analyzer-comment-author-overlay" hidden>
+            <div class="workspace-db-clear-backdrop" id="analyzerAddCommentBackdrop" aria-hidden="true"></div>
+            <div
+                class="workspace-db-clear-modal analyzer-add-comment-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="analyzerAddCommentModalTitle"
+                onclick="event.stopPropagation()"
+            >
+                <button type="button" class="spillover-edit-modal__close" id="analyzerAddCommentModalClose" aria-label="Close">
+                    &times;
+                </button>
+                <h2 id="analyzerAddCommentModalTitle" class="workspace-db-clear-modal__title">Add comment</h2>
+                <p id="analyzerAddCommentModalHint" class="export-contrib-modal__intro" style="margin-top: 0">
+                    Choose an assignee and optional issue, then post. Uses the same sprint threshold as Upload &amp; configure.
+                </p>
+                <div class="analyzer-add-comment__field">
+                    <label for="analyzerAddCommentAssigneeSelect">Assignee</label>
+                    <select id="analyzerAddCommentAssigneeSelect" aria-label="Assignee"></select>
+                </div>
+                <div class="analyzer-add-comment__field">
+                    <label for="analyzerAddCommentIssueSelect">Issue</label>
+                    <select id="analyzerAddCommentIssueSelect" aria-label="Issue"></select>
+                </div>
+                <div class="analyzer-add-comment__field">
+                    <label for="analyzerAddCommentBody">Message</label>
+                    <textarea id="analyzerAddCommentBody" maxlength="8000" placeholder="Write your note…" rows="5"></textarea>
+                </div>
+                <div class="workspace-db-clear-modal__actions" style="margin-top: 0.25rem">
+                    <button type="button" class="btn btn-secondary" id="analyzerAddCommentCancelBtn">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="analyzerAddCommentPostBtn">Post</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="analyzerCommentAuthorOverlay" class="workspace-db-clear-overlay analyzer-comment-author-overlay" hidden>
+            <div class="workspace-db-clear-backdrop" id="analyzerCommentAuthorBackdrop" aria-hidden="true"></div>
+            <div
+                class="workspace-db-clear-modal analyzer-author-chat"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="analyzerCommentAuthorModalTitle"
+                onclick="event.stopPropagation()"
+            >
+                <button
+                    type="button"
+                    class="spillover-edit-modal__close analyzer-author-chat__close"
+                    id="analyzerCommentAuthorModalClose"
+                    aria-label="Close chat"
+                >
+                    &times;
+                </button>
+                <header class="analyzer-author-chat__header">
+                    <div class="analyzer-author-chat__avatar" id="analyzerCommentAuthorModalAvatar" aria-hidden="true"></div>
+                    <div class="analyzer-author-chat__headtext">
+                        <h2 id="analyzerCommentAuthorModalTitle" class="analyzer-author-chat__title"></h2>
+                        <p id="analyzerCommentAuthorModalSubtitle" class="analyzer-author-chat__subtitle"></p>
+                    </div>
+                </header>
+                <div
+                    id="analyzerCommentAuthorModalBody"
+                    class="analyzer-author-chat__messages"
+                    role="log"
+                    aria-live="polite"
+                    aria-relevant="additions"
+                ></div>
             </div>
         </div>
 
@@ -6869,6 +7368,9 @@
             updateNavForView(view);
             if (view !== 'invite') {
                 stopBulkInviteStatusPoll();
+            }
+            if (view === 'comments' && typeof refreshCommentsDashboard === 'function') {
+                refreshCommentsDashboard();
             }
             if (view === 'dashboard') {
                 refreshContributorActivity();
@@ -8569,6 +9071,717 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
+        }
+
+        var _analyzerCommentsPanelWired = false;
+        /** Last flat list from GET /comments; used to inherit issue_key on threaded replies. */
+        var analyzerCommentsListCache = [];
+        /** Rows for People who commented cards + author modal (see renderAnalyzerCommentersTable). */
+        var analyzerCommentersPanelData = [];
+        /** When author chat modal is open, used to reopen after posting a reply. */
+        var analyzerAuthorModalParticipantKey = null;
+        /** Merged assignee → issue keys from last people-insights fetch (Add comment modal). */
+        var analyzerCommentsPeopleInsightsMerged = null;
+
+        function closeAnalyzerAuthorCommentsModal() {
+            var over = document.getElementById('analyzerCommentAuthorOverlay');
+            if (over) over.hidden = true;
+            analyzerAuthorModalParticipantKey = null;
+        }
+
+        function closeAnalyzerAddCommentModal() {
+            var el = document.getElementById('analyzerAddCommentOverlay');
+            if (el) el.hidden = true;
+        }
+
+        function mergeAssigneesIssueRowsFromPeopleInsights(data) {
+            if (!data || !data.ok) return [];
+            var byName = {};
+            function add(arr) {
+                if (!arr || !arr.length) return;
+                var i;
+                for (i = 0; i < arr.length; i++) {
+                    var row = arr[i];
+                    if (!row || row.assignee == null) continue;
+                    var name = String(row.assignee).trim();
+                    if (!name) continue;
+                    if (!byName[name]) byName[name] = {};
+                    var keys = row.issueKeys || [];
+                    var j;
+                    for (j = 0; j < keys.length; j++) {
+                        var k = String(keys[j] || '').trim();
+                        if (k) byName[name][k] = true;
+                    }
+                }
+            }
+            add(data.spilloverAssignees);
+            add(data.bugAssignees);
+            var out = [];
+            var n;
+            for (n in byName) {
+                if (Object.prototype.hasOwnProperty.call(byName, n)) {
+                    out.push({
+                        assignee: n,
+                        issueKeys: Object.keys(byName[n]).sort()
+                    });
+                }
+            }
+            out.sort(function (a, b) {
+                return a.assignee.localeCompare(b.assignee);
+            });
+            return out;
+        }
+
+        function populateAnalyzerAddCommentAssigneeSelect(rows) {
+            var sel = document.getElementById('analyzerAddCommentAssigneeSelect');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Select assignee\u2026</option>';
+            var i;
+            for (i = 0; i < (rows || []).length; i++) {
+                var name = rows[i].assignee;
+                sel.innerHTML +=
+                    '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '</option>';
+            }
+        }
+
+        function updateAnalyzerAddCommentIssueSelect() {
+            var asel = document.getElementById('analyzerAddCommentAssigneeSelect');
+            var isel = document.getElementById('analyzerAddCommentIssueSelect');
+            if (!asel || !isel) return;
+            var name = String(asel.value || '').trim();
+            isel.innerHTML = '<option value="">General (whole upload)</option>';
+            if (!name || !analyzerCommentsPeopleInsightsMerged) return;
+            var i;
+            var keys = [];
+            for (i = 0; i < analyzerCommentsPeopleInsightsMerged.length; i++) {
+                if (analyzerCommentsPeopleInsightsMerged[i].assignee === name) {
+                    keys = analyzerCommentsPeopleInsightsMerged[i].issueKeys || [];
+                    break;
+                }
+            }
+            for (i = 0; i < keys.length; i++) {
+                var k = keys[i];
+                isel.innerHTML +=
+                    '<option value="' + escapeHtml(k) + '">' + escapeHtml(k) + '</option>';
+            }
+        }
+
+        function openAnalyzerAddCommentModal() {
+            var uploadId = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            if (!uploadId) {
+                showError('No saved upload is selected. Load a workspace first.');
+                return;
+            }
+            var overlay = document.getElementById('analyzerAddCommentOverlay');
+            var hint = document.getElementById('analyzerAddCommentModalHint');
+            if (!overlay) return;
+            var thEl = document.getElementById('compareThreshold');
+            var thVal = thEl ? encodeURIComponent(String(thEl.value || '').trim()) : '';
+            var bodyTa = document.getElementById('analyzerAddCommentBody');
+            if (bodyTa) bodyTa.value = '';
+            if (hint) {
+                hint.textContent = 'Loading assignees\u2026';
+            }
+            overlay.hidden = false;
+            ensureApiBaseProbed()
+                .then(function (apiOk) {
+                    if (!apiOk) {
+                        if (hint) {
+                            hint.textContent = 'API not reachable. Run npm start or add ?api= to the URL.';
+                        }
+                        return null;
+                    }
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(
+                        base +
+                            '/api/uploads/' +
+                            encodeURIComponent(uploadId) +
+                            '/people-insights?threshold=' +
+                            thVal
+                    );
+                })
+                .then(function (r) {
+                    if (!r) return null;
+                    return r.json().then(function (j) {
+                        return { ok: r.ok, data: j };
+                    });
+                })
+                .then(function (res) {
+                    if (!res || !res.data) return;
+                    if (!res.ok || !res.data.ok) {
+                        if (hint) {
+                            hint.textContent = (res.data && res.data.error) || 'Could not load assignees.';
+                        }
+                        analyzerCommentsPeopleInsightsMerged = [];
+                        populateAnalyzerAddCommentAssigneeSelect([]);
+                        updateAnalyzerAddCommentIssueSelect();
+                        return;
+                    }
+                    analyzerCommentsPeopleInsightsMerged = mergeAssigneesIssueRowsFromPeopleInsights(res.data);
+                    if (hint) {
+                        hint.textContent =
+                            'Choose an assignee and optional issue, then post. Uses the same sprint threshold as Upload & configure.';
+                    }
+                    populateAnalyzerAddCommentAssigneeSelect(analyzerCommentsPeopleInsightsMerged);
+                    updateAnalyzerAddCommentIssueSelect();
+                });
+        }
+
+        function postAnalyzerAddCommentFromModal() {
+            var uploadId = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            var asel = document.getElementById('analyzerAddCommentAssigneeSelect');
+            var isel = document.getElementById('analyzerAddCommentIssueSelect');
+            var bodyTa = document.getElementById('analyzerAddCommentBody');
+            if (!uploadId || !asel || !isel || !bodyTa) return;
+            var assignee = String(asel.value || '').trim();
+            if (!assignee) {
+                showError('Select an assignee.');
+                return;
+            }
+            var raw = String(bodyTa.value || '').trim();
+            if (!raw) {
+                showError('Write a message before posting.');
+                return;
+            }
+            var issueKey = String(isel.value || '').trim();
+            if (!issueKey && analyzerCommentsPeopleInsightsMerged) {
+                var keys = [];
+                var idx;
+                for (idx = 0; idx < analyzerCommentsPeopleInsightsMerged.length; idx++) {
+                    if (analyzerCommentsPeopleInsightsMerged[idx].assignee === assignee) {
+                        keys = analyzerCommentsPeopleInsightsMerged[idx].issueKeys || [];
+                        break;
+                    }
+                }
+                if (keys.length === 1) {
+                    issueKey = keys[0];
+                }
+            }
+            var auth = getAnalyzerCommentsAuthor();
+            var payload = {
+                body: raw,
+                authorName: auth.name,
+                authorUid: auth.uid,
+                assigneeScope: assignee
+            };
+            if (issueKey) payload.issueKey = issueKey;
+            var postBtn = document.getElementById('analyzerAddCommentPostBtn');
+            if (postBtn) postBtn.disabled = true;
+            ensureApiBaseProbed()
+                .then(function (apiOk) {
+                    if (!apiOk) {
+                        showError('Backend not reachable.');
+                        return null;
+                    }
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(base + '/api/uploads/' + encodeURIComponent(uploadId) + '/comments', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                })
+                .then(function (r) {
+                    if (!r) return null;
+                    return parseHttpJsonResponse(r);
+                })
+                .then(function (result) {
+                    if (postBtn) postBtn.disabled = false;
+                    if (!result) return;
+                    if (!result.ok || !result.body.ok) {
+                        var err = (result.body && result.body.error) || 'HTTP ' + result.status;
+                        showError(err);
+                        return;
+                    }
+                    bodyTa.value = '';
+                    closeAnalyzerAddCommentModal();
+                    hideErrorToastBar();
+                    refreshCommentsDashboard();
+                })
+                .catch(function () {
+                    if (postBtn) postBtn.disabled = false;
+                    showError('Could not post comment.');
+                });
+        }
+
+        function buildCommenterAggregatesForPanel(flat) {
+            var map = {};
+            for (var i = 0; i < flat.length; i++) {
+                var c = flat[i];
+                var uid = c.authorUid != null ? String(c.authorUid).trim() : '';
+                var name =
+                    c.authorName != null && String(c.authorName).trim() !== ''
+                        ? String(c.authorName).trim()
+                        : 'Analyst';
+                var key = uid !== '' ? 'uid:' + uid : 'name:' + name.toLowerCase();
+                if (!map[key]) {
+                    map[key] = { displayName: name, comments: [], participantKey: key };
+                } else if (uid !== '' && map[key].displayName === 'Analyst' && name !== 'Analyst') {
+                    map[key].displayName = name;
+                }
+                map[key].comments.push(c);
+            }
+            var rows = [];
+            var k;
+            for (k in map) {
+                if (Object.prototype.hasOwnProperty.call(map, k)) {
+                    rows.push(map[k]);
+                }
+            }
+            rows.sort(function (a, b) {
+                var n = b.comments.length - a.comments.length;
+                if (n !== 0) return n;
+                return String(a.displayName).localeCompare(String(b.displayName));
+            });
+            return rows;
+        }
+
+        function splitDisplayNameForPersonCard(displayName) {
+            var s = String(displayName != null ? displayName : '').trim();
+            if (!s) return { first: '', last: 'Unknown' };
+            var parts = s.split(/\s+/).filter(function (p) {
+                return p.length > 0;
+            });
+            if (!parts.length) return { first: '', last: 'Unknown' };
+            if (parts.length === 1) return { first: '', last: parts[0] };
+            var last = parts.pop();
+            var first = parts.join(' ');
+            return { first: first, last: last };
+        }
+
+        /** LEAD = analyst-style (Firebase uid, Analyst/Admin label, or email display). CLIENT = everyone else. */
+        function commenterCardRoleIsLead(entry) {
+            var arr = entry && entry.comments ? entry.comments : [];
+            if (!arr.length) return false;
+            var c0 = arr[0];
+            var uid = c0.authorUid != null ? String(c0.authorUid).trim() : '';
+            if (uid.length >= 18) return true;
+            var raw = c0.authorName != null ? String(c0.authorName).trim() : '';
+            var n = raw.toLowerCase();
+            if (n === 'analyst' || n === 'admin') return true;
+            if (raw.indexOf('@') >= 0) return true;
+            return false;
+        }
+
+        function renderAnalyzerCommentersTable(flat) {
+            var host = document.getElementById('analyzerCommentsParticipants');
+            if (!host) return;
+            if (!flat || !flat.length) {
+                analyzerCommentersPanelData = [];
+                host.innerHTML =
+                    '<div class="acm-people-board-empty">No comments yet. When someone posts a note, they appear here as a card. Click a card to read and reply.</div>';
+                return;
+            }
+            var rows = buildCommenterAggregatesForPanel(flat);
+            analyzerCommentersPanelData = rows;
+            var html = '<div class="acm-people-grid" role="list">';
+            var r;
+            for (r = 0; r < rows.length; r++) {
+                var entry = rows[r];
+                var isLead = commenterCardRoleIsLead(entry);
+                var mod = isLead ? 'acm-person-card--lead' : 'acm-person-card--client';
+                var roleLabel = isLead ? 'LEAD' : 'CLIENT';
+                var nameParts = splitDisplayNameForPersonCard(entry.displayName);
+                var n = entry.comments.length;
+                var countLabel = n === 1 ? '1 comment' : n + ' comments';
+                var ariaName = (nameParts.first ? nameParts.first + ' ' : '') + nameParts.last;
+                html +=
+                    '<article class="acm-person-card ' +
+                    mod +
+                    '" data-acm-participant-idx="' +
+                    r +
+                    '" tabindex="0" role="listitem" aria-label="Open comments by ' +
+                    escapeHtml(ariaName) +
+                    '">';
+                html += '<div class="acm-person-card__top">';
+                html += '<div class="acm-person-card__roleRow">';
+                html += '<span class="acm-person-card__accent" aria-hidden="true"></span>';
+                html += '<span class="acm-person-card__role">' + roleLabel + '</span>';
+                html += '</div>';
+                html +=
+                    '<button type="button" class="acm-person-card__more" tabindex="-1" aria-label="More">...</button>';
+                html += '</div>';
+                html += '<div class="acm-person-card__name">';
+                if (nameParts.first) {
+                    html += '<span class="acm-person-card__first">' + escapeHtml(nameParts.first) + '</span>';
+                }
+                html += '<span class="acm-person-card__last">' + escapeHtml(nameParts.last) + '</span>';
+                html += '</div>';
+                html += '<div class="acm-person-card__count">' + escapeHtml(countLabel) + '</div>';
+                html += '</article>';
+            }
+            html += '</div>';
+            host.innerHTML = html;
+        }
+
+        function buildAuthorModalCommentsHtml(entry) {
+            var comments = entry.comments.slice().sort(function (a, b) {
+                var ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                var tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return ta - tb;
+            });
+            var parts = [];
+            for (var i = 0; i < comments.length; i++) {
+                var c = comments[i];
+                var idStr = String(c.id);
+                var when = c.createdAt
+                    ? new Date(c.createdAt).toLocaleString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                      })
+                    : '';
+                var issueK = c.issueKey != null ? String(c.issueKey).trim() : '';
+                var issueChip =
+                    issueK !== ''
+                        ? '<span class="analyzer-comments-issue">' + escapeHtml(issueK) + '</span>'
+                        : '';
+                var body = c.body != null ? String(c.body) : '';
+                parts.push(
+                    '<div class="acm-chat-msg" data-acm-chat-msg="' +
+                        escapeHtml(idStr) +
+                        '">' +
+                        '<div class="acm-chat-msg__bubble">' +
+                        '<div class="acm-chat-msg__meta">' +
+                        '<span class="acm-chat-msg__time">' +
+                        escapeHtml(when) +
+                        '</span>' +
+                        issueChip +
+                        '</div>' +
+                        '<div class="acm-chat-msg__text">' +
+                        escapeHtml(body) +
+                        '</div>' +
+                        '<div class="acm-chat-msg__actions">' +
+                        '<button type="button" class="btn btn-secondary" data-acm-reply-toggle="' +
+                        escapeHtml(idStr) +
+                        '">Reply</button></div>' +
+                        '<div class="analyzer-comments-reply-form" hidden data-acm-reply-form="' +
+                        escapeHtml(idStr) +
+                        '"><textarea class="analyzer-comments__textarea" rows="3" maxlength="8000" placeholder="Write a reply\u2026" data-acm-reply-ta="' +
+                        escapeHtml(idStr) +
+                        '"></textarea><div class="analyzer-comments__composer-actions">' +
+                        '<button type="button" class="btn btn-secondary" data-acm-reply-cancel="' +
+                        escapeHtml(idStr) +
+                        '">Cancel</button>' +
+                        '<button type="button" class="btn btn-primary" data-acm-reply-send="' +
+                        escapeHtml(idStr) +
+                        '">Send</button></div></div></div></div>'
+                );
+            }
+            return '<div class="acm-chat-thread">' + parts.join('') + '</div>';
+        }
+
+        function acmAuthorChatInitials(displayName) {
+            var s = String(displayName != null ? displayName : '').trim();
+            if (!s) return '?';
+            var parts = s.split(/\s+/).filter(function (p) {
+                return p.length > 0;
+            });
+            if (parts.length >= 2) {
+                return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+            }
+            return s.length >= 2 ? s.slice(0, 2).toUpperCase() : s.charAt(0).toUpperCase();
+        }
+
+        function openAnalyzerAuthorCommentsModal(idx) {
+            var entry = analyzerCommentersPanelData[idx];
+            if (!entry) return;
+            var over = document.getElementById('analyzerCommentAuthorOverlay');
+            var title = document.getElementById('analyzerCommentAuthorModalTitle');
+            var sub = document.getElementById('analyzerCommentAuthorModalSubtitle');
+            var av = document.getElementById('analyzerCommentAuthorModalAvatar');
+            var body = document.getElementById('analyzerCommentAuthorModalBody');
+            if (!over || !title || !body) return;
+            analyzerAuthorModalParticipantKey = entry.participantKey != null ? entry.participantKey : null;
+            if (av) av.textContent = acmAuthorChatInitials(entry.displayName);
+            title.textContent = entry.displayName || 'Thread';
+            var n = entry.comments ? entry.comments.length : 0;
+            var countLabel = n === 1 ? '1 message' : n + ' messages';
+            if (sub) sub.textContent = countLabel + ' · Reply to add to this thread';
+            body.innerHTML = buildAuthorModalCommentsHtml(entry);
+            over.hidden = false;
+            requestAnimationFrame(function () {
+                body.scrollTop = body.scrollHeight;
+            });
+        }
+
+        function getAnalyzerCommentsAuthor() {
+            try {
+                if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+                    var u = firebase.auth().currentUser;
+                    var name =
+                        (u.displayName && String(u.displayName).trim()) ||
+                        (u.email && String(u.email).split('@')[0]) ||
+                        'Analyst';
+                    return { name: name, uid: u.uid ? String(u.uid) : '' };
+                }
+            } catch (eAuth) {}
+            return { name: 'Analyst', uid: '' };
+        }
+
+        function setAnalyzerCommentsStatus(msg, kind) {
+            var el = document.getElementById('analyzerCommentsStatus');
+            if (!el) return;
+            el.textContent = msg || '';
+            el.classList.toggle('analyzer-comments__status--err', kind === 'err');
+        }
+
+        function wireAnalyzerCommentsPanelOnce() {
+            if (_analyzerCommentsPanelWired) return;
+            _analyzerCommentsPanelWired = true;
+            var partHost = document.getElementById('analyzerCommentsParticipants');
+            if (partHost && !partHost.dataset.acmPanelWired) {
+                partHost.dataset.acmPanelWired = '1';
+                partHost.addEventListener('click', function (ev) {
+                    var card = ev.target.closest('.acm-person-card[data-acm-participant-idx]');
+                    if (!card || !partHost.contains(card)) return;
+                    var idx = parseInt(card.getAttribute('data-acm-participant-idx'), 10);
+                    if (isNaN(idx)) return;
+                    openAnalyzerAuthorCommentsModal(idx);
+                });
+                partHost.addEventListener('keydown', function (ev) {
+                    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+                    var card = ev.target.closest('.acm-person-card[data-acm-participant-idx]');
+                    if (!card || !partHost.contains(card)) return;
+                    ev.preventDefault();
+                    var idx2 = parseInt(card.getAttribute('data-acm-participant-idx'), 10);
+                    if (isNaN(idx2)) return;
+                    openAnalyzerAuthorCommentsModal(idx2);
+                });
+            }
+            var acOver = document.getElementById('analyzerCommentAuthorOverlay');
+            var acModalBody = document.getElementById('analyzerCommentAuthorModalBody');
+            if (acOver && !acOver.dataset.acmReplyWired) {
+                acOver.dataset.acmReplyWired = '1';
+                var acBd = document.getElementById('analyzerCommentAuthorBackdrop');
+                if (acBd) acBd.addEventListener('click', closeAnalyzerAuthorCommentsModal);
+                var acClose = document.getElementById('analyzerCommentAuthorModalClose');
+                if (acClose) acClose.addEventListener('click', closeAnalyzerAuthorCommentsModal);
+                /* Reply controls live inside #analyzerCommentAuthorModalBody; parent modal uses
+                   stopPropagation() so clicks never bubble to #analyzerCommentAuthorOverlay. */
+                if (acModalBody && !acModalBody.dataset.acmReplyBodyWired) {
+                    acModalBody.dataset.acmReplyBodyWired = '1';
+                    acModalBody.addEventListener('click', function (ev) {
+                    var t = ev.target;
+                    if (!t || !t.closest) return;
+                    var btn = t.closest('[data-acm-reply-toggle],[data-acm-reply-cancel],[data-acm-reply-send]');
+                    if (!btn || !acModalBody.contains(btn)) return;
+                    var toggleId = btn.getAttribute('data-acm-reply-toggle');
+                    if (toggleId != null && toggleId !== '') {
+                        var form = acModalBody.querySelector('[data-acm-reply-form="' + toggleId + '"]');
+                        if (form) form.hidden = !form.hidden;
+                        return;
+                    }
+                    var cancelId = btn.getAttribute('data-acm-reply-cancel');
+                    if (cancelId != null && cancelId !== '') {
+                        var formC = acModalBody.querySelector('[data-acm-reply-form="' + cancelId + '"]');
+                        var taC = acModalBody.querySelector('[data-acm-reply-ta="' + cancelId + '"]');
+                        if (formC) formC.hidden = true;
+                        if (taC) taC.value = '';
+                        return;
+                    }
+                    var sendId = btn.getAttribute('data-acm-reply-send');
+                    if (sendId != null && sendId !== '') {
+                        var taS = acModalBody.querySelector('[data-acm-reply-ta="' + sendId + '"]');
+                        postAnalyzerComment(sendId, taS);
+                    }
+                    });
+                }
+            }
+            var addOv = document.getElementById('analyzerAddCommentOverlay');
+            if (addOv && !addOv.dataset.acmAddOvWired) {
+                addOv.dataset.acmAddOvWired = '1';
+                var adb = document.getElementById('analyzerAddCommentBackdrop');
+                if (adb) adb.addEventListener('click', closeAnalyzerAddCommentModal);
+                var adx = document.getElementById('analyzerAddCommentModalClose');
+                if (adx) adx.addEventListener('click', closeAnalyzerAddCommentModal);
+                var adc = document.getElementById('analyzerAddCommentCancelBtn');
+                if (adc) adc.addEventListener('click', closeAnalyzerAddCommentModal);
+                var adp = document.getElementById('analyzerAddCommentPostBtn');
+                if (adp) adp.addEventListener('click', postAnalyzerAddCommentFromModal);
+                var asel = document.getElementById('analyzerAddCommentAssigneeSelect');
+                if (asel) asel.addEventListener('change', updateAnalyzerAddCommentIssueSelect);
+            }
+            var btnAdd = document.getElementById('analyzerCommentsBtnAdd');
+            if (btnAdd && !btnAdd.dataset.acmToolbarWired) {
+                btnAdd.dataset.acmToolbarWired = '1';
+                btnAdd.addEventListener('click', openAnalyzerAddCommentModal);
+            }
+        }
+
+        function renderAnalyzerCommentsList(flat) {
+            var list = document.getElementById('analyzerCommentsList');
+            if (!list) return;
+        }
+
+        function postAnalyzerComment(parentIdStr, fromReplyTa) {
+            var uploadId = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            if (!uploadId) {
+                showError('No saved upload is selected. Load a workspace from the database first.');
+                return;
+            }
+            var ta = fromReplyTa || document.getElementById('analyzerCommentComposeRoot');
+            if (!ta) return;
+            var raw = String(ta.value || '').trim();
+            if (!raw) {
+                showError('Write something before posting.');
+                return;
+            }
+            var fromModal =
+                fromReplyTa && fromReplyTa.closest && fromReplyTa.closest('#analyzerCommentAuthorOverlay');
+            var reopenParticipantKey = fromModal ? analyzerAuthorModalParticipantKey : null;
+            var auth = getAnalyzerCommentsAuthor();
+            var payload = {
+                body: raw,
+                authorName: auth.name,
+                authorUid: auth.uid,
+            };
+            if (parentIdStr != null && String(parentIdStr).trim() !== '') {
+                var pids = String(parentIdStr).trim();
+                payload.parentId = pids;
+                var cix;
+                for (cix = 0; cix < analyzerCommentsListCache.length; cix++) {
+                    var pc = analyzerCommentsListCache[cix];
+                    if (pc && String(pc.id) === pids) {
+                        var pik = pc.issueKey != null ? String(pc.issueKey).trim() : '';
+                        if (pik) payload.issueKey = pik;
+                        break;
+                    }
+                }
+            }
+            ensureApiBaseProbed()
+                .then(function (apiOk) {
+                    if (!apiOk) {
+                        showError(
+                            'Backend not reachable. Open the app from the same URL as npm start or add ?api=http://localhost:3000 to the address bar.'
+                        );
+                        return null;
+                    }
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(base + '/api/uploads/' + encodeURIComponent(uploadId) + '/comments', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+                })
+                .then(function (r) {
+                    if (!r) return null;
+                    return parseHttpJsonResponse(r);
+                })
+                .then(function (result) {
+                    if (!result) return;
+                    if (!result.ok || !result.body.ok) {
+                        var err = (result.body && result.body.error) || 'HTTP ' + result.status;
+                        showError(err);
+                        return;
+                    }
+                    ta.value = '';
+                    if (parentIdStr != null && String(parentIdStr).trim() !== '') {
+                        var pid = String(parentIdStr).trim();
+                        var phase = document.getElementById('commentsPhase');
+                        var form = phase && phase.querySelector('[data-analyzer-reply-form="' + pid + '"]');
+                        if (form) form.hidden = true;
+                        var acOver = document.getElementById('analyzerCommentAuthorOverlay');
+                        if (acOver) {
+                            var fm = acOver.querySelector('[data-acm-reply-form="' + pid + '"]');
+                            if (fm) fm.hidden = true;
+                            var taM = acOver.querySelector('[data-acm-reply-ta="' + pid + '"]');
+                            if (taM) taM.value = '';
+                        }
+                    }
+                    hideErrorToastBar();
+                    var refreshP = refreshCommentsDashboard();
+                    if (reopenParticipantKey && refreshP && typeof refreshP.then === 'function') {
+                        return refreshP.then(function () {
+                            var ix;
+                            for (ix = 0; ix < analyzerCommentersPanelData.length; ix++) {
+                                var prow = analyzerCommentersPanelData[ix];
+                                if (prow && prow.participantKey === reopenParticipantKey) {
+                                    openAnalyzerAuthorCommentsModal(ix);
+                                    var scrollEl = document.getElementById('analyzerCommentAuthorModalBody');
+                                    if (scrollEl) {
+                                        requestAnimationFrame(function () {
+                                            scrollEl.scrollTop = scrollEl.scrollHeight;
+                                        });
+                                    }
+                                    return null;
+                                }
+                            }
+                            closeAnalyzerAuthorCommentsModal();
+                            return null;
+                        });
+                    }
+                    if (fromModal) closeAnalyzerAuthorCommentsModal();
+                })
+                .catch(function () {
+                    showError(
+                        'Could not post comment. Check the API URL (?api=), CORS, and that DATABASE_URL is set on the server.'
+                    );
+                });
+        }
+
+        function refreshCommentsDashboard() {
+            wireAnalyzerCommentsPanelOnce();
+            var uploadId = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            var statusEl = document.getElementById('analyzerCommentsStatus');
+            var partHost = document.getElementById('analyzerCommentsParticipants');
+            if (!partHost) return Promise.resolve();
+            if (!uploadId) {
+                analyzerCommentsListCache = [];
+                setAnalyzerCommentsStatus('', '');
+                partHost.innerHTML =
+                    '<div class="acm-people-board-empty">Select or load a saved upload first. People who commented will appear as cards.</div>';
+                analyzerCommentersPanelData = [];
+                return Promise.resolve();
+            }
+            setAnalyzerCommentsStatus('Loading comments\u2026', '');
+            return ensureApiBaseProbed()
+                .then(function (apiOk) {
+                    if (!apiOk) {
+                        setAnalyzerCommentsStatus(
+                            'Backend not reachable. Run npm start and open the analyzer from that URL (not a raw file:// path), or add ?api=http://localhost:3000 to the address bar. Then click Refresh uploads.',
+                            'err'
+                        );
+                        analyzerCommentsListCache = [];
+                        partHost.innerHTML = '';
+                        analyzerCommentersPanelData = [];
+                        return null;
+                    }
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(base + '/api/uploads/' + encodeURIComponent(uploadId) + '/comments');
+                })
+                .then(function (r) {
+                    if (!r) return null;
+                    return parseHttpJsonResponse(r);
+                })
+                .then(function (result) {
+                    if (!result) return;
+                    if (!result.ok || !result.body.ok) {
+                        var err = (result.body && result.body.error) || 'HTTP ' + result.status;
+                        setAnalyzerCommentsStatus(err, 'err');
+                        analyzerCommentsListCache = [];
+                        partHost.innerHTML = '';
+                        analyzerCommentersPanelData = [];
+                        return;
+                    }
+                    setAnalyzerCommentsStatus('', '');
+                    var flatComments = result.body.comments || [];
+                    analyzerCommentsListCache = flatComments;
+                    renderAnalyzerCommentersTable(flatComments);
+                    renderAnalyzerCommentsList(flatComments);
+                })
+                .catch(function (err) {
+                    var extra = err && err.message ? ' (' + err.message + ')' : '';
+                    setAnalyzerCommentsStatus(
+                        'Could not load comments.' +
+                            extra +
+                            ' Use the same origin as the API or set ?api= to your server URL.',
+                        'err'
+                    );
+                    analyzerCommentsListCache = [];
+                    partHost.innerHTML = '';
+                    analyzerCommentersPanelData = [];
+                });
         }
 
         function buildBugCategorySelectHtml(selected) {
@@ -11718,6 +12931,10 @@
                     if (ip && !ip.hidden) {
                         refreshInvitePeopleInsights();
                     }
+                    var commentsPh = document.getElementById('commentsPhase');
+                    if (commentsPh && !commentsPh.hidden && typeof refreshCommentsDashboard === 'function') {
+                        refreshCommentsDashboard();
+                    }
                 })
                 .catch(function () {
                     setDbUploadStatus(
@@ -11765,6 +12982,12 @@
                         fetchAndMergeIssueEdits(currentUploadId);
                         if (typeof schedulePersistWorkspace === 'function') {
                             schedulePersistWorkspace();
+                        }
+                        if (typeof refreshCommentsDashboard === 'function') {
+                            var cp = document.getElementById('commentsPhase');
+                            if (cp && !cp.hidden) {
+                                refreshCommentsDashboard();
+                            }
                         }
                         setDbUploadStatus(
                             'Loaded upload #' +

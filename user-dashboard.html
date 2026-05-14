@@ -361,11 +361,7 @@
             margin-bottom: 0.25rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-        /* Less space between the nav underline and the Comments label */
-        .contrib-sidebar__nav + .contrib-nav-section__label {
-            margin-top: 0.45rem;
-        }
-        /* Same gap between the rule below Comments and the Category label */
+        /* Same gap between the rule after nav and the Category label */
         #contribCategorySection > .contrib-nav-section__label:first-child {
             margin-top: 0.45rem;
         }
@@ -383,7 +379,7 @@
             margin-top: 0.35rem;
             margin-bottom: 0.35rem;
         }
-        /* When Category block is hidden, only one line between Comments and Issues (avoid double rule) */
+        /* When Category block is hidden, avoid a double rule before Issues */
         #contribCategorySection[hidden] + #contribSidebarRuleBeforeIssues {
             display: none;
         }
@@ -423,11 +419,6 @@
             font-weight: 600;
         }
         .contrib-bug-category-guide-nav--active {
-            color: #f1f5f9 !important;
-            background: rgba(255, 255, 255, 0.07) !important;
-            font-weight: 600;
-        }
-        .contrib-comments-nav--active {
             color: #f1f5f9 !important;
             background: rgba(255, 255, 255, 0.07) !important;
             font-weight: 600;
@@ -778,6 +769,13 @@
             margin: 0 auto;
             background: transparent;
         }
+        body.contrib-session .contrib-main-dash:has(#panelComments:not([hidden])) {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            padding-bottom: 1rem;
+        }
         .contrib-banner {
             margin-bottom: 1rem;
         }
@@ -845,548 +843,529 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        .contrib-comments-dash .contrib-panel-dash__title {
-            font-size: 1.2rem;
-            letter-spacing: -0.03em;
-        }
-        .contrib-comments-dash__head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem 1rem;
-            margin-bottom: 0.45rem;
-            padding-bottom: 0.65rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .contrib-comments-dash__head .contrib-panel-dash__title {
-            margin-bottom: 0;
-        }
-        .contrib-comments-dash__badge {
-            flex-shrink: 0;
-            min-width: 1.85rem;
-            height: 1.85rem;
-            padding: 0 0.4rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8125rem;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -0.02em;
-            text-transform: none;
-            border-radius: 999px;
-            color: #e2e8f0;
-            background: linear-gradient(160deg, rgba(59, 130, 246, 0.22), rgba(15, 23, 42, 0.9));
-            border: 1px solid rgba(96, 165, 250, 0.35);
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2) inset;
-        }
-        .contrib-comments-dash__hint {
-            margin-bottom: 1rem;
-            max-width: 62ch;
-        }
-        .contrib-comments-dash__toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.6rem 1rem;
-            margin-bottom: 0.85rem;
-        }
-        .contrib-comments-dash__toolbar-inner {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.5rem 0.75rem;
-            flex: 1 1 14rem;
-            padding: 0.45rem 0.6rem 0.45rem 0.75rem;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.22);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .contrib-comments-dash__filter-label {
-            font-size: 0.6875rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: #94a3b8;
-            flex-shrink: 0;
-        }
-        .contrib-comments-dash__filter-select {
-            flex: 1 1 10rem;
-            min-width: 0;
-            max-width: 100%;
-            padding: 0.4rem 0.55rem;
-            font-size: 0.8125rem;
-            font-family: inherit;
-            color: var(--text);
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        }
-        .contrib-comments-dash__filter-select:hover {
-            border-color: rgba(96, 165, 250, 0.35);
-        }
-        .contrib-comments-dash__filter-select:focus {
-            outline: none;
-            border-color: rgba(59, 130, 246, 0.55);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-        }
-        .contrib-comments-dash__filter-meta {
-            flex: 1 1 100%;
-            font-size: 0.75rem;
-            color: #8b93a1;
-            line-height: 1.4;
-        }
-        @media (min-width: 640px) {
-            .contrib-comments-dash__filter-meta {
-                flex: 1 1 auto;
-                text-align: right;
-                min-width: 12rem;
-            }
-        }
-        .contrib-comments-dash__body {
-            display: grid;
-            gap: 1rem;
-            align-items: start;
-        }
-        @media (min-width: 900px) {
-            .contrib-comments-dash__body {
-                grid-template-columns: minmax(0, 1fr) minmax(272px, 340px);
-                gap: 1.15rem 1.25rem;
-            }
-        }
-        .contrib-comments-feed-wrap {
-            position: relative;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.2) 100%);
-            margin-bottom: 0;
-            min-height: 7.5rem;
-            overflow: hidden;
-        }
-        .contrib-comments-dash__empty[hidden] {
+        /* —— Comments page (only visible from sidebar) —— */
+        #panelComments[hidden] {
             display: none !important;
         }
-        .contrib-comments-dash__empty {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 1.5rem 1.25rem;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .contrib-comments-dash__empty-icon {
-            display: flex;
-            margin-bottom: 0.65rem;
-            color: #64748b;
-        }
-        .contrib-comments-dash__empty-title {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: #cbd5e1;
-            margin: 0 0 0.35rem;
-        }
-        .contrib-comments-dash__empty-sub {
-            font-size: 0.8125rem;
-            color: #8892a0;
-            margin: 0;
-            max-width: 32ch;
-            line-height: 1.5;
-        }
-        .contrib-comments-feed {
-            --thread-line-x: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.65rem;
-            max-height: min(52vh, 30rem);
-            overflow-y: auto;
-            scroll-behavior: smooth;
-            padding: 0.75rem 0.75rem 0.85rem 1rem;
+        .contrib-comments-page.contrib-panel-dash:not([hidden]) {
             position: relative;
-            z-index: 0;
+            display: flex;
+            flex-direction: column;
         }
-        .contrib-comments-feed::before {
-            content: "";
-            position: absolute;
-            left: var(--thread-line-x);
-            top: 0.85rem;
-            bottom: 0.85rem;
-            width: 2px;
-            border-radius: 2px;
-            background: linear-gradient(180deg, rgba(59, 130, 246, 0.28), rgba(255, 255, 255, 0.05));
-            pointer-events: none;
+        body.contrib-session .contrib-comments-page.contrib-panel-dash:not([hidden]) {
+            flex: 1;
+            min-height: 0;
+            margin-bottom: 0;
         }
-        .contrib-comments-feed::-webkit-scrollbar {
-            width: 6px;
+        body.contrib-session #panelComments.contrib-comments-page.contrib-panel-dash:not([hidden]) {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            margin-bottom: 0;
         }
-        .contrib-comments-feed::-webkit-scrollbar-track {
+        .contrib-comments-page__layout {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: min(72vh, 680px);
+            max-height: min(calc(100dvh - 6.5rem), 920px);
+            margin-top: 0.35rem;
+        }
+        .contrib-comments-page__scroll {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            border: none;
+            border-radius: 0;
             background: transparent;
         }
-        .contrib-comments-feed::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.14);
-            border-radius: 99px;
-        }
-        .contrib-comment-card {
-            display: flex;
-            gap: 0.65rem;
-            align-items: flex-start;
-            margin-left: 0.1rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(10, 12, 18, 0.55);
-            padding: 0.65rem 0.75rem 0.7rem 0.65rem;
-            text-align: left;
-            transition: border-color 0.18s ease, background 0.18s ease, transform 0.12s ease;
-        }
-        .contrib-comment-card:hover {
-            border-color: rgba(96, 165, 250, 0.22);
-            background: rgba(15, 20, 30, 0.75);
-        }
-        .contrib-comment-card--ticket {
-            border-color: rgba(59, 130, 246, 0.12);
-        }
-        .contrib-comment-card--session {
-            border-color: rgba(148, 163, 184, 0.08);
-        }
-        .contrib-comment-card__avatar {
+        .contrib-comments-privacy-hint {
             flex-shrink: 0;
-            width: 2.125rem;
-            height: 2.125rem;
-            border-radius: 999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.625rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            color: #f1f5f9;
-            position: relative;
-            z-index: 1;
-            background: linear-gradient(145deg, rgba(51, 65, 85, 0.9), rgba(15, 23, 42, 0.95));
-            border: 2px solid rgba(148, 163, 184, 0.35);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-        }
-        .contrib-comment-card--ticket .contrib-comment-card__avatar {
-            background: linear-gradient(145deg, rgba(59, 130, 246, 0.45), rgba(30, 58, 138, 0.75));
-            border-color: rgba(147, 197, 253, 0.45);
-        }
-        .contrib-comment-card__main {
-            flex: 1;
-            min-width: 0;
-        }
-        .contrib-comment-card__meta {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            grid-template-areas:
-                "primary aside"
-                "time time";
-            gap: 0.2rem 0.65rem;
-            align-items: start;
-            margin-bottom: 0.4rem;
-        }
-        .contrib-comment-card__meta-primary {
-            grid-area: primary;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            gap: 0.25rem 0.5rem;
-            min-width: 0;
-        }
-        .contrib-comment-card__meta-aside {
-            grid-area: aside;
-            justify-self: end;
-            align-self: start;
-        }
-        .contrib-comment-card__author {
-            font-weight: 600;
-            font-size: 0.8125rem;
-            color: #f1f5f9;
-        }
-        .contrib-comment-card__time {
-            grid-area: time;
-            font-size: 0.6875rem;
-            font-variant-numeric: tabular-nums;
-            color: #8892a0;
+            font-size: 0.75rem;
+            color: var(--text-muted, #888);
+            margin: 0 0.35rem 0.5rem;
             line-height: 1.35;
         }
-        .contrib-comment-card__ticket {
-            display: inline-block;
-            font-family: ui-monospace, monospace;
-            font-size: 0.625rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            color: #bfdbfe;
-            background: rgba(59, 130, 246, 0.14);
-            border: 1px solid rgba(59, 130, 246, 0.35);
-            padding: 0.15rem 0.45rem;
-            border-radius: 999px;
+        .contrib-comments-page .contrib-chat-dock__feed {
+            max-height: none;
+            flex: 1;
         }
-        .contrib-comment-card__ticket--session {
-            color: #94a3b8;
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        .contrib-comment-card__summary {
-            font-size: 0.6875rem;
-            color: #94a3b8;
-            margin: 0 0 0.45rem;
-            line-height: 1.45;
-            padding: 0.35rem 0.45rem;
-            border-radius: 6px;
-            background: rgba(0, 0, 0, 0.2);
-            border-left: 2px solid rgba(59, 130, 246, 0.45);
-        }
-        .contrib-comment-card__body {
+        .contrib-chat-empty {
+            margin: 1rem 0.75rem;
             font-size: 0.875rem;
-            line-height: 1.58;
-            color: #e2e8f0;
-            word-break: break-word;
+            color: var(--text-muted, #888);
+            line-height: 1.45;
         }
-        .contrib-comment-card__edited {
-            font-size: 0.5625rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #64748b;
-        }
-        .contrib-comment-card__actions {
+        .contrib-comments-page__fab-bar {
+            flex-shrink: 0;
             display: flex;
-            flex-wrap: wrap;
+            justify-content: flex-end;
             align-items: center;
-            gap: 0.45rem 0.5rem;
-            margin-top: 0.6rem;
-            padding-top: 0.55rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .contrib-comment-card__action {
-            appearance: none;
-            cursor: pointer;
-            font: inherit;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            padding: 0.28rem 0.65rem;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.04);
-            color: #cbd5e1;
-            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-        }
-        .contrib-comment-card__action:hover {
-            background: rgba(255, 255, 255, 0.09);
-            border-color: rgba(255, 255, 255, 0.16);
-            color: #f8fafc;
-        }
-        .contrib-comment-card__action:focus-visible {
-            outline: 2px solid var(--focus-ring);
-            outline-offset: 2px;
-        }
-        .contrib-comment-card__action--danger {
-            color: #fca5a5;
-            border-color: rgba(248, 113, 113, 0.25);
-            background: rgba(127, 29, 29, 0.12);
-        }
-        .contrib-comment-card__action--danger:hover {
-            color: #fecaca;
-            border-color: rgba(248, 113, 113, 0.45);
-            background: rgba(127, 29, 29, 0.22);
-        }
-        .contrib-comments-composer {
+            padding: 0.35rem 0.05rem 0;
+            margin-top: 0;
             position: sticky;
             bottom: 0;
-            z-index: 2;
-            margin-top: 0;
-            padding-top: 0;
+            z-index: 4;
+            background: transparent;
         }
-        @media (min-width: 900px) {
-            .contrib-comments-composer {
-                position: sticky;
-                top: 0.5rem;
-                bottom: auto;
-                align-self: start;
-            }
+        .contrib-comments-page__fab.contrib-chat-fab {
+            position: static;
+            left: auto;
+            right: auto;
+            bottom: auto;
         }
-        .contrib-comments-composer__shell {
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: linear-gradient(165deg, rgba(30, 41, 59, 0.55), rgba(10, 12, 16, 0.98));
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-            padding: 0.95rem 1rem 1rem;
-            scroll-margin-bottom: 1rem;
-        }
-        .contrib-comments-composer__post-group {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.45rem 0.55rem;
-        }
-        .contrib-comments-composer__btn-secondary {
-            appearance: none;
-            cursor: pointer;
-            font: inherit;
+        .contrib-comments-sidebar-nav--active {
+            color: #f1f5f9 !important;
+            background: rgba(255, 255, 255, 0.07) !important;
             font-weight: 600;
-            font-size: 0.8125rem;
-            padding: 0.48rem 0.95rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: rgba(255, 255, 255, 0.04);
-            color: #cbd5e1;
-            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
         }
-        .contrib-comments-composer__btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #f1f5f9;
-            border-color: rgba(255, 255, 255, 0.18);
-        }
-        .contrib-comments-composer__btn-secondary:focus-visible {
-            outline: 2px solid var(--focus-ring);
-            outline-offset: 2px;
-        }
-        .contrib-comments-composer__title {
-            font-size: 0.6875rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #94a3b8;
-            margin: 0 0 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .contrib-comments-composer__grid {
-            display: grid;
-            gap: 0.85rem;
-        }
-        @media (min-width: 520px) {
-            .contrib-comments-composer__grid {
-                grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
-                gap: 0.85rem 1rem;
-                align-items: start;
-            }
-        }
-        .contrib-comments-composer__field {
-            width: 100%;
-            min-width: 0;
-        }
-        .contrib-comments-composer__label {
-            display: block;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            letter-spacing: 0.03em;
-            color: #94a3b8;
-            margin-bottom: 0.3rem;
-        }
-        .contrib-comments-composer__select,
-        .contrib-comments-composer__textarea {
-            display: block;
-            width: 100%;
-            max-width: none;
-            box-sizing: border-box;
-            padding: 0.55rem 0.72rem;
-            font-size: 0.875rem;
-            font-family: inherit;
-            color: var(--text);
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        }
-        .contrib-comments-composer__textarea {
-            resize: vertical;
-            min-height: 6.25rem;
-            line-height: 1.5;
-        }
-        .contrib-comments-composer__textarea:focus,
-        .contrib-comments-composer__select:focus {
-            outline: none;
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-        }
-        .contrib-comments-composer__footer {
+        .contrib-chat-dock__feed {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 0.55rem 0.55rem 0.65rem;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            margin-top: 0.85rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
         }
-        .contrib-comments-composer__footer-actions {
+        .contrib-chat-msg {
+            display: flex;
+            gap: 0.45rem;
+            align-items: flex-end;
+        }
+        .contrib-chat-msg.contrib-chat-msg--reply {
+            margin-left: 1.25rem;
+            padding-left: 0.45rem;
+            border-left: 2px solid rgba(59, 130, 246, 0.28);
+        }
+        .contrib-chat-msg__avatar {
+            flex-shrink: 0;
+            width: 1.85rem;
+            height: 1.85rem;
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.12));
+            color: #dbeafe;
+            font-size: 0.62rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contrib-chat-msg__bubble {
+            min-width: 0;
+            flex: 1;
+            border-radius: 12px 12px 12px 4px;
+            padding: 0.5rem 0.65rem 0.55rem;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: rgba(39, 39, 42, 0.95);
+        }
+        .contrib-chat-msg__bubble--ticket {
+            border-color: rgba(59, 130, 246, 0.22);
+            background: rgba(30, 58, 95, 0.35);
+        }
+        .contrib-chat-msg__bubble-top {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 0.65rem 1rem;
-            width: 100%;
+            gap: 0.25rem 0.45rem;
+            margin-bottom: 0.28rem;
         }
-        .contrib-comments-composer__footer-meta {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.65rem 1rem;
+        .contrib-chat-msg__author {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #f4f4f5;
+        }
+        .contrib-chat-msg__edited {
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #71717a;
+        }
+        .contrib-chat-msg__chip {
+            font-family: ui-monospace, 'Consolas', monospace;
+            font-size: 0.62rem;
+            font-weight: 600;
+            color: #93c5fd;
+            padding: 0.08rem 0.35rem;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, 0.15);
+        }
+        .contrib-chat-msg__chip--session {
+            color: #a1a1aa;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .contrib-chat-msg__time {
             margin-left: auto;
-            font-size: 0.6875rem;
-            color: #8892a0;
+            font-size: 0.62rem;
+            color: #71717a;
+            white-space: nowrap;
         }
-        @media (max-width: 520px) {
-            .contrib-comments-composer__footer-meta {
-                margin-left: 0;
-                width: 100%;
-            }
-        }
-        .contrib-comments-composer__count {
-            font-variant-numeric: tabular-nums;
-        }
-        .contrib-comments-composer__kbd-hint kbd {
-            display: inline-block;
-            font-size: 0.625rem;
-            font-family: ui-monospace, monospace;
-            padding: 0.1rem 0.3rem;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.35);
+        .contrib-chat-msg__summary {
+            margin: 0 0 0.28rem;
+            font-size: 0.68rem;
             color: #94a3b8;
+            line-height: 1.35;
         }
-        .contrib-comments-composer__kbd-plus {
-            margin: 0 0.1rem;
-            opacity: 0.55;
-            user-select: none;
+        .contrib-chat-msg__body {
+            font-size: 0.8rem;
+            line-height: 1.45;
+            color: #e4e4e7;
+            word-break: break-word;
         }
-        .contrib-comments-composer__btn {
+        .contrib-chat-msg__actions {
+            display: flex;
+            gap: 0.45rem;
+            margin-top: 0.4rem;
+            padding-top: 0.35rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .contrib-chat-msg__action {
             appearance: none;
             border: none;
-            cursor: pointer;
+            background: transparent;
+            color: #94a3b8;
             font: inherit;
+            font-size: 0.68rem;
             font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+        }
+        .contrib-chat-msg__action:hover {
+            color: #e4e4e7;
+        }
+        .contrib-chat-msg__action--danger:hover {
+            color: #fca5a5;
+        }
+        .contrib-chat-fab {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(24, 24, 27, 0.95);
+            color: #f4f4f5;
+            font: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.55rem 1rem 0.55rem 0.75rem;
+            border-radius: 999px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 8px 28px rgba(0, 0, 0, 0.4);
+            transition: background 0.15s, border-color 0.15s, transform 0.15s;
+        }
+        .contrib-chat-fab:hover {
+            background: rgba(39, 39, 42, 0.98);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+        .contrib-chat-fab:active {
+            transform: scale(0.98);
+        }
+        .contrib-chat-fab svg {
+            width: 18px;
+            height: 18px;
+            opacity: 0.85;
+        }
+
+        /* Composer modal (dark two-column shell, similar to link shortener UIs) */
+        .contrib-cm-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 21100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .contrib-cm-modal[hidden] {
+            display: none !important;
+        }
+        .contrib-cm-modal__backdrop {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .contrib-cm-modal__panel {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 720px;
+            max-height: min(92vh, 640px);
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #121214;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+                0 24px 64px rgba(0, 0, 0, 0.55);
+            overflow: hidden;
+        }
+        .contrib-cm-modal__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.35);
+        }
+        .contrib-cm-modal__crumb {
+            margin: 0;
             font-size: 0.8125rem;
-            padding: 0.52rem 1.35rem;
+            font-weight: 500;
+            color: #fafafa;
+            letter-spacing: -0.01em;
+        }
+        .contrib-cm-modal__crumb-sep {
+            margin: 0 0.35rem;
+            opacity: 0.45;
+            font-weight: 400;
+        }
+        .contrib-cm-modal__x {
+            appearance: none;
+            border: none;
+            background: transparent;
+            color: #a1a1aa;
+            font-size: 1.35rem;
+            line-height: 1;
+            width: 2rem;
+            height: 2rem;
             border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contrib-cm-modal__x:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .contrib-cm-modal__body {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .contrib-cm-modal__col {
+            padding: 1rem 1rem 0.85rem;
+            overflow-y: auto;
+        }
+        .contrib-cm-modal__col--left {
+            border-right: none;
+        }
+        .contrib-cm-modal__field {
+            margin-bottom: 1rem;
+        }
+        .contrib-cm-modal__field:last-child {
+            margin-bottom: 0;
+        }
+        .contrib-cm-modal__label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 0.4rem;
+        }
+        .contrib-cm-modal__input,
+        .contrib-cm-modal__textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.5rem 0.65rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #18181b;
+            color: #fafafa;
+            font: inherit;
+            font-size: 0.875rem;
+        }
+        .contrib-cm-modal__textarea {
+            min-height: 7.5rem;
+            resize: vertical;
+            line-height: 1.45;
+        }
+        .contrib-cm-modal__input:focus,
+        .contrib-cm-modal__textarea:focus {
+            outline: 2px solid rgba(59, 130, 246, 0.45);
+            outline-offset: 0;
+            border-color: rgba(59, 130, 246, 0.35);
+        }
+        .contrib-cm-modal__muted {
+            margin: 0 0 0.65rem;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: #71717a;
+        }
+        .contrib-cm-modal__file {
+            margin: 0 0 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #e4e4e7;
+            word-break: break-word;
+        }
+        .contrib-cm-modal__side-label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 0.4rem;
+        }
+        .contrib-cm-modal__folder {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.55rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #18181b;
+            font-size: 0.8125rem;
+            color: #d4d4d8;
+            margin-bottom: 0.85rem;
+        }
+        .contrib-cm-modal__folder-ico {
+            width: 1.1rem;
+            height: 1.1rem;
+            color: #4ade80;
+            flex-shrink: 0;
+        }
+        .contrib-cm-modal__foot {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.65rem;
+            padding: 0.75rem 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.35);
+        }
+        .contrib-cm-modal__foot-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem 0.75rem;
+        }
+        .contrib-cm-modal__foot-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.65rem;
+        }
+        .contrib-cm-modal__count {
+            font-size: 0.72rem;
+            color: #71717a;
+            margin-left: auto;
+        }
+        .contrib-cm-modal__pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .contrib-cm-modal__pill {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #18181b;
+            color: #d4d4d8;
+            font: inherit;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 0.32rem 0.55rem;
+            border-radius: 999px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.28rem;
+        }
+        .contrib-cm-modal__pill:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            background: #27272a;
+        }
+        .contrib-cm-modal__primary {
+            appearance: none;
+            border: 1px solid rgba(59, 130, 246, 0.5);
             background: var(--accent);
             color: #fff;
-            box-shadow: none;
-            transition: background 0.15s ease, filter 0.15s ease, transform 0.12s ease;
+            font: inherit;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            padding: 0.48rem 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
         }
-        .contrib-comments-composer__btn:hover {
-            filter: brightness(1.06);
+        .contrib-cm-modal__primary-ico {
+            flex-shrink: 0;
+        }
+        .contrib-cm-modal__primary:hover {
             background: var(--accent-hover);
+            border-color: var(--accent-hover);
         }
-        .contrib-comments-composer__btn:active {
-            transform: translateY(1px);
+        .contrib-cm-modal__secondary {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: transparent;
+            color: #d4d4d8;
+            font: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.48rem 0.85rem;
+            border-radius: 8px;
+            cursor: pointer;
         }
-        .contrib-comments-composer__btn:focus-visible {
-            outline: 2px solid var(--focus-ring);
-            outline-offset: 2px;
+        .contrib-cm-modal__secondary:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .contrib-cm-modal__foot-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem;
         }
         .contrib-comments-composer__status {
             font-size: 0.75rem;
             color: #86efac;
-            margin: 0;
-            line-height: 1.45;
+            min-height: 1.1em;
         }
         .contrib-comments-composer__status--warn {
             color: #fca5a5;
+        }
+        .contrib-cm-modal__kbd {
+            font-size: 0.65rem;
+            color: #52525b;
+        }
+        .contrib-cm-modal__kbd kbd {
+            font-family: ui-monospace, monospace;
+            font-size: 0.6rem;
+            padding: 0.08rem 0.25rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #18181b;
+        }
+        .contrib-comments-composer__kbd-plus {
+            margin: 0 0.1rem;
+            opacity: 0.65;
         }
 
         /* Save / validation errors: inside Spillover (or Bugs) panel, not fixed viewport */
@@ -2299,13 +2278,6 @@
             width: 100%;
             max-width: 100%;
         }
-        .contrib-category-guide__intro {
-            font-size: 0.9375rem;
-            color: #94a3b8;
-            margin-bottom: 1.25rem;
-            line-height: 1.55;
-            max-width: none;
-        }
         .contrib-ref-wrap {
             width: 100%;
             overflow-x: auto;
@@ -2552,18 +2524,26 @@
                 <div class="contrib-sidebar__scroll">
                     <p class="contrib-nav-section__label">Your tasks</p>
                     <nav id="contribNavTabs" class="contrib-sidebar__nav" role="tablist" aria-label="Spillover and bugs"></nav>
-                    <p class="contrib-nav-section__label">Comments</p>
-                    <button
-                        type="button"
-                        class="contrib-sidenav__link contrib-sidenav__link--button"
-                        id="contribWriteCommentNavBtn"
-                    >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                        Comments
-                    </button>
                     <div class="contrib-sidebar__rule contrib-sidebar__rule--after-discussion" aria-hidden="true"></div>
+                    <div id="contribNavCommentsSection">
+                        <p class="contrib-nav-section__label">Comments</p>
+                        <button
+                            type="button"
+                            id="contribSidebarCommentsBtn"
+                            class="contrib-sidenav__link contrib-sidenav__link--button"
+                            aria-label="Open comments — notes saved in this browser"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                />
+                            </svg>
+                            Notes &amp; chat
+                        </button>
+                    </div>
+                    <div class="contrib-sidebar__rule" aria-hidden="true"></div>
                     <div id="contribCategorySection" hidden>
                         <p class="contrib-nav-section__label">Category</p>
                         <div id="contribSpillCategoryGuideWrap">
@@ -2664,91 +2644,37 @@
                     <div id="banner" class="banner contrib-banner" hidden aria-hidden="true"></div>
                     <section id="panelSpill" class="contrib-panel-dash" aria-labelledby="contribPanelSpillTitle" hidden></section>
                     <section id="panelBug" class="contrib-panel-dash" aria-labelledby="contribPanelBugTitle" hidden></section>
-                    <section id="panelComments" class="contrib-panel-dash contrib-comments-dash" aria-labelledby="contribPanelCommentsTitle" hidden>
-                        <div class="contrib-comments-dash__head">
-                            <h2 id="contribPanelCommentsTitle" class="contrib-panel-dash__title">Comments</h2>
-                            <span id="contribCommentsCountBadge" class="contrib-comments-dash__badge" aria-live="polite">0</span>
-                        </div>
-                        <p class="contrib-panel-dash__hint contrib-comments-dash__hint">
-                            Session notes or ticket-specific context. Saved in <strong>this browser</strong> until a shared thread exists.
-                        </p>
-                        <div class="contrib-comments-dash__toolbar">
-                            <div class="contrib-comments-dash__toolbar-inner">
-                                <label class="contrib-comments-dash__filter-label" for="contribCommentsFilter">Filter thread</label>
-                                <select id="contribCommentsFilter" class="contrib-comments-dash__filter-select" aria-label="Filter comments by ticket">
-                                    <option value="all">All comments</option>
-                                    <option value="general">Session only</option>
-                                </select>
-                            </div>
-                            <span id="contribCommentsFilterMeta" class="contrib-comments-dash__filter-meta" aria-live="polite"></span>
-                        </div>
-                        <div class="contrib-comments-dash__body">
-                            <div class="contrib-comments-feed-wrap">
-                                <div id="contribCommentsEmptyState" class="contrib-comments-dash__empty" hidden>
-                                    <span class="contrib-comments-dash__empty-icon" aria-hidden="true">
-                                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                opacity="0.35"
-                                                d="M8 12C8 9.79086 9.79086 8 12 8H28C30.2091 8 32 9.79086 32 12V22C32 24.2091 30.2091 26 28 26H18L12 32V12Z"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path d="M14 16H26M14 20H22" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" opacity="0.5" />
-                                        </svg>
-                                    </span>
-                                    <p class="contrib-comments-dash__empty-title">Nothing here yet</p>
-                                    <p class="contrib-comments-dash__empty-sub">Try another filter or add a comment below.</p>
-                                </div>
+                    <section
+                        id="panelComments"
+                        class="contrib-panel-dash contrib-comments-page"
+                        aria-label="Notes and chat"
+                        hidden
+                    >
+                        <div class="contrib-comments-page__layout">
+                            <div class="contrib-comments-page__scroll">
+                                <p class="contrib-comments-privacy-hint">
+                                    Only your notes and replies from the team are shown here.
+                                </p>
                                 <div
                                     id="contribCommentsFeed"
-                                    class="contrib-comments-feed"
-                                    role="feed"
-                                    aria-label="Comment thread"
-                                    aria-busy="false"
+                                    class="contrib-chat-dock__feed"
+                                    role="log"
+                                    aria-live="polite"
+                                    aria-relevant="additions"
                                 ></div>
                             </div>
-                            <div class="contrib-comments-composer">
-                                <div id="contribCommentsComposerShell" class="contrib-comments-composer__shell">
-                                    <h3 id="contribCommentsComposerTitle" class="contrib-comments-composer__title">Add a comment</h3>
-                                    <div class="contrib-comments-composer__grid">
-                                        <div class="contrib-comments-composer__field">
-                                            <label class="contrib-comments-composer__label" for="contribCommentIssueSelect">Link to ticket</label>
-                                            <select
-                                                id="contribCommentIssueSelect"
-                                                class="contrib-comments-composer__select"
-                                                aria-label="Optional: link comment to a ticket"
-                                            >
-                                                <option value="">General (whole session)</option>
-                                            </select>
-                                        </div>
-                                        <div class="contrib-comments-composer__field">
-                                            <label class="contrib-comments-composer__label" for="contribCommentBody">Message</label>
-                                            <textarea
-                                                id="contribCommentBody"
-                                                class="contrib-comments-composer__textarea"
-                                                rows="4"
-                                                maxlength="5000"
-                                                placeholder="Blockers, questions, handoff context…"
-                                            ></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="contrib-comments-composer__footer">
-                                        <div class="contrib-comments-composer__footer-actions">
-                                            <div class="contrib-comments-composer__post-group">
-                                                <button type="button" id="contribCommentPostBtn" class="contrib-comments-composer__btn">Post</button>
-                                                <button type="button" id="contribCommentCancelEditBtn" class="contrib-comments-composer__btn-secondary" hidden>
-                                                    Cancel edit
-                                                </button>
-                                            </div>
-                                            <div class="contrib-comments-composer__footer-meta">
-                                                <span id="contribCommentCharCount" class="contrib-comments-composer__count" aria-hidden="true">0 / 5000</span>
-                                                <span id="contribCommentsKbdHint" class="contrib-comments-composer__kbd-hint"></span>
-                                            </div>
-                                        </div>
-                                        <p id="contribCommentsPostStatus" class="contrib-comments-composer__status" role="status" aria-live="polite"></p>
-                                    </div>
-                                </div>
+                            <div class="contrib-comments-page__fab-bar">
+                                <button
+                                    type="button"
+                                    id="contribChatFabBtn"
+                                    class="contrib-chat-fab contrib-comments-page__fab"
+                                    aria-label="Add comment"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Add comment
+                                </button>
                             </div>
                         </div>
                     </section>
@@ -2759,10 +2685,6 @@
                         hidden
                     >
                         <h2 id="contribPanelCategoryTitle" class="contrib-panel-dash__title">Spillover categories</h2>
-                        <p class="contrib-category-guide__intro">
-                            Use these definitions to choose the closest <strong>category</strong> when you fill in spillover
-                            on the Spillover tab. Pick one primary category per issue; use the reason field for specifics.
-                        </p>
                         <div class="contrib-category-guide">
                             <div class="contrib-ref-wrap" role="region" aria-label="Category definitions">
                                 <table class="contrib-ref-table">
@@ -2890,10 +2812,6 @@
                         hidden
                     >
                         <h2 id="contribPanelBugCategoryTitle" class="contrib-panel-dash__title">Bug defect categories</h2>
-                        <p class="contrib-category-guide__intro">
-                            Use this reference when you choose <strong>Category</strong> on the Bugs tab. Pick the closest match; use
-                            <strong>RCA</strong> for specifics.
-                        </p>
                         <div class="contrib-category-guide">
                             <div class="contrib-ref-wrap" role="region" aria-label="Bug category definitions">
                                 <table class="contrib-ref-table">
@@ -3066,6 +2984,65 @@
         </div>
     </div>
 
+    <div id="contribCommentModal" class="contrib-cm-modal" role="dialog" aria-modal="true" aria-labelledby="contribCmModalTitle" hidden>
+        <div class="contrib-cm-modal__backdrop" data-cm-modal-close tabindex="-1" aria-hidden="true"></div>
+        <div class="contrib-cm-modal__panel">
+            <header class="contrib-cm-modal__head">
+                <h2 id="contribCmModalTitle" class="visually-hidden">Add or edit a comment</h2>
+                <p class="contrib-cm-modal__crumb">
+                    <span>Comments</span><span class="contrib-cm-modal__crumb-sep">›</span><span id="contribCommentsComposerTitle">New comment</span>
+                </p>
+                <button type="button" class="contrib-cm-modal__x" data-cm-modal-close aria-label="Close">×</button>
+            </header>
+            <div class="contrib-cm-modal__body">
+                <div class="contrib-cm-modal__col contrib-cm-modal__col--left">
+                    <div class="contrib-cm-modal__field">
+                        <div class="contrib-cm-modal__label">
+                            <span>Link to issue</span>
+                        </div>
+                        <select id="contribCommentIssueSelect" class="contrib-cm-modal__input" aria-label="Issue to attach comment to"></select>
+                    </div>
+                    <div class="contrib-cm-modal__field">
+                        <div class="contrib-cm-modal__label">
+                            <span>Message</span>
+                        </div>
+                        <textarea
+                            id="contribCommentBody"
+                            class="contrib-cm-modal__textarea"
+                            maxlength="5000"
+                            rows="7"
+                            placeholder="Write your note…"
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+            <footer class="contrib-cm-modal__foot">
+                <div class="contrib-cm-modal__foot-top">
+                    <span id="contribCommentsPostStatus" class="contrib-comments-composer__status" role="status"></span>
+                    <span id="contribCommentCharCount" class="contrib-cm-modal__count">0 / 5000</span>
+                    <span id="contribCommentsKbdHint" class="contrib-cm-modal__kbd" aria-hidden="true"></span>
+                </div>
+                <div class="contrib-cm-modal__foot-bottom">
+                    <div class="contrib-cm-modal__pills">
+                        <button type="button" class="contrib-cm-modal__pill" id="contribCommentPillSession" title="Clear issue link">
+                            Session only
+                        </button>
+                        <button type="button" class="contrib-cm-modal__pill" id="contribCommentPillClear">Clear</button>
+                    </div>
+                    <div class="contrib-cm-modal__foot-actions">
+                        <button type="button" id="contribCommentCancelEditBtn" class="contrib-cm-modal__secondary" hidden>Cancel</button>
+                        <button type="button" id="contribCommentPostBtn" class="contrib-cm-modal__primary">
+                            <svg class="contrib-cm-modal__primary-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                            <span id="contribCommentPostBtnLabel">Post comment</span>
+                        </button>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
     <script>
         var CATEGORY_OPTIONS = [
             'Defect Blocker',
@@ -3146,6 +3123,145 @@
                 }
             } catch (e2) {}
             return path;
+        }
+
+        /** Avoids throw from r.json() when the response is HTML (wrong host, 404 page, etc.). */
+        function parseInviteApiJsonResponse(r) {
+            return r.text().then(function (text) {
+                var j = {};
+                try {
+                    var t = text != null ? String(text) : '';
+                    if (t.charCodeAt(0) === 0xfeff) t = t.slice(1);
+                    t = t.trim();
+                    j = t ? JSON.parse(t) : {};
+                } catch (eParse) {
+                    var rawHtml = text != null ? String(text) : '';
+                    var cantInviteComments =
+                        /Cannot GET\s+\/api\/invite\/[^/\s]+\/comments/i.test(rawHtml) ||
+                        /Cannot POST\s+\/api\/invite\/[^/\s]+\/comments/i.test(rawHtml);
+                    j = {
+                        ok: false,
+                        error: cantInviteComments
+                            ? 'This API build does not expose invite comments (GET/POST /api/invite/…/comments). Stop every old node process, run npm start from this project again, or redeploy Vercel. Open /api/health — inviteCommentRoutes should be true.'
+                            : 'The server did not return JSON. If you use Live Server or another preview port, the app will try to find the API (for example port 3000) automatically after you reload. You can also add ?api=http://localhost:3000 to the address bar.'
+                    };
+                }
+                return { ok: r.ok, status: r.status, body: j };
+            });
+        }
+
+        function dedupeContribStrings(arr) {
+            var seen = {};
+            var res = [];
+            for (var i = 0; i < (arr || []).length; i++) {
+                var s = arr[i];
+                if (seen[s]) continue;
+                seen[s] = true;
+                res.push(s);
+            }
+            return res;
+        }
+
+        /** Same strategy as analyzer.html: find Express when this page is served from another port (e.g. Live Server). */
+        function buildContribApiBaseCandidates() {
+            var out = [];
+            try {
+                var q = new URLSearchParams(window.location.search).get('api');
+                if (q) {
+                    out.push(String(q).replace(/\/$/, ''));
+                    return out;
+                }
+            } catch (eQ) {}
+            try {
+                var portStr = window.location.port || '';
+                var pagePort = portStr ? parseInt(portStr, 10) : NaN;
+                var h = window.location.hostname || '';
+                var isLocal = h === 'localhost' || h === '127.0.0.1';
+                var isApiRange = !isNaN(pagePort) && pagePort >= 3000 && pagePort <= 3010;
+                if (isLocal && portStr !== '' && !isApiRange) {
+                    out.push('http://' + h + ':3000');
+                    if (h === 'localhost') {
+                        out.push('http://127.0.0.1:3000');
+                    } else if (h === '127.0.0.1') {
+                        out.push('http://localhost:3000');
+                    }
+                }
+            } catch (ePre) {}
+            out.push('');
+            try {
+                var saved = localStorage.getItem('jiraSpilloverApiBase');
+                if (saved) out.push(String(saved).replace(/\/$/, ''));
+            } catch (e2) {}
+            var host = '';
+            try {
+                host = window.location.hostname || '';
+            } catch (e3) {}
+            if (host === 'localhost' || host === '127.0.0.1') {
+                for (var p = 3000; p <= 3010; p++) {
+                    out.push('http://' + host + ':' + p);
+                }
+            } else {
+                for (var p2 = 3000; p2 <= 3010; p2++) {
+                    out.push('http://localhost:' + p2);
+                    out.push('http://127.0.0.1:' + p2);
+                }
+            }
+            if (window.location.protocol === 'file:') {
+                out = out.filter(function (x) {
+                    return x !== '';
+                });
+            }
+            return dedupeContribStrings(out);
+        }
+
+        function probeContribApiBaseTry(i, candidates) {
+            if (i >= (candidates || []).length) return Promise.resolve(false);
+            var base = candidates[i];
+            var url = (base ? base : '') + '/api/health';
+            var ctrl = new AbortController();
+            var timer = setTimeout(function () {
+                ctrl.abort();
+            }, 3200);
+            return fetch(url, { signal: ctrl.signal })
+                .then(function (r) {
+                    clearTimeout(timer);
+                    if (!r.ok) return probeContribApiBaseTry(i + 1, candidates);
+                    return r.text().then(function (text) {
+                        var j = null;
+                        try {
+                            j = text ? JSON.parse(text) : null;
+                        } catch (eJ) {
+                            j = null;
+                        }
+                        if (j && j.ok === true) {
+                            try {
+                                if (base) localStorage.setItem('jiraSpilloverApiBase', base);
+                            } catch (e4) {}
+                            return true;
+                        }
+                        return probeContribApiBaseTry(i + 1, candidates);
+                    });
+                })
+                .catch(function () {
+                    clearTimeout(timer);
+                    return probeContribApiBaseTry(i + 1, candidates);
+                });
+        }
+
+        function probeContribApiBase() {
+            return probeContribApiBaseTry(0, buildContribApiBaseCandidates());
+        }
+
+        var contribApiBaseProbePromise = null;
+
+        function ensureContribApiBaseProbed() {
+            if (!contribApiBaseProbePromise) {
+                contribApiBaseProbePromise = probeContribApiBase().then(function (ok) {
+                    if (!ok) contribApiBaseProbePromise = null;
+                    return ok;
+                });
+            }
+            return contribApiBaseProbePromise;
         }
 
         function persistApiFromQuery() {
@@ -3445,8 +3561,6 @@
 
         /** Set each render — nav click handler uses this to show the right panel. */
         var contribNavVisibility = { showSpill: false, showBug: false };
-        var contribDashCommentCtx = { token: '', issues: [], displayName: 'You' };
-        var contribDashEditingCommentId = null;
 
         function getWorkspaceCompletionState(data) {
             data = data || {};
@@ -4029,11 +4143,7 @@
                             rca: rca != null ? String(rca) : ''
                         })
                     })
-                        .then(function (r) {
-                            return r.json().then(function (j) {
-                                return { ok: r.ok, body: j };
-                            });
-                        })
+                        .then(parseInviteApiJsonResponse)
                         .then(function (out) {
                             if (!out.ok) {
                                 showContributorSaveError((out.body && out.body.error) || 'Save failed', kind);
@@ -4236,27 +4346,68 @@
             });
         }
 
-        function setupContribCommentsNavButton() {
-            var btn = document.getElementById('contribWriteCommentNavBtn');
-            if (!btn || btn.dataset.contribCommentsWired === '1') return;
-            btn.dataset.contribCommentsWired = '1';
-            btn.addEventListener('click', function () {
-                var panelSpill = document.getElementById('panelSpill');
-                var panelBug = document.getElementById('panelBug');
-                var panelCat = document.getElementById('panelCategoryGuide');
-                var panelBugCat = document.getElementById('panelBugCategoryGuide');
-                setContribPanelVisibility(
-                    panelSpill,
-                    panelBug,
-                    panelCat,
-                    panelBugCat,
-                    contribNavVisibility.showSpill,
-                    contribNavVisibility.showBug,
-                    { activePanel: 'comments' }
-                );
-                refreshMixedInviteHeader();
-                focusContribCommentsComposer();
-            });
+        function closeContribCommentModal() {
+            var m = document.getElementById('contribCommentModal');
+            if (m) m.hidden = true;
+            contribDashReplyToId = null;
+            syncContribComposerEditChrome();
+            try {
+                document.body.style.overflow = '';
+            } catch (eO) {}
+        }
+
+        function openContribCommentModal() {
+            var m = document.getElementById('contribCommentModal');
+            if (!m) return;
+            m.hidden = false;
+            try {
+                document.body.style.overflow = 'hidden';
+            } catch (eO2) {}
+            setContribCommentsKbdHint();
+            focusContribCommentsComposer();
+        }
+
+        function openContribCommentsComposerFresh() {
+            cancelContribCommentEdit();
+            clearContribCommentPostStatus();
+            openContribCommentModal();
+        }
+
+        function setContribCommentsSidebarNavActive(on) {
+            var b = document.getElementById('contribSidebarCommentsBtn');
+            if (!b) return;
+            b.classList.toggle('contrib-comments-sidebar-nav--active', !!on);
+            if (on) b.setAttribute('aria-current', 'page');
+            else b.removeAttribute('aria-current');
+        }
+
+        function goContribCommentsPage() {
+            var panelSpill = document.getElementById('panelSpill');
+            var panelBug = document.getElementById('panelBug');
+            var panelCat = document.getElementById('panelCategoryGuide');
+            var panelBugCat = document.getElementById('panelBugCategoryGuide');
+            var nav = document.getElementById('contribNavTabs');
+            if (nav) {
+                var tabs = nav.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                var i;
+                for (i = 0; i < tabs.length; i++) {
+                    tabs[i].classList.remove('contrib-sidenav__btn--active');
+                    tabs[i].setAttribute('aria-selected', 'false');
+                }
+            }
+            setCategoryGuideNavActive(false);
+            setBugCategoryGuideNavActive(false);
+            setContribPanelVisibility(
+                panelSpill,
+                panelBug,
+                panelCat,
+                panelBugCat,
+                contribNavVisibility.showSpill,
+                contribNavVisibility.showBug,
+                { activePanel: 'comments' }
+            );
+            refreshMixedInviteHeader();
+            loadContribCommentsFromApi();
         }
 
         function getActiveContribPanel() {
@@ -4301,14 +4452,10 @@
             opts = opts || {};
             var active = opts.activePanel || 'spill';
             var panelCommentsEl = document.getElementById('panelComments');
-            var commentsNavBtn = document.getElementById('contribWriteCommentNavBtn');
 
             if (active === 'comments') {
                 if (panelCommentsEl) panelCommentsEl.hidden = false;
-                if (commentsNavBtn) {
-                    commentsNavBtn.classList.add('contrib-comments-nav--active');
-                    commentsNavBtn.setAttribute('aria-current', 'page');
-                }
+                setContribCommentsSidebarNavActive(true);
                 if (panelCat) panelCat.hidden = true;
                 if (panelBugCat) panelBugCat.hidden = true;
                 if (panelSpill) panelSpill.hidden = true;
@@ -4327,10 +4474,8 @@
             }
 
             if (panelCommentsEl) panelCommentsEl.hidden = true;
-            if (commentsNavBtn) {
-                commentsNavBtn.classList.remove('contrib-comments-nav--active');
-                commentsNavBtn.removeAttribute('aria-current');
-            }
+            setContribCommentsSidebarNavActive(false);
+            closeContribCommentModal();
 
             if (active === 'categories' && !showSpill) active = showBug ? 'bug' : 'spill';
             if (active === 'bugCategories' && !showBug) active = showSpill ? 'spill' : 'bug';
@@ -4374,11 +4519,7 @@
             }
 
             fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
-                .then(function (r) {
-                    return r.json().then(function (j) {
-                        return { ok: r.ok, status: r.status, body: j };
-                    });
-                })
+                .then(parseInviteApiJsonResponse)
                 .then(function (res) {
                     if (res.status === 410) {
                         if (saveKey) {
@@ -4492,11 +4633,6 @@
                 if (panelCatEmpty) panelCatEmpty.hidden = true;
                 var panelBugCatEmpty = document.getElementById('panelBugCategoryGuide');
                 if (panelBugCatEmpty) panelBugCatEmpty.hidden = true;
-                var commentsNavBtnEmpty = document.getElementById('contribWriteCommentNavBtn');
-                if (commentsNavBtnEmpty) {
-                    commentsNavBtnEmpty.classList.remove('contrib-comments-nav--active');
-                    commentsNavBtnEmpty.removeAttribute('aria-current');
-                }
                 if (panelSpill) {
                     panelSpill.hidden = false;
                     panelSpill.innerHTML =
@@ -4576,10 +4712,10 @@
                     setBugCategoryGuideNavActive(true);
                     setCategoryGuideNavActive(false);
                 } else if (opts.activePanel === 'comments') {
-                    var navBtnsCm = tabsEl.querySelectorAll('.contrib-sidenav__btn[data-panel]');
-                    for (var cm = 0; cm < navBtnsCm.length; cm++) {
-                        navBtnsCm[cm].classList.remove('contrib-sidenav__btn--active');
-                        navBtnsCm[cm].setAttribute('aria-selected', 'false');
+                    var navBtnsCo = tabsEl.querySelectorAll('.contrib-sidenav__btn[data-panel]');
+                    for (var nco = 0; nco < navBtnsCo.length; nco++) {
+                        navBtnsCo[nco].classList.remove('contrib-sidenav__btn--active');
+                        navBtnsCo[nco].setAttribute('aria-selected', 'false');
                     }
                     setCategoryGuideNavActive(false);
                     setBugCategoryGuideNavActive(false);
@@ -4652,7 +4788,6 @@
             setupContribNavTabsDelegation();
             setupContribCategoryGuideNavButton();
             setupContribBugCategoryGuideNavButton();
-            setupContribCommentsNavButton();
             renderIssuesNavList(issues, editsByKey);
             initCommentsDashboard(issues, data, token);
         }
@@ -4670,43 +4805,79 @@
             return escapeHtml(s).replace(/'/g, '&#39;');
         }
 
-        function commentsStorageKey(token) {
-            return 'contribDashComments_v1_' + String(token || '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 120);
-        }
-
-        function readStoredComments(token) {
-            try {
-                var raw = localStorage.getItem(commentsStorageKey(token));
-                if (!raw) return [];
-                var arr = JSON.parse(raw);
-                if (!Array.isArray(arr)) return [];
-                var changed = false;
-                var i;
-                for (i = 0; i < arr.length; i++) {
-                    if (!arr[i] || typeof arr[i] !== 'object') continue;
-                    if (!arr[i].id) {
-                        arr[i].id = newContribCommentId();
-                        changed = true;
-                    }
-                }
-                if (changed) writeStoredComments(token, arr);
-                return arr;
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function writeStoredComments(token, rows) {
-            try {
-                localStorage.setItem(commentsStorageKey(token), JSON.stringify(rows));
-            } catch (e) {}
-        }
-
-        function newContribCommentId() {
-            return 'c_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
-        }
-
         var contribCommentsStatusTimer = null;
+        /** Server-backed comments (same rows as analyzer Comments for this upload). */
+        var contribDashCommentCtx = null;
+        var contribDashReplyToId = null;
+        var contribDashCommentsRows = [];
+
+        function mapApiCommentsToFeedRows(rows) {
+            var out = [];
+            var i;
+            for (i = 0; i < (rows || []).length; i++) {
+                var row = rows[i];
+                if (!row || typeof row !== 'object') continue;
+                out.push({
+                    id: String(row.id != null ? row.id : ''),
+                    parentId: row.parentId != null && String(row.parentId).trim() !== '' ? String(row.parentId) : '',
+                    issueKey: row.issueKey != null ? String(row.issueKey).trim() : '',
+                    body: row.body != null ? String(row.body) : '',
+                    author: row.authorName != null ? String(row.authorName) : 'Contributor',
+                    at: row.createdAt != null ? String(row.createdAt) : new Date().toISOString()
+                });
+            }
+            return out;
+        }
+
+        function loadContribCommentsFromApi(opts) {
+            opts = opts || {};
+            var token =
+                contribDashCommentCtx && contribDashCommentCtx.token
+                    ? String(contribDashCommentCtx.token).trim()
+                    : typeof window !== 'undefined' && window.contribSessionToken
+                      ? String(window.contribSessionToken).trim()
+                      : '';
+            if (!token) {
+                contribDashCommentsRows = [];
+                renderContribCommentsFeed();
+                return;
+            }
+            ensureContribApiBaseProbed().then(function (apiOk) {
+                if (!apiOk) {
+                    contribDashCommentsRows = [];
+                    setContribCommentPostStatus(
+                        'Cannot reach the API. Run npm start or add ?api=http://localhost:3000 to the URL.',
+                        true
+                    );
+                    renderContribCommentsFeed();
+                    return;
+                }
+                fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/comments'))
+                    .then(parseInviteApiJsonResponse)
+                    .then(function (out) {
+                        if (!out.ok || !out.body || !out.body.ok) {
+                            contribDashCommentsRows = [];
+                            setContribCommentPostStatus(
+                                (out.body && out.body.error) ||
+                                    ('Could not load comments (HTTP ' + (out.status || '?') + ').'),
+                                true
+                            );
+                        } else {
+                            contribDashCommentsRows = mapApiCommentsToFeedRows(out.body.comments || []);
+                            if (!opts.preservePostStatus) clearContribCommentPostStatus();
+                        }
+                        renderContribCommentsFeed();
+                    })
+                    .catch(function () {
+                        contribDashCommentsRows = [];
+                        setContribCommentPostStatus(
+                            'Could not load comments (network). If the dashboard is not served by the API host, add ?api=http://localhost:3000 (or your server URL) to the address bar.',
+                            true
+                        );
+                        renderContribCommentsFeed();
+                    });
+            });
+        }
 
         function formatContribRelativeTime(iso) {
             var d = new Date(iso);
@@ -4765,45 +4936,46 @@
         }
 
         function syncContribComposerEditChrome() {
-            var postBtn = document.getElementById('contribCommentPostBtn');
+            var labelEl = document.getElementById('contribCommentPostBtnLabel');
             var cancelBtn = document.getElementById('contribCommentCancelEditBtn');
             var titleEl = document.getElementById('contribCommentsComposerTitle');
-            var editing = !!contribDashEditingCommentId;
-            if (postBtn) postBtn.textContent = editing ? 'Save changes' : 'Post';
-            if (cancelBtn) cancelBtn.hidden = !editing;
-            if (titleEl) titleEl.textContent = editing ? 'Edit comment' : 'Add a comment';
+            var replying = !!(contribDashReplyToId && String(contribDashReplyToId).trim());
+            if (labelEl) labelEl.textContent = replying ? 'Post reply' : 'Post comment';
+            if (cancelBtn) {
+                cancelBtn.hidden = !replying;
+                cancelBtn.textContent = 'Cancel reply';
+            }
+            if (titleEl) titleEl.textContent = replying ? 'Reply to comment' : 'New comment';
         }
 
         function cancelContribCommentEdit() {
-            contribDashEditingCommentId = null;
+            contribDashReplyToId = null;
             var ta = document.getElementById('contribCommentBody');
             var issueSel = document.getElementById('contribCommentIssueSelect');
             if (ta) ta.value = '';
             if (issueSel) issueSel.value = '';
             updateContribCommentCharCount();
             syncContribComposerEditChrome();
+            closeContribCommentModal();
         }
 
-        function beginContribCommentEdit(id) {
+        function beginContribCommentReply(id) {
             id = String(id || '').trim();
             if (!id) return;
-            var token = contribDashCommentCtx && contribDashCommentCtx.token ? String(contribDashCommentCtx.token).trim() : '';
-            if (!token) return;
-            var rows = readStoredComments(token);
             var found = null;
             var i;
-            for (i = 0; i < rows.length; i++) {
-                if (String(rows[i].id) === id) {
-                    found = rows[i];
+            for (i = 0; i < contribDashCommentsRows.length; i++) {
+                if (String(contribDashCommentsRows[i].id) === id) {
+                    found = contribDashCommentsRows[i];
                     break;
                 }
             }
             if (!found) return;
-            contribDashEditingCommentId = id;
+            contribDashReplyToId = id;
             clearContribCommentPostStatus();
             var ta = document.getElementById('contribCommentBody');
             var issueSel = document.getElementById('contribCommentIssueSelect');
-            if (ta) ta.value = found.body != null ? String(found.body) : '';
+            if (ta) ta.value = '';
             if (issueSel) {
                 var ik = found.issueKey != null ? String(found.issueKey).trim() : '';
                 var has = false;
@@ -4828,38 +5000,12 @@
             }
             updateContribCommentCharCount();
             syncContribComposerEditChrome();
+            openContribCommentModal();
             if (ta) {
                 try {
                     ta.focus();
-                    ta.setSelectionRange(ta.value.length, ta.value.length);
                 } catch (eF) {}
             }
-            var shell = document.getElementById('contribCommentsComposerShell');
-            if (shell && shell.scrollIntoView) {
-                try {
-                    shell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                } catch (eS) {}
-            }
-        }
-
-        function deleteContribCommentById(id) {
-            id = String(id || '').trim();
-            if (!id) return;
-            if (!window.confirm('Delete this comment? This cannot be undone in the browser.')) return;
-            var token =
-                contribDashCommentCtx && contribDashCommentCtx.token
-                    ? String(contribDashCommentCtx.token).trim()
-                    : '';
-            if (!token) return;
-            var rows = readStoredComments(token);
-            var next = rows.filter(function (r) {
-                return String(r.id) !== id;
-            });
-            if (next.length === rows.length) return;
-            writeStoredComments(token, next);
-            if (String(contribDashEditingCommentId) === id) cancelContribCommentEdit();
-            setContribCommentPostStatus('Comment deleted.', false);
-            renderContribCommentsFeed();
         }
 
         function sortedInviteIssues(issues) {
@@ -4894,64 +5040,18 @@
 
         function renderContribCommentsFeed() {
             var ctx = contribDashCommentCtx;
-            var token = ctx && ctx.token ? ctx.token : '';
             var feed = document.getElementById('contribCommentsFeed');
-            var emptyEl = document.getElementById('contribCommentsEmptyState');
-            var filterEl = document.getElementById('contribCommentsFilter');
-            var badge = document.getElementById('contribCommentsCountBadge');
-            var meta = document.getElementById('contribCommentsFilterMeta');
             if (!feed) return;
-            var filterVal = filterEl ? String(filterEl.value || 'all') : 'all';
-            var all = readStoredComments(token);
-            var filtered = all.filter(function (c) {
-                if (filterVal === 'all') return true;
-                var key = c.issueKey != null ? String(c.issueKey).trim() : '';
-                if (filterVal === 'general') return !key;
-                return (
-                    key === filterVal ||
-                    normalizeIssueKeyLookup(key) === normalizeIssueKeyLookup(filterVal)
-                );
-            });
+            var filtered = (contribDashCommentsRows || []).slice();
             filtered.sort(function (a, b) {
                 return String(a.at || '').localeCompare(String(b.at || ''));
             });
-            var sumMap = contribIssueSummaryLookup(ctx.issues);
-            if (badge) {
-                badge.textContent = all.length === 1 ? '1' : String(all.length);
-            }
-            if (meta) {
-                if (!all.length) {
-                    meta.textContent = 'No comments saved in this browser yet.';
-                } else if (filtered.length === all.length) {
-                    meta.textContent =
-                        (all.length === 1 ? '1 comment' : all.length + ' comments') + ' · showing all';
-                } else {
-                    meta.textContent =
-                        'Showing ' +
-                        filtered.length +
-                        ' of ' +
-                        all.length +
-                        (all.length === 1 ? ' comment' : ' comments');
-                }
-            }
-            var emptySub = emptyEl ? emptyEl.querySelector('.contrib-comments-dash__empty-sub') : null;
-            var emptyTitle = emptyEl ? emptyEl.querySelector('.contrib-comments-dash__empty-title') : null;
+            var sumMap = contribIssueSummaryLookup(ctx && ctx.issues);
             if (!filtered.length) {
-                feed.innerHTML = '';
-                if (emptyEl) emptyEl.hidden = false;
-                if (emptyTitle) {
-                    emptyTitle.textContent =
-                        all.length && filterVal !== 'all' ? 'No matching comments' : 'Nothing here yet';
-                }
-                if (emptySub) {
-                    emptySub.textContent =
-                        all.length && filterVal !== 'all'
-                            ? 'No comments match this filter. Choose another view or add a new note.'
-                            : 'Add a note below — link it to a ticket or keep it general for the session.';
-                }
+                feed.innerHTML =
+                    '<p class="contrib-chat-empty" role="status">No messages yet. You will see your own notes and replies from the team here.</p>';
                 return;
             }
-            if (emptyEl) emptyEl.hidden = true;
             var html = '';
             var i;
             for (i = 0; i < filtered.length; i++) {
@@ -4971,55 +5071,45 @@
                               minute: '2-digit'
                           })
                         : '';
-                var timeLabel = rel ? rel + (absStr ? ' · ' + absStr : '') : escapeHtml(absStr);
-                var editedMark =
-                    c.editedAt && String(c.editedAt).trim()
-                        ? '<span class="contrib-comment-card__edited">Edited</span>'
-                        : '';
+                var timeShort = rel || escapeHtml(absStr);
                 var rawBody = c.body != null ? String(c.body) : '';
                 var bodyHtml = escapeHtml(rawBody).replace(/\n/g, '<br/>');
                 var summary = key ? sumMap[key] || sumMap[normalizeIssueKeyLookup(key)] || '' : '';
-                var cardMod = key ? ' contrib-comment-card--ticket' : ' contrib-comment-card--session';
+                var bubbleMod = key ? ' contrib-chat-msg__bubble--ticket' : '';
                 var cid = c.id != null ? String(c.id).trim() : '';
-                var badgeInner = key
-                    ? '<span class="contrib-comment-card__ticket">' + escapeHtml(key) + '</span>'
-                    : '<span class="contrib-comment-card__ticket contrib-comment-card__ticket--session">Session</span>';
-                html += '<article class="contrib-comment-card' + cardMod + '">';
-                html += '<div class="contrib-comment-card__avatar" aria-hidden="true">' + initials + '</div>';
-                html += '<div class="contrib-comment-card__main">';
-                html += '<div class="contrib-comment-card__meta">';
-                html += '<div class="contrib-comment-card__meta-primary">';
-                html += '<span class="contrib-comment-card__author">' + author + '</span>';
-                html += editedMark;
-                html += '</div>';
-                html += '<div class="contrib-comment-card__meta-aside">' + badgeInner + '</div>';
+                var chipClass = key ? 'contrib-chat-msg__chip' : 'contrib-chat-msg__chip contrib-chat-msg__chip--session';
+                var chipText = key ? escapeHtml(key) : 'Session';
+                var pid = c.parentId != null ? String(c.parentId).trim() : '';
+                var rowClass = 'contrib-chat-msg' + (pid ? ' contrib-chat-msg--reply' : '');
+                html += '<div class="' + rowClass + '" role="article">';
+                html += '<div class="contrib-chat-msg__avatar" aria-hidden="true">' + initials + '</div>';
+                html += '<div class="contrib-chat-msg__bubble' + bubbleMod + '">';
+                html += '<div class="contrib-chat-msg__bubble-top">';
+                html += '<span class="contrib-chat-msg__author">' + author + '</span>';
+                html += '<span class="' + chipClass + '">' + chipText + '</span>';
                 html +=
-                    '<span class="contrib-comment-card__time" title="' +
+                    '<span class="contrib-chat-msg__time" title="' +
                     escapeAttr(absStr) +
                     '">' +
-                    escapeHtml(timeLabel) +
+                    timeShort +
                     '</span>';
                 html += '</div>';
                 if (key && summary) {
                     html +=
-                        '<p class="contrib-comment-card__summary">' +
-                        escapeHtml(summary.length > 140 ? summary.slice(0, 138) + '\u2026' : summary) +
+                        '<p class="contrib-chat-msg__summary">' +
+                        escapeHtml(summary.length > 120 ? summary.slice(0, 118) + '\u2026' : summary) +
                         '</p>';
                 }
-                html += '<div class="contrib-comment-card__body">' + bodyHtml + '</div>';
-                if (cid) {
-                    html += '<div class="contrib-comment-card__actions">';
+                html += '<div class="contrib-chat-msg__body">' + bodyHtml + '</div>';
+                if (cid && /^\d+$/.test(cid)) {
+                    html += '<div class="contrib-chat-msg__actions">';
                     html +=
-                        '<button type="button" class="contrib-comment-card__action" data-comment-action="edit" data-comment-id="' +
+                        '<button type="button" class="contrib-chat-msg__action" data-comment-action="reply" data-comment-id="' +
                         escapeAttr(cid) +
-                        '">Edit</button>';
-                    html +=
-                        '<button type="button" class="contrib-comment-card__action contrib-comment-card__action--danger" data-comment-action="delete" data-comment-id="' +
-                        escapeAttr(cid) +
-                        '">Delete</button>';
+                        '">Reply</button>';
                     html += '</div>';
                 }
-                html += '</div></article>';
+                html += '</div></div>';
             }
             feed.innerHTML = html;
             try {
@@ -5048,8 +5138,6 @@
         function populateContribCommentSelectors(issues) {
             var sorted = sortedInviteIssues(issues);
             var issueSel = document.getElementById('contribCommentIssueSelect');
-            var filterEl = document.getElementById('contribCommentsFilter');
-            var prevFilter = filterEl ? String(filterEl.value || 'all') : 'all';
             if (issueSel) {
                 issueSel.innerHTML = '<option value="">General (whole session)</option>';
                 for (var i = 0; i < sorted.length; i++) {
@@ -5064,84 +5152,105 @@
                         '</option>';
                 }
             }
-            if (filterEl) {
-                filterEl.innerHTML =
-                    '<option value="all">All comments</option><option value="general">Session only</option>';
-                for (var j = 0; j < sorted.length; j++) {
-                    var iss2 = sorted[j];
-                    var k2 = iss2.issueKey != null ? String(iss2.issueKey).trim() : '';
-                    if (!k2) continue;
-                    filterEl.innerHTML +=
-                        '<option value="' +
-                        escapeAttr(k2) +
-                        '">' +
-                        escapeHtml(buildContribIssueOptionLabel(iss2)) +
-                        '</option>';
-                }
-                var still = false;
-                for (var oi = 0; oi < filterEl.options.length; oi++) {
-                    if (filterEl.options[oi].value === prevFilter) {
-                        still = true;
-                        break;
-                    }
-                }
-                filterEl.value = still ? prevFilter : 'all';
-            }
         }
 
         function postContribCommentFromComposer() {
             var ctx = contribDashCommentCtx;
-            var token = ctx && ctx.token ? String(ctx.token).trim() : '';
+            var token =
+                ctx && ctx.token
+                    ? String(ctx.token).trim()
+                    : typeof window !== 'undefined' && window.contribSessionToken
+                      ? String(window.contribSessionToken).trim()
+                      : '';
             if (!token) {
                 setContribCommentPostStatus('Session not ready.', true);
                 return;
             }
             var ta = document.getElementById('contribCommentBody');
             var issueSel = document.getElementById('contribCommentIssueSelect');
+            var postBtn = document.getElementById('contribCommentPostBtn');
             var body = ta ? String(ta.value || '').trim() : '';
             if (!body) {
-                setContribCommentPostStatus('Write something before posting.', true);
+                setContribCommentPostStatus('Add a message first.', true);
                 return;
             }
             var issueKey = issueSel ? String(issueSel.value || '').trim() : '';
-            var rows = readStoredComments(token);
-            var editing = contribDashEditingCommentId ? String(contribDashEditingCommentId).trim() : '';
-            if (editing) {
-                var idx = -1;
-                var j;
-                for (j = 0; j < rows.length; j++) {
-                    if (String(rows[j].id) === editing) {
-                        idx = j;
-                        break;
-                    }
-                }
-                if (idx < 0) {
-                    setContribCommentPostStatus('That comment no longer exists.', true);
-                    cancelContribCommentEdit();
-                    renderContribCommentsFeed();
-                    return;
-                }
-                rows[idx].body = body;
-                rows[idx].issueKey = issueKey;
-                rows[idx].editedAt = new Date().toISOString();
-                writeStoredComments(token, rows);
-                cancelContribCommentEdit();
-                setContribCommentPostStatus('Comment updated.', false);
-                renderContribCommentsFeed();
+            var parentId = contribDashReplyToId ? String(contribDashReplyToId).trim() : '';
+            if (parentId && !/^\d+$/.test(parentId)) {
+                setContribCommentPostStatus('Invalid reply target.', true);
+                contribDashReplyToId = null;
+                syncContribComposerEditChrome();
                 return;
             }
-            rows.push({
-                id: newContribCommentId(),
-                issueKey: issueKey,
+            var payload = {
                 body: body,
-                author: ctx.displayName || 'You',
-                at: new Date().toISOString()
+                issueKey: issueKey,
+                displayName: ctx && ctx.displayName ? String(ctx.displayName).trim() : ''
+            };
+            if (parentId) payload.parentId = parentId;
+
+            if (postBtn && postBtn.dataset.contribPosting === '1') {
+                return;
+            }
+            if (postBtn) postBtn.dataset.contribPosting = '1';
+
+            ensureContribApiBaseProbed().then(function (apiOk) {
+                if (!apiOk) {
+                    if (postBtn) delete postBtn.dataset.contribPosting;
+                    setContribCommentPostStatus(
+                        'Cannot reach the API. Run npm start or add ?api=http://localhost:3000 to the URL.',
+                        true
+                    );
+                    return;
+                }
+                if (postBtn) postBtn.disabled = true;
+                fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/comments'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json'
+                    },
+                    cache: 'no-store',
+                    body: JSON.stringify(payload)
+                })
+                    .then(parseInviteApiJsonResponse)
+                    .then(function (out) {
+                        if (postBtn) delete postBtn.dataset.contribPosting;
+                        if (postBtn) postBtn.disabled = false;
+                        var posted =
+                            out.ok &&
+                            out.body &&
+                            (out.body.ok === true ||
+                                (out.status === 201 &&
+                                    out.body.comment &&
+                                    out.body.comment.id != null &&
+                                    String(out.body.comment.id).trim() !== ''));
+                        if (!posted) {
+                            var errLine =
+                                (out.body && out.body.error) ||
+                                ('Could not post comment (HTTP ' + (out.status || '?') + ').');
+                            var tryUrl = apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/comments');
+                            setContribCommentPostStatus(errLine + ' Request URL: ' + tryUrl, true);
+                            return;
+                        }
+                        contribDashReplyToId = null;
+                        if (ta) ta.value = '';
+                        if (issueSel) issueSel.value = '';
+                        updateContribCommentCharCount();
+                        syncContribComposerEditChrome();
+                        setContribCommentPostStatus('Posted.', false);
+                        loadContribCommentsFromApi({ preservePostStatus: true });
+                        closeContribCommentModal();
+                    })
+                    .catch(function () {
+                        if (postBtn) delete postBtn.dataset.contribPosting;
+                        if (postBtn) postBtn.disabled = false;
+                        setContribCommentPostStatus(
+                            'Could not post comment (network). If the dashboard is not served by the API host, add ?api=http://localhost:3000 (or your server URL) to the address bar.',
+                            true
+                        );
+                    });
             });
-            writeStoredComments(token, rows);
-            if (ta) ta.value = '';
-            updateContribCommentCharCount();
-            setContribCommentPostStatus('Saved locally in this browser.', false);
-            renderContribCommentsFeed();
         }
 
         function focusContribCommentsComposer() {
@@ -5155,9 +5264,9 @@
 
         function initCommentsDashboard(issues, data, token) {
             token = String(token || '').trim();
-            var panel = document.getElementById('panelComments');
-            if (!panel) return;
-            contribDashEditingCommentId = null;
+            var feed = document.getElementById('contribCommentsFeed');
+            if (!feed) return;
+            contribDashReplyToId = null;
             contribDashCommentCtx = {
                 token: token,
                 issues: issues && issues.slice ? issues.slice() : [],
@@ -5165,41 +5274,64 @@
             };
             populateContribCommentSelectors(contribDashCommentCtx.issues);
             syncContribComposerEditChrome();
-            renderContribCommentsFeed();
             updateContribCommentCharCount();
             setContribCommentsKbdHint();
-            if (panel.dataset.contribCommentsDashWired === '1') return;
-            panel.dataset.contribCommentsDashWired = '1';
-            var postBtn = document.getElementById('contribCommentPostBtn');
             var cancelEditBtn = document.getElementById('contribCommentCancelEditBtn');
-            var filterEl = document.getElementById('contribCommentsFilter');
             var taBody = document.getElementById('contribCommentBody');
-            if (postBtn) {
-                postBtn.addEventListener('click', function () {
-                    postContribCommentFromComposer();
+            var modal = document.getElementById('contribCommentModal');
+            var fab = document.getElementById('contribChatFabBtn');
+            var navCommentsBtn = document.getElementById('contribSidebarCommentsBtn');
+            if (modal && modal.dataset.contribCmClickV2 !== '1') {
+                modal.dataset.contribCmClickV2 = '1';
+                modal.addEventListener('click', function (ev) {
+                    if (ev.target.closest('[data-cm-modal-close]')) {
+                        closeContribCommentModal();
+                        return;
+                    }
+                    if (ev.target.closest('#contribCommentPostBtn')) {
+                        ev.preventDefault();
+                        postContribCommentFromComposer();
+                    }
                 });
             }
-            if (cancelEditBtn) {
+            if (cancelEditBtn && !cancelEditBtn.dataset.contribCmWired) {
+                cancelEditBtn.dataset.contribCmWired = '1';
                 cancelEditBtn.addEventListener('click', function () {
                     cancelContribCommentEdit();
                     clearContribCommentPostStatus();
                 });
             }
-            panel.addEventListener('click', function (ev) {
-                var actBtn = ev.target.closest('[data-comment-action][data-comment-id]');
-                if (!actBtn || !panel.contains(actBtn)) return;
-                var cid = actBtn.getAttribute('data-comment-id');
-                var act = actBtn.getAttribute('data-comment-action');
-                if (!cid) return;
-                if (act === 'delete') deleteContribCommentById(cid);
-                else if (act === 'edit') beginContribCommentEdit(cid);
-            });
-            if (filterEl) {
-                filterEl.addEventListener('change', function () {
-                    renderContribCommentsFeed();
+            if (fab && !fab.dataset.contribCmWired) {
+                fab.dataset.contribCmWired = '1';
+                fab.addEventListener('click', function () {
+                    openContribCommentsComposerFresh();
                 });
             }
-            if (taBody) {
+            if (navCommentsBtn && !navCommentsBtn.dataset.contribCmWired) {
+                navCommentsBtn.dataset.contribCmWired = '1';
+                navCommentsBtn.addEventListener('click', function () {
+                    goContribCommentsPage();
+                });
+            }
+            if (modal && !modal.dataset.contribCmWired) {
+                modal.dataset.contribCmWired = '1';
+                modal.addEventListener('click', function (ev) {
+                    if (ev.target.closest('[data-cm-modal-close]')) closeContribCommentModal();
+                });
+            }
+            if (!feed.dataset.contribCmWired) {
+                feed.dataset.contribCmWired = '1';
+                feed.addEventListener('click', function (ev) {
+                    var actBtn = ev.target.closest('[data-comment-action][data-comment-id]');
+                    if (!actBtn || !feed.contains(actBtn)) return;
+                    var cid = actBtn.getAttribute('data-comment-id');
+                    var act = actBtn.getAttribute('data-comment-action');
+                    if (!cid) return;
+                    if (act === 'reply') beginContribCommentReply(cid);
+                });
+            }
+            if (taBody && !taBody.dataset.contribCmWired) {
+                taBody.dataset.contribCmWired = '1';
                 taBody.addEventListener('input', updateContribCommentCharCount);
                 taBody.addEventListener('keydown', function (ev) {
                     if (ev.key !== 'Enter') return;
@@ -5208,6 +5340,23 @@
                     postContribCommentFromComposer();
                 });
             }
+            var pillSess = document.getElementById('contribCommentPillSession');
+            var pillClear = document.getElementById('contribCommentPillClear');
+            var issueSel = document.getElementById('contribCommentIssueSelect');
+            if (pillSess && issueSel && !pillSess.dataset.contribCmWired) {
+                pillSess.dataset.contribCmWired = '1';
+                pillSess.addEventListener('click', function () {
+                    issueSel.value = '';
+                });
+            }
+            if (pillClear && taBody && !pillClear.dataset.contribCmWired) {
+                pillClear.dataset.contribCmWired = '1';
+                pillClear.addEventListener('click', function () {
+                    taBody.value = '';
+                    updateContribCommentCharCount();
+                });
+            }
+            loadContribCommentsFromApi();
         }
 
         function categoryOptionsHtml(selected) {
@@ -5338,6 +5487,7 @@
                 shell.hidden = true;
                 shell.classList.remove('contrib-shell--enter');
             }
+            closeContribCommentModal();
             if (landing) landing.hidden = false;
             if (foot) foot.hidden = false;
             var wn = document.getElementById('contribSidebarWelcomeName');
@@ -5676,46 +5826,54 @@
             clearAllBanners();
             showContributorWorkspaceLoading();
 
-            fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
-                .then(function (r) {
-                    return r.json().then(function (j) {
-                        return { ok: r.ok, status: r.status, body: j };
-                    });
-                })
-                .then(function (res) {
-                    if (res.status === 410) {
-                        clearStoredContribInviteToken();
-                        restoreContributorLandingView();
-                        showBanner(
-                            (res.body && res.body.error) || 'This invite has expired.',
-                            'err',
-                            'landing'
-                        );
-                        return;
-                    }
-                    if (!res.ok || !res.body.ok) {
-                        restoreContributorLandingView();
-                        showBanner((res.body && res.body.error) || 'Could not load invite.', 'err', 'landing');
-                        return;
-                    }
-
-                    document.documentElement.classList.remove('contrib-invite-pending');
-
-                    var data = res.body;
-                    persistContribInviteToken(token);
-                    renderContributorWorkspace(data, token);
-                    requestAnimationFrame(function () {
-                        triggerWorkspaceEnterAnimation();
-                    });
-                })
-                .catch(function () {
+            ensureContribApiBaseProbed().then(function (apiOk) {
+                if (!apiOk) {
                     restoreContributorLandingView();
                     showBanner(
-                        'Could not reach the server. Start the app (npm start) and open this page from that address. If the port is not 3000, add ?api=http://localhost:YOUR_PORT to the URL. Re-create the invite from the analyzer if your link is old (new links include the API address).',
+                        'Backend not reachable. In the project folder run npm start, then reload this page. If the API is not on port 3000, add ?api=http://localhost:YOUR_PORT to the address bar (use your real port).',
                         'err',
                         'landing'
                     );
-                });
+                    return;
+                }
+
+                fetch(apiFetchUrl('/api/invite/' + encodeURIComponent(token) + '/session'))
+                    .then(parseInviteApiJsonResponse)
+                    .then(function (res) {
+                        if (res.status === 410) {
+                            clearStoredContribInviteToken();
+                            restoreContributorLandingView();
+                            showBanner(
+                                (res.body && res.body.error) || 'This invite has expired.',
+                                'err',
+                                'landing'
+                            );
+                            return;
+                        }
+                        if (!res.ok || !res.body || !res.body.ok) {
+                            restoreContributorLandingView();
+                            showBanner((res.body && res.body.error) || 'Could not load invite.', 'err', 'landing');
+                            return;
+                        }
+
+                        document.documentElement.classList.remove('contrib-invite-pending');
+
+                        var data = res.body;
+                        persistContribInviteToken(token);
+                        renderContributorWorkspace(data, token);
+                        requestAnimationFrame(function () {
+                            triggerWorkspaceEnterAnimation();
+                        });
+                    })
+                    .catch(function () {
+                        restoreContributorLandingView();
+                        showBanner(
+                            'Could not reach the server. Start the app (npm start) and reload. If the port is not 3000, add ?api=http://localhost:YOUR_PORT to the URL. Re-create the invite from the analyzer if your link is old (new links include the API address).',
+                            'err',
+                            'landing'
+                        );
+                    });
+            });
         }
 
         /**
@@ -5763,7 +5921,9 @@
 
             function modalBlocksEscape() {
                 var thank = document.getElementById('contribThankModal');
-                return thank && !thank.hidden;
+                if (thank && !thank.hidden) return true;
+                var cm = document.getElementById('contribCommentModal');
+                return !!(cm && !cm.hidden);
             }
 
             function setNavOpen(open) {
@@ -5782,6 +5942,12 @@
             });
             document.addEventListener('keydown', function (e) {
                 if (e.key !== 'Escape') return;
+                var cm = document.getElementById('contribCommentModal');
+                if (cm && !cm.hidden) {
+                    closeContribCommentModal();
+                    e.preventDefault();
+                    return;
+                }
                 if (modalBlocksEscape()) return;
                 if (document.body.classList.contains('contrib-nav-open')) setNavOpen(false);
             });
@@ -5821,9 +5987,15 @@
                     setNavOpen(false);
                 });
             }
-            var commentsNavBtnMob = document.getElementById('contribWriteCommentNavBtn');
-            if (commentsNavBtnMob) {
-                commentsNavBtnMob.addEventListener('click', function () {
+            var chatFabMob = document.getElementById('contribChatFabBtn');
+            if (chatFabMob) {
+                chatFabMob.addEventListener('click', function () {
+                    setNavOpen(false);
+                });
+            }
+            var sidebarCommentsMob = document.getElementById('contribSidebarCommentsBtn');
+            if (sidebarCommentsMob) {
+                sidebarCommentsMob.addEventListener('click', function () {
                     setNavOpen(false);
                 });
             }

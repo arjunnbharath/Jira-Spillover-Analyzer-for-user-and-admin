@@ -5,7 +5,7 @@
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
     "api/index.js": {
-      "includeFiles": "{analyzer.html,auth.html,user-dashboard.html,firebase-config.js,images/**,js/**,templates/**,db/**}",
+      "includeFiles": "{express-app.js,analyzer.html,auth.html,user-dashboard.html,firebase-config.js,images/**,js/**,templates/**,db/**}",
       "maxDuration": 60
     }
   }

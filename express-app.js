@@ -10,6 +10,7 @@ const { Pool } = require('pg');
 const dotenv = require('dotenv');
 const XLSX = require('xlsx');
 const nodemailer = require('nodemailer');
+const { exec } = require('child_process');
 
 dotenv.config({ path: path.join(__dirname, '.env'), override: true });
 
@@ -506,6 +507,253 @@ async function fetchInviteOr404(client, token) {
   return { invite: inv };
 }
 
+function uploadCommentRowToJson(row) {
+  if (!row) return null;
+  return {
+    id: String(row.id),
+    parentId: row.parent_id != null ? String(row.parent_id) : null,
+    body: row.body != null ? String(row.body) : '',
+    authorName: row.author_name != null ? String(row.author_name) : '',
+    authorUid: row.author_uid != null ? String(row.author_uid) : '',
+    issueKey: row.issue_key != null ? String(row.issue_key) : '',
+    assigneeScope: row.assignee_scope != null ? String(row.assignee_scope) : '',
+    createdAt: row.created_at ? new Date(row.created_at).toISOString() : null,
+  };
+}
+
+/** Matches user-dashboard contributorDisplayName / formatNameFromInviteEmail (assignee scope, else email local-part). */
+function formatNameFromInviteEmailExpress(email) {
+  const raw = email != null ? String(email).trim() : '';
+  const lower = raw.toLowerCase();
+  const at = lower.indexOf('@');
+  if (at <= 0) return '';
+  let local = lower.slice(0, at);
+  const plus = local.indexOf('+');
+  if (plus >= 0) local = local.slice(0, plus);
+  const parts = local.split(/[._-]+/).filter((p) => p.length > 0);
+  if (!parts.length) return '';
+  return parts.map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+}
+
+function inviteeDisplayNameFromInviteRow(inv) {
+  if (!inv) return '';
+  const scope = inv.assignee_scope != null ? String(inv.assignee_scope).trim() : '';
+  if (scope) return scope;
+  const em = inv.invitee_email != null ? String(inv.invitee_email).trim() : '';
+  if (em) {
+    const fromEmail = formatNameFromInviteEmailExpress(em);
+    if (fromEmail) return fromEmail;
+  }
+  return 'Your workspace';
+}
+
+function normInviteAuthorLabel(s) {
+  return String(s || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ');
+}
+
+function isInviteCommentSelfRow(row, inviteeLabelNorm) {
+  const n = normInviteAuthorLabel(row.author_name);
+  return n !== '' && n === inviteeLabelNorm;
+}
+
+/** Analyst / admin posts: signed-in Firebase uid, common labels, or email-style display name. */
+function isInviteCommentPrivilegedAnalystRow(row) {
+  const uid = row.author_uid != null ? String(row.author_uid).trim() : '';
+  if (uid.length >= 18) return true;
+  const n = normInviteAuthorLabel(row.author_name);
+  if (n === 'analyst' || n === 'admin') return true;
+  const raw = row.author_name != null ? String(row.author_name).trim() : '';
+  if (raw.includes('@')) return true;
+  return false;
+}
+
+/**
+ * Invite GET: this invitee's comments; analyst replies in those threads; analyst notes on issue
+ * keys for this invite; and assignee-targeted analyst notes (empty issue_key + assignee_scope)
+ * for assignee-filtered invites.
+ */
+function filterUploadCommentsForInviteViewer(rows, inv, inviteIssueKeyNormSet, inviteAssigneeNormSet) {
+  const list = rows || [];
+  if (!list.length) return [];
+  const labelNorm = normInviteAuthorLabel(inviteeDisplayNameFromInviteRow(inv));
+  const issueSet = inviteIssueKeyNormSet instanceof Set ? inviteIssueKeyNormSet : new Set();
+  const assigneeSet = inviteAssigneeNormSet instanceof Set ? inviteAssigneeNormSet : new Set();
+
+  const byId = new Map();
+  for (let i = 0; i < list.length; i++) {
+    const row = list[i];
+    byId.set(String(row.id), row);
+  }
+
+  const children = new Map();
+  for (let i = 0; i < list.length; i++) {
+    const row = list[i];
+    const pid = row.parent_id != null ? String(row.parent_id).trim() : '';
+    if (pid && /^\d+$/.test(pid)) {
+      if (!children.has(pid)) children.set(pid, []);
+      children.get(pid).push(String(row.id));
+    }
+  }
+
+  const visible = new Set();
+  const queue = [];
+
+  for (let i = 0; i < list.length; i++) {
+    const row = list[i];
+    if (isInviteCommentSelfRow(row, labelNorm)) {
+      const id = String(row.id);
+      if (!visible.has(id)) {
+        visible.add(id);
+        queue.push(id);
+      }
+    }
+  }
+
+  for (let i = 0; i < list.length; i++) {
+    const row = list[i];
+    const ikRaw = row.issue_key != null ? String(row.issue_key).trim() : '';
+    const ik = ikRaw ? normalizeIssueKeyDedupe(ikRaw) : '';
+    if (!ik || !issueSet.has(ik)) continue;
+    if (!isInviteCommentPrivilegedAnalystRow(row)) continue;
+    const id = String(row.id);
+    if (!visible.has(id)) {
+      visible.add(id);
+      queue.push(id);
+    }
+  }
+
+  if (inv.filter_by_assignee && assigneeSet.size) {
+    for (let i = 0; i < list.length; i++) {
+      const row = list[i];
+      if (!isInviteCommentPrivilegedAnalystRow(row)) continue;
+      const ikRaw = row.issue_key != null ? String(row.issue_key).trim() : '';
+      const ik = ikRaw ? normalizeIssueKeyDedupe(ikRaw) : '';
+      if (ik) continue;
+      const asRaw = row.assignee_scope != null ? String(row.assignee_scope).trim() : '';
+      if (!asRaw) continue;
+      if (!assigneeSet.has(normalizeAssigneeForMatch(asRaw))) continue;
+      const id = String(row.id);
+      if (!visible.has(id)) {
+        visible.add(id);
+        queue.push(id);
+      }
+    }
+  }
+
+  while (queue.length) {
+    const pid = queue.shift();
+    const kids = children.get(pid) || [];
+    for (let j = 0; j < kids.length; j++) {
+      const kid = kids[j];
+      if (visible.has(kid)) continue;
+      const row = byId.get(kid);
+      if (!row) continue;
+      if (isInviteCommentSelfRow(row, labelNorm) || isInviteCommentPrivilegedAnalystRow(row)) {
+        visible.add(kid);
+        queue.push(kid);
+      }
+    }
+  }
+
+  return list.filter((row) => visible.has(String(row.id)));
+}
+
+function parseCommentPostBody(reqBody) {
+  const body = reqBody && typeof reqBody === 'object' ? reqBody : {};
+  const rawText = body.body != null ? String(body.body) : '';
+  const text = rawText.trim();
+  if (!text) {
+    const err = new Error('Comment body is required');
+    err.statusCode = 400;
+    throw err;
+  }
+  const maxLen = 8000;
+  if (text.length > maxLen) {
+    const err = new Error(`Comment must be at most ${maxLen} characters`);
+    err.statusCode = 400;
+    throw err;
+  }
+  let issueKey = body.issueKey != null ? String(body.issueKey).trim() : '';
+  if (issueKey.length > 64) issueKey = issueKey.slice(0, 64);
+
+  let parentId = null;
+  if (body.parentId != null && String(body.parentId).trim() !== '') {
+    const pid = String(body.parentId).trim();
+    if (!/^\d+$/.test(pid)) {
+      const err = new Error('Invalid parent comment id');
+      err.statusCode = 400;
+      throw err;
+    }
+    parentId = pid;
+  }
+  let assigneeScope = body.assigneeScope != null ? String(body.assigneeScope).trim() : '';
+  if (assigneeScope.length > 400) assigneeScope = assigneeScope.slice(0, 400);
+  return { text, issueKey, parentId, assigneeScope };
+}
+
+/**
+ * Spillover/bug data is keyed by issue_field_edits PRIMARY KEY (upload_id, issue_key).
+ * For ticket-scoped comments, ensure that row exists (empty defaults) so comments align to the same key;
+ * ON CONFLICT DO NOTHING preserves existing analyst/contributor edit values.
+ */
+async function ensureIssueFieldEditStubForComment(client, uploadId, normalizedIssueKey) {
+  const ik = normalizedIssueKey != null ? String(normalizedIssueKey).trim() : '';
+  if (!ik) return;
+  await client.query(
+    `INSERT INTO issue_field_edits
+      (upload_id, issue_key, spillover_reason, spillover_category, spillover_yes_no, prod, rca, bug_category, updated_at)
+     VALUES ($1::bigint, $2::text, '', '', '', '', '', '', NOW())
+     ON CONFLICT (upload_id, issue_key) DO NOTHING`,
+    [uploadId, ik]
+  );
+}
+
+async function insertUploadComment(
+  client,
+  uploadId,
+  { text, authorName, authorUid, parentId, issueKey, assigneeScope }
+) {
+  const rawIk = issueKey != null ? String(issueKey).trim() : '';
+  const ik = rawIk ? normalizeIssueKeyDedupe(rawIk) : '';
+  let scopeRaw = assigneeScope != null ? String(assigneeScope).trim() : '';
+  if (scopeRaw.length > 400) scopeRaw = scopeRaw.slice(0, 400);
+  if (ik) {
+    try {
+      await ensureIssueFieldEditStubForComment(client, uploadId, ik);
+    } catch (eStub) {
+      console.error('ensureIssueFieldEditStubForComment failed (comment insert will still run):', eStub);
+    }
+  }
+  if (parentId) {
+    const pr = await client.query(
+      `SELECT id FROM upload_comments WHERE id = $1::bigint AND upload_id = $2::bigint`,
+      [parentId, uploadId]
+    );
+    if (!pr.rows.length) {
+      const err = new Error('Parent comment not found for this upload');
+      err.statusCode = 400;
+      throw err;
+    }
+    const ins = await client.query(
+      `INSERT INTO upload_comments (upload_id, parent_id, body, author_name, author_uid, issue_key, assignee_scope)
+       VALUES ($1::bigint, $2::bigint, $3, $4, $5, $6, $7)
+       RETURNING id, parent_id, body, author_name, author_uid, issue_key, assignee_scope, created_at`,
+      [uploadId, parentId, text, authorName, authorUid, ik, scopeRaw]
+    );
+    return ins.rows[0];
+  }
+  const ins = await client.query(
+    `INSERT INTO upload_comments (upload_id, parent_id, body, author_name, author_uid, issue_key, assignee_scope)
+     VALUES ($1::bigint, NULL, $2, $3, $4, $5, $6)
+     RETURNING id, parent_id, body, author_name, author_uid, issue_key, assignee_scope, created_at`,
+    [uploadId, text, authorName, authorUid, ik, scopeRaw]
+  );
+  return ins.rows[0];
+}
+
 function normalizeAssigneeForMatch(s) {
   return String(s || '')
     .trim()
@@ -762,6 +1010,8 @@ app.get('/api/health', async (req, res) => {
     ok: true,
     databaseConfigured: configured,
     databaseReachable: false,
+    /** False only on very old deployments; contributor comments need GET/POST /api/invite/:token/comments */
+    inviteCommentRoutes: true,
   };
   if (!configured) {
     body.hint =
@@ -817,7 +1067,7 @@ app.post('/api/database/clear-all', async (req, res) => {
       ok: true,
       deletedUploads: r.rowCount,
       message:
-        'All uploads and related rows (invites, issue edits) were removed.',
+        'All uploads and related rows (invites, issue edits, comments) were removed.',
     });
   } catch (e) {
     console.error(e);
@@ -1021,6 +1271,110 @@ app.get('/api/uploads/:id/issue-edits', async (req, res) => {
     res.json({
       ok: true,
       edits: mergeIssueEditRowsForInvite(r.rows).map(coerceInviteEditRowForJson),
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
+app.get('/api/uploads/:id/comments', async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({
+      error: 'DATABASE_URL is not set. Add your database connection URI to .env',
+    });
+  }
+  const id = req.params.id;
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).json({ error: 'Invalid upload id' });
+  }
+
+  const client = await p.connect();
+  try {
+    await ensureSchema(client);
+    const check = await client.query(`SELECT id FROM file_uploads WHERE id = $1`, [id]);
+    if (!check.rows.length) {
+      return res.status(404).json({ error: 'Upload not found' });
+    }
+    const r = await client.query(
+      `SELECT id, upload_id, parent_id, body, author_name, author_uid, issue_key, assignee_scope, created_at
+       FROM upload_comments WHERE upload_id = $1
+       ORDER BY created_at ASC`,
+      [id]
+    );
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.json({
+      ok: true,
+      comments: r.rows.map((row) => uploadCommentRowToJson(row)),
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
+app.post('/api/uploads/:id/comments', async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({
+      error: 'DATABASE_URL is not set. Add your database connection URI to .env',
+    });
+  }
+  const id = req.params.id;
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).json({ error: 'Invalid upload id' });
+  }
+
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  let parsed;
+  try {
+    parsed = parseCommentPostBody(body);
+  } catch (eParse) {
+    return res.status(eParse.statusCode || 400).json({ error: String(eParse.message || eParse) });
+  }
+
+  let authorName = body.authorName != null ? String(body.authorName).trim() : '';
+  if (authorName.length > 200) authorName = authorName.slice(0, 200);
+  let authorUid = body.authorUid != null ? String(body.authorUid).trim() : '';
+  if (authorUid.length > 128) authorUid = authorUid.slice(0, 128);
+  if (!authorName) authorName = 'Analyst';
+
+  const client = await p.connect();
+  try {
+    await ensureSchema(client);
+    const check = await client.query(`SELECT id FROM file_uploads WHERE id = $1`, [id]);
+    if (!check.rows.length) {
+      return res.status(404).json({ error: 'Upload not found' });
+    }
+
+    let row;
+    try {
+      row = await insertUploadComment(client, id, {
+        text: parsed.text,
+        authorName,
+        authorUid,
+        parentId: parsed.parentId,
+        issueKey: parsed.issueKey,
+        assigneeScope: parsed.assigneeScope,
+      });
+    } catch (eIns) {
+      const code = eIns.statusCode || 500;
+      return res.status(code).json({
+        error: String(eIns.message || eIns),
+      });
+    }
+    res.status(201).json({
+      ok: true,
+      comment: uploadCommentRowToJson(row),
     });
   } catch (e) {
     console.error(e);
@@ -1789,6 +2143,143 @@ app.get('/api/invite/:token/session', async (req, res) => {
   }
 });
 
+app.get(['/api/invite/:token/comments', '/api/invite/:token/comments/'], async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({
+      error: 'DATABASE_URL is not set. Add your database connection URI to .env',
+    });
+  }
+  const raw = String(req.params.token || '').trim();
+  if (!/^[0-9a-f-]{36}$/i.test(raw)) {
+    return res.status(400).json({ error: 'Invalid token' });
+  }
+  const client = await p.connect();
+  try {
+    await ensureSchema(client);
+    const got = await fetchInviteOr404(client, raw);
+    if (!got) {
+      return res.status(404).json({ error: 'Invite not found' });
+    }
+    if (got.expired) {
+      return res.status(410).json({ error: 'Invite expired' });
+    }
+    const uploadId = got.invite.upload_id;
+    const r = await client.query(
+      `SELECT id, upload_id, parent_id, body, author_name, author_uid, issue_key, assignee_scope, created_at
+       FROM upload_comments WHERE upload_id = $1
+       ORDER BY created_at ASC`,
+      [uploadId]
+    );
+    const { issues } = await buildIssuesForInvite(client, got.invite);
+    const inviteIssueKeyNormSet = new Set();
+    for (let ii = 0; ii < (issues || []).length; ii++) {
+      const iss = issues[ii];
+      const rawK = iss && iss.issueKey != null ? String(iss.issueKey).trim() : '';
+      if (!rawK) continue;
+      const ded = normalizeIssueKeyDedupe(rawK);
+      if (ded) inviteIssueKeyNormSet.add(ded);
+    }
+    const inviteAssigneeNormSet = new Set();
+    if (got.invite.filter_by_assignee) {
+      for (let ai = 0; ai < (issues || []).length; ai++) {
+        const iss = issues[ai];
+        const a = iss && iss.assignee != null ? String(iss.assignee).trim() : '';
+        if (a) inviteAssigneeNormSet.add(normalizeAssigneeForMatch(a));
+      }
+    }
+    const filteredRows = filterUploadCommentsForInviteViewer(
+      r.rows,
+      got.invite,
+      inviteIssueKeyNormSet,
+      inviteAssigneeNormSet
+    );
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.json({
+      ok: true,
+      comments: filteredRows.map((row) => uploadCommentRowToJson(row)),
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
+app.post(['/api/invite/:token/comments', '/api/invite/:token/comments/'], async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({
+      error: 'DATABASE_URL is not set. Add your database connection URI to .env',
+    });
+  }
+  const raw = String(req.params.token || '').trim();
+  if (!/^[0-9a-f-]{36}$/i.test(raw)) {
+    return res.status(400).json({ error: 'Invalid token' });
+  }
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  let parsed;
+  try {
+    parsed = parseCommentPostBody(body);
+  } catch (eParse) {
+    return res.status(eParse.statusCode || 400).json({ error: String(eParse.message || eParse) });
+  }
+
+  let authorName =
+    body.displayName != null && String(body.displayName).trim()
+      ? String(body.displayName).trim()
+      : body.authorName != null
+        ? String(body.authorName).trim()
+        : '';
+  if (authorName.length > 200) authorName = authorName.slice(0, 200);
+  let authorUid = body.authorUid != null ? String(body.authorUid).trim() : '';
+  if (authorUid.length > 128) authorUid = authorUid.slice(0, 128);
+  if (!authorName) authorName = 'Contributor';
+
+  const client = await p.connect();
+  try {
+    await ensureSchema(client);
+    const got = await fetchInviteOr404(client, raw);
+    if (!got) {
+      return res.status(404).json({ error: 'Invite not found' });
+    }
+    if (got.expired) {
+      return res.status(410).json({ error: 'Invite expired' });
+    }
+    const uploadId = String(got.invite.upload_id);
+    let row;
+    try {
+      row = await insertUploadComment(client, uploadId, {
+        text: parsed.text,
+        authorName,
+        authorUid,
+        parentId: parsed.parentId,
+        issueKey: parsed.issueKey,
+        assigneeScope: parsed.assigneeScope,
+      });
+    } catch (eIns) {
+      const code = eIns.statusCode || 500;
+      return res.status(code).json({
+        error: String(eIns.message || eIns),
+      });
+    }
+    res.status(201).json({
+      ok: true,
+      comment: uploadCommentRowToJson(row),
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
 /** Primary: bugCategory. Accepts bug_category / "Bug category" / any key matching /^bug[\s_-]*category$/i. */
 function pickBugCategoryFromBody(body) {
   if (!body || typeof body !== 'object') return '';
@@ -2063,11 +2554,33 @@ app.use(express.static(ROOT));
 
 module.exports = app;
 
+/** After `npm start`, open Chrome (Windows/macOS) or default browser (Linux). Set OPEN_BROWSER=0 to skip. */
+function openBrowserAfterStart(port) {
+  const v = String(process.env.OPEN_BROWSER || '').trim().toLowerCase();
+  if (v === '0' || v === 'false' || v === 'no') return;
+  const url = `http://localhost:${port}/`;
+  setTimeout(function () {
+    try {
+      if (process.platform === 'win32') {
+        exec('start chrome ' + JSON.stringify(url), { windowsHide: true, shell: true });
+      } else if (process.platform === 'darwin') {
+        exec('open -a ' + JSON.stringify('Google Chrome') + ' ' + JSON.stringify(url));
+      } else {
+        exec('xdg-open ' + JSON.stringify(url));
+      }
+    } catch (eOpen) {
+      /* ignore */
+    }
+  }, 450);
+}
+
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`http://localhost:${PORT}`);
+    console.log('[routes] invite comments: GET/POST /api/invite/:token/comments');
     if (!process.env.DATABASE_URL) {
       console.warn('Warning: DATABASE_URL not set — /api/upload will return 503.');
     }
+    openBrowserAfterStart(PORT);
   });
 }

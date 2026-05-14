@@ -60,3 +60,26 @@ CREATE INDEX IF NOT EXISTS idx_issue_field_edits_upload ON issue_field_edits (up
 ALTER TABLE issue_field_edits ADD COLUMN IF NOT EXISTS bug_category TEXT NOT NULL DEFAULT '';
 
 ALTER TABLE issue_field_edits ADD COLUMN IF NOT EXISTS spillover_yes_no TEXT NOT NULL DEFAULT '';
+
+-- Analyst workspace comments per upload (analyzer Comments dashboard; supports replies)
+CREATE TABLE IF NOT EXISTS upload_comments (
+  id BIGSERIAL PRIMARY KEY,
+  upload_id BIGINT NOT NULL REFERENCES file_uploads (id) ON DELETE CASCADE,
+  parent_id BIGINT REFERENCES upload_comments (id) ON DELETE CASCADE,
+  body TEXT NOT NULL,
+  author_name TEXT NOT NULL DEFAULT '',
+  author_uid TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_upload_comments_upload_id ON upload_comments (upload_id);
+CREATE INDEX IF NOT EXISTS idx_upload_comments_parent_id ON upload_comments (parent_id);
+CREATE INDEX IF NOT EXISTS idx_upload_comments_created ON upload_comments (upload_id, created_at);
+
+-- Same dimensions as issue_field_edits PK (upload_id, issue_key) for ticket-scoped threads; session uses issue_key ''.
+CREATE INDEX IF NOT EXISTS idx_upload_comments_upload_issue ON upload_comments (upload_id, issue_key);
+
+ALTER TABLE upload_comments ADD COLUMN IF NOT EXISTS issue_key TEXT NOT NULL DEFAULT '';
+
+-- Admin "Add comment" target assignee (when issue_key is empty); invite visibility matches assignee-scoped invites.
+ALTER TABLE upload_comments ADD COLUMN IF NOT EXISTS assignee_scope TEXT NOT NULL DEFAULT '';
