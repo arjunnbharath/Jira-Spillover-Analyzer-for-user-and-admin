@@ -570,6 +570,19 @@ function isInviteCommentPrivilegedAnalystRow(row) {
   return false;
 }
 
+/** Same trust model as POST body: privileged analyst may edit/delete any upload comment; else own row only. */
+function actorCanModifyUploadCommentRow(row, authorName, authorUid) {
+  const pseudo = { author_name: authorName, author_uid: authorUid };
+  if (isInviteCommentPrivilegedAnalystRow(pseudo)) return true;
+  const ruid = row.author_uid != null ? String(row.author_uid).trim() : '';
+  const quid = authorUid != null ? String(authorUid).trim() : '';
+  if (ruid && quid && ruid === quid) return true;
+  const rn = normInviteAuthorLabel(row.author_name);
+  const qn = normInviteAuthorLabel(authorName);
+  if (!ruid && !quid && rn && qn && rn === qn) return true;
+  return false;
+}
+
 /**
  * Invite GET: this invitee's comments; analyst replies in those threads; analyst notes on issue
  * keys for this invite; and assignee-targeted analyst notes (empty issue_key + assignee_scope)
@@ -694,6 +707,24 @@ function parseCommentPostBody(reqBody) {
   return { text, issueKey, parentId, assigneeScope };
 }
 
+function parseCommentPatchBody(reqBody) {
+  const body = reqBody && typeof reqBody === 'object' ? reqBody : {};
+  const rawText = body.body != null ? String(body.body) : '';
+  const text = rawText.trim();
+  if (!text) {
+    const err = new Error('Comment body is required');
+    err.statusCode = 400;
+    throw err;
+  }
+  const maxLen = 8000;
+  if (text.length > maxLen) {
+    const err = new Error(`Comment must be at most ${maxLen} characters`);
+    err.statusCode = 400;
+    throw err;
+  }
+  return { text };
+}
+
 /**
  * Spillover/bug data is keyed by issue_field_edits PRIMARY KEY (upload_id, issue_key).
  * For ticket-scoped comments, ensure that row exists (empty defaults) so comments align to the same key;
@@ -752,6 +783,52 @@ async function insertUploadComment(
     [uploadId, text, authorName, authorUid, ik, scopeRaw]
   );
   return ins.rows[0];
+}
+
+async function updateUploadComment(client, uploadId, commentId, text, authorName, authorUid) {
+  const sel = await client.query(
+    `SELECT id, author_name, author_uid FROM upload_comments WHERE id = $1::bigint AND upload_id = $2::bigint`,
+    [commentId, uploadId]
+  );
+  if (!sel.rows.length) {
+    const err = new Error('Comment not found');
+    err.statusCode = 404;
+    throw err;
+  }
+  const row = sel.rows[0];
+  if (!actorCanModifyUploadCommentRow(row, authorName, authorUid)) {
+    const err = new Error('Not allowed to edit this comment');
+    err.statusCode = 403;
+    throw err;
+  }
+  const up = await client.query(
+    `UPDATE upload_comments SET body = $1 WHERE id = $2::bigint AND upload_id = $3::bigint
+     RETURNING id, parent_id, body, author_name, author_uid, issue_key, assignee_scope, created_at`,
+    [text, commentId, uploadId]
+  );
+  return up.rows[0];
+}
+
+async function deleteUploadComment(client, uploadId, commentId, authorName, authorUid) {
+  const sel = await client.query(
+    `SELECT id, author_name, author_uid FROM upload_comments WHERE id = $1::bigint AND upload_id = $2::bigint`,
+    [commentId, uploadId]
+  );
+  if (!sel.rows.length) {
+    const err = new Error('Comment not found');
+    err.statusCode = 404;
+    throw err;
+  }
+  const row = sel.rows[0];
+  if (!actorCanModifyUploadCommentRow(row, authorName, authorUid)) {
+    const err = new Error('Not allowed to delete this comment');
+    err.statusCode = 403;
+    throw err;
+  }
+  await client.query(`DELETE FROM upload_comments WHERE id = $1::bigint AND upload_id = $2::bigint`, [
+    commentId,
+    uploadId,
+  ]);
 }
 
 function normalizeAssigneeForMatch(s) {
@@ -1376,6 +1453,112 @@ app.post('/api/uploads/:id/comments', async (req, res) => {
       ok: true,
       comment: uploadCommentRowToJson(row),
     });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
+app.patch('/api/uploads/:id/comments/:commentId', async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({
+      error: 'DATABASE_URL is not set. Add your database connection URI to .env',
+    });
+  }
+  const uploadId = req.params.id;
+  const commentId = req.params.commentId;
+  if (!/^\d+$/.test(uploadId) || !/^\d+$/.test(commentId)) {
+    return res.status(400).json({ error: 'Invalid id' });
+  }
+
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  let parsed;
+  try {
+    parsed = parseCommentPatchBody(body);
+  } catch (eParse) {
+    return res.status(eParse.statusCode || 400).json({ error: String(eParse.message || eParse) });
+  }
+
+  let authorName = body.authorName != null ? String(body.authorName).trim() : '';
+  if (authorName.length > 200) authorName = authorName.slice(0, 200);
+  let authorUid = body.authorUid != null ? String(body.authorUid).trim() : '';
+  if (authorUid.length > 128) authorUid = authorUid.slice(0, 128);
+  if (!authorName) authorName = 'Analyst';
+
+  const client = await p.connect();
+  try {
+    await ensureSchema(client);
+    const check = await client.query(`SELECT id FROM file_uploads WHERE id = $1`, [uploadId]);
+    if (!check.rows.length) {
+      return res.status(404).json({ error: 'Upload not found' });
+    }
+    let row;
+    try {
+      row = await updateUploadComment(client, uploadId, commentId, parsed.text, authorName, authorUid);
+    } catch (eUp) {
+      const code = eUp.statusCode || 500;
+      return res.status(code).json({ error: String(eUp.message || eUp) });
+    }
+    res.json({ ok: true, comment: uploadCommentRowToJson(row) });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'development' ? String(e.message || e) : 'Database error',
+    });
+  } finally {
+    client.release();
+  }
+});
+
+app.delete('/api/uploads/:id/comments/:commentId', async (req, res) => {
+  const p = getPool();
+  if (!p) {
+    return res.status(503).json({
+      error: 'DATABASE_URL is not set. Add your database connection URI to .env',
+    });
+  }
+  const uploadId = req.params.id;
+  const commentId = req.params.commentId;
+  if (!/^\d+$/.test(uploadId) || !/^\d+$/.test(commentId)) {
+    return res.status(400).json({ error: 'Invalid id' });
+  }
+
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  let authorName =
+    req.query.authorName != null && String(req.query.authorName).trim() !== ''
+      ? String(req.query.authorName).trim()
+      : body.authorName != null
+        ? String(body.authorName).trim()
+        : '';
+  if (authorName.length > 200) authorName = authorName.slice(0, 200);
+  let authorUid =
+    req.query.authorUid != null && String(req.query.authorUid).trim() !== ''
+      ? String(req.query.authorUid).trim()
+      : body.authorUid != null
+        ? String(body.authorUid).trim()
+        : '';
+  if (authorUid.length > 128) authorUid = authorUid.slice(0, 128);
+  if (!authorName) authorName = 'Analyst';
+
+  const client = await p.connect();
+  try {
+    await ensureSchema(client);
+    const check = await client.query(`SELECT id FROM file_uploads WHERE id = $1`, [uploadId]);
+    if (!check.rows.length) {
+      return res.status(404).json({ error: 'Upload not found' });
+    }
+    try {
+      await deleteUploadComment(client, uploadId, commentId, authorName, authorUid);
+    } catch (eDel) {
+      const code = eDel.statusCode || 500;
+      return res.status(code).json({ error: String(eDel.message || eDel) });
+    }
+    res.json({ ok: true });
   } catch (e) {
     console.error(e);
     res.status(500).json({

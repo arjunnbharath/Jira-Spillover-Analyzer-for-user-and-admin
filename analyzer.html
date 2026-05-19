@@ -846,18 +846,21 @@
             display: none !important;
         }
 
-        /* —— Analyzer Comments: people cards + author modal —— */
+        /* —— Analyzer Comments —— */
         .analyzer-comments {
-            margin-top: 0.75rem;
-        }
-        .analyzer-comments--cards-only {
             margin-top: 0.5rem;
         }
+        .analyzer-comments--cards-only {
+            margin-top: 0.35rem;
+        }
         .analyzer-comments-dashboard-status {
-            font-size: 0.8125rem;
-            min-height: 1.25em;
-            margin: 0 0 0.75rem 0;
+            font-size: 0.75rem;
+            min-height: 1.1em;
+            margin: 0 0 0.5rem 0;
             color: var(--text-muted);
+        }
+        .analyzer-comments-dashboard-status.acm-dash-page__status {
+            margin-bottom: 0;
         }
         .analyzer-comments-dashboard-status.analyzer-comments__status--err {
             color: #f87171;
@@ -917,8 +920,8 @@
         }
         .analyzer-comments__textarea:focus {
             outline: none;
-            border-color: rgba(59, 130, 246, 0.45);
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: none;
         }
         .analyzer-comments__composer-actions {
             display: flex;
@@ -975,11 +978,11 @@
 
         .analyzer-comments-people-wrap {
             margin-bottom: 0;
-            padding: 1.15rem 1.1rem 1.35rem;
-            border-radius: 12px;
-            background: #0a0a0c;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            padding: 1rem;
+            border-radius: 8px;
+            background: var(--surface, #141416);
+            border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+            box-shadow: none;
         }
         .analyzer-comments-participants-heading {
             font-size: 0.68rem;
@@ -994,12 +997,13 @@
         }
         .acm-people-board-empty {
             text-align: center;
-            padding: 2rem 1rem;
-            color: #9ca3af;
-            font-size: 0.8125rem;
-            line-height: 1.5;
-            border: 1px dashed rgba(255, 255, 255, 0.12);
-            border-radius: 10px;
+            padding: 1.25rem 0.85rem;
+            color: var(--text-muted, #9ca3af);
+            font-size: 0.78rem;
+            line-height: 1.45;
+            border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+            border-radius: 6px;
+            background: transparent;
         }
         .acm-people-grid {
             display: grid;
@@ -1109,7 +1113,7 @@
         .analyzer-comment-author-overlay {
             z-index: 1150;
         }
-        /* People-who-commented → chat-style thread */
+        /* Author thread modal (minimal) */
         .analyzer-author-chat.workspace-db-clear-modal {
             position: relative;
             max-width: 26rem;
@@ -1120,10 +1124,10 @@
             flex-direction: column;
             padding: 0;
             overflow: hidden;
-            border-radius: 16px;
-            background: linear-gradient(165deg, #141418 0%, #0c0c0f 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+            border-radius: 8px;
+            background: var(--surface, #141416);
+            border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
         }
         .analyzer-author-chat .analyzer-author-chat__close {
             position: absolute;
@@ -1135,26 +1139,26 @@
             flex-shrink: 0;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.85rem 2.5rem 0.75rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(0, 0, 0, 0.25);
+            gap: 0.65rem;
+            padding: 0.65rem 2.25rem 0.65rem 0.85rem;
+            border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+            background: transparent;
         }
         .analyzer-author-chat__avatar {
             flex-shrink: 0;
-            width: 2.65rem;
-            height: 2.65rem;
+            width: 2.25rem;
+            height: 2.25rem;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.78rem;
-            font-weight: 700;
+            font-size: 0.72rem;
+            font-weight: 600;
             letter-spacing: 0.02em;
-            color: #f8fafc;
-            background: linear-gradient(135deg, #334155 0%, #0ea5e9 100%);
-            border: 2px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.25);
+            color: #e4e4e7;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            box-shadow: none;
         }
         .analyzer-author-chat__headtext {
             min-width: 0;
@@ -1162,107 +1166,738 @@
         }
         .analyzer-author-chat__title {
             margin: 0;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #f9fafb;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text, #fafafa);
             line-height: 1.25;
             word-break: break-word;
         }
         .analyzer-author-chat__subtitle {
-            margin: 0.2rem 0 0 0;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: #9ca3af;
-            letter-spacing: 0.02em;
+            margin: 0.15rem 0 0 0;
+            font-size: 0.68rem;
+            font-weight: 400;
+            color: var(--text-muted, #9ca3af);
+            letter-spacing: 0;
         }
         .analyzer-author-chat__messages {
             flex: 1;
             min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 0.85rem 0.75rem 1rem;
-            background: radial-gradient(120% 80% at 50% 0%, rgba(56, 189, 248, 0.06) 0%, transparent 55%),
-                #0a0a0d;
+            padding: 0.65rem 0.75rem 0.85rem;
+            background: var(--surface-2, #111113);
             scroll-behavior: smooth;
         }
-        .acm-chat-thread {
+        .acm-dash-main__thread .acm-chat-thread {
             display: flex;
             flex-direction: column;
             gap: 0.65rem;
         }
-        .acm-chat-msg {
+        .acm-dash-main__thread .acm-chat-msg {
             display: flex;
-            justify-content: flex-start;
+            flex-direction: column;
+            max-width: 100%;
         }
-        .acm-chat-msg__bubble {
-            max-width: 92%;
-            border-radius: 14px 14px 14px 4px;
-            padding: 0.55rem 0.7rem 0.5rem;
-            background: #1a2332;
-            border: 1px solid rgba(56, 189, 248, 0.15);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        .acm-dash-main__thread .acm-chat-msg__row {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.45rem;
+            max-width: 100%;
         }
-        .acm-chat-msg__meta {
+        .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__row {
+            justify-content: flex-end;
+        }
+        .acm-dash-main__thread .acm-chat-msg__avatar {
+            flex-shrink: 0;
+            width: 1.85rem;
+            height: 1.85rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #f4f4f5;
+            background: linear-gradient(145deg, #3f3f46, #27272a);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.15rem;
+        }
+        .acm-dash-main__thread .acm-chat-msg__bubble {
+            flex: 0 1 auto;
+            max-width: min(88%, 22rem);
+            border-radius: 18px;
+            padding: 0.55rem 0.75rem 0.6rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+        .acm-dash-main__thread .acm-chat-msg--theirs .acm-chat-msg__bubble {
+            background: #2a2a30;
+            border-radius: 6px 18px 18px 18px;
+        }
+        .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__bubble {
+            background: #243124;
+            border-color: rgba(34, 197, 94, 0.28);
+            border-radius: 18px 6px 18px 18px;
+        }
+        .acm-dash-main__thread .acm-chat-msg__meta {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 0.35rem 0.5rem;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.3rem;
         }
-        .acm-chat-msg__time {
-            font-size: 0.65rem;
-            font-weight: 500;
-            color: #64748b;
+        .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__meta {
+            justify-content: flex-end;
         }
-        .acm-chat-msg__bubble .analyzer-comments-issue {
+        .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__who {
+            text-align: right;
+        }
+        .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__edit-actions {
+            justify-content: flex-end;
+        }
+        .acm-dash-main__thread .acm-chat-msg__time {
             font-size: 0.62rem;
-            padding: 0.12rem 0.4rem;
-            border-radius: 999px;
-            background: rgba(56, 189, 248, 0.12);
-            color: #7dd3fc;
-            border: 1px solid rgba(56, 189, 248, 0.22);
+            font-weight: 500;
+            color: #94a3b8;
         }
-        .acm-chat-msg__text {
-            font-size: 0.8125rem;
-            line-height: 1.45;
-            color: #e2e8f0;
+        .acm-dash-main__thread .acm-chat-msg__bubble .analyzer-comments-issue {
+            font-size: 0.6rem;
+            padding: 0.12rem 0.35rem;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.35);
+            color: #cbd5e1;
+            border: none;
+        }
+        .acm-dash-main__thread .acm-chat-msg__text {
+            font-size: 0.84rem;
+            line-height: 1.5;
+            color: #f4f4f5;
             white-space: pre-wrap;
             word-break: break-word;
         }
-        .acm-chat-msg__actions {
+        .acm-dash-main__thread .acm-chat-msg__who {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #a1a1aa;
+            margin-bottom: 0.2rem;
+        }
+        .acm-dash-main__thread .acm-chat-msg__toolbar {
+            margin-top: 0.4rem;
+            padding-top: 0.35rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            align-items: center;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.68rem;
+            font-weight: 600;
+            line-height: 1.2;
+            cursor: pointer;
+            transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn:focus-visible {
+            outline: 2px solid rgba(34, 197, 94, 0.55);
+            outline-offset: 1px;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn--ghost {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn--ghost:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.12);
+            color: #f8fafc;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn--primary {
+            background: rgba(34, 197, 94, 0.22);
+            border-color: rgba(34, 197, 94, 0.45);
+            color: #ecfdf5;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn--primary:hover:not(:disabled) {
+            background: rgba(34, 197, 94, 0.32);
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn--secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn--secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn--danger {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(248, 113, 113, 0.35);
+            color: #fecaca;
+        }
+        .acm-dash-main__thread .acm-chat-msg__btn--danger:hover:not(:disabled) {
+            background: rgba(239, 68, 68, 0.22);
+            color: #fef2f2;
+        }
+        .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__toolbar {
+            justify-content: flex-end;
+        }
+        .acm-dash-main__thread .acm-chat-msg__edit {
+            margin-top: 0.4rem;
+        }
+        .acm-dash-main__thread .acm-chat-msg__edit-actions {
+            margin-top: 0.35rem;
+            display: flex;
+            gap: 0.45rem;
+        }
+        .acm-dash-main__thread .acm-chat-msg .analyzer-comments-reply-form {
             margin-top: 0.45rem;
-            padding-top: 0.4rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .acm-chat-msg__actions .btn {
-            font-size: 0.7rem;
-            padding: 0.28rem 0.65rem;
-            border-radius: 999px;
-        }
-        .acm-chat-msg .analyzer-comments-reply-form {
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 10px;
+            padding: 0.45rem;
+            border-radius: 8px;
             background: rgba(0, 0, 0, 0.35);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .acm-chat-msg .analyzer-comments__textarea {
+        .acm-dash-main__thread .acm-chat-msg .analyzer-comments__textarea {
             width: 100%;
             box-sizing: border-box;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: #0f1419;
-            color: #f1f5f9;
+            background: rgba(0, 0, 0, 0.4);
+            color: #f8fafc;
             font-size: 0.8rem;
-            padding: 0.45rem 0.55rem;
+            padding: 0.4rem 0.5rem;
             resize: vertical;
-            min-height: 3.25rem;
+            min-height: 3rem;
         }
-        .acm-chat-msg .analyzer-comments__composer-actions {
+        .acm-dash-main__thread .acm-chat-msg .analyzer-comments__composer-actions {
             margin-top: 0.45rem;
             display: flex;
             justify-content: flex-end;
             gap: 0.4rem;
+        }
+
+        /* Comments dashboard: messenger-style dark (no app nav) */
+        #commentsPhase.comments-phase--dashboard {
+            display: flex;
+            flex-direction: column;
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            max-width: 100%;
+        }
+        .acm-dash-page {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+        .acm-dash-page__bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 0.5rem 1rem;
+            flex-shrink: 0;
+        }
+        .acm-dash-page__lead {
+            min-width: 0;
+        }
+        .acm-dash-page__title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: #fafafa;
+        }
+        .acm-dash-page__lede {
+            margin: 0.2rem 0 0;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            color: #a1a1aa;
+            max-width: 40rem;
+        }
+        .acm-dash-page__status {
+            margin: 0;
+            text-align: right;
+            align-self: center;
+            max-width: min(100%, 22rem);
+            font-size: 0.72rem;
+            color: #a1a1aa;
+        }
+        .acm-dash-page__status:empty {
+            min-height: 0;
+        }
+        .analyzer-comments--dashboard-chat {
+            display: flex;
+            flex-direction: column;
+            margin-top: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+        .acm-dash-shell {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            height: min(72vh, 44rem);
+            min-height: 24rem;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: #141416;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+        }
+        .acm-dash-sidebar {
+            flex: 0 0 min(100%, 17.5rem);
+            width: min(100%, 17.5rem);
+            max-width: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: #18181b;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .acm-dash-sidebar__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 0.9rem 0.65rem;
+            flex-shrink: 0;
+        }
+        .acm-dash-sidebar__title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fafafa;
+            letter-spacing: -0.02em;
+        }
+        .acm-dash-sidebar__badge {
+            min-width: 1.4rem;
+            height: 1.4rem;
+            padding: 0 0.4rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #ecfdf5;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.45);
+            border-radius: 8px;
+        }
+        .acm-dash-sidebar__search-wrap {
+            position: relative;
+            margin: 0 0.65rem 0.65rem;
+            flex-shrink: 0;
+        }
+        .acm-dash-sidebar__search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #71717a;
+            display: flex;
+            pointer-events: none;
+        }
+        .acm-dash-sidebar__search {
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #27272a;
+            color: #fafafa;
+            font: inherit;
+            font-size: 0.8rem;
+            padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+            outline: none;
+        }
+        .acm-dash-sidebar__search::placeholder {
+            color: #71717a;
+        }
+        .acm-dash-sidebar__search:focus {
+            border-color: rgba(34, 197, 94, 0.45);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15);
+        }
+        .acm-dash-sidebar__list {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0 0.5rem 0.5rem;
+        }
+        .acm-dash-sidebar__list .acm-dash-sidebar-empty {
+            margin: 0.75rem;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.78rem;
+            color: #71717a;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .acm-dash-sidebar__footer {
+            flex-shrink: 0;
+            padding: 0.65rem 0.75rem 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: #18181b;
+        }
+        .acm-dash-sidebar__new-chat {
+            width: 100%;
+            border-radius: 999px;
+            border: 2px solid rgba(34, 197, 94, 0.55);
+            background: transparent;
+            color: #4ade80;
+            font: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.55rem 0.75rem;
+            cursor: pointer;
+            transition: background 0.12s ease, color 0.12s ease;
+        }
+        .acm-dash-sidebar__new-chat:hover {
+            background: rgba(34, 197, 94, 0.1);
+            color: #86efac;
+        }
+        .acm-dash-peer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .acm-dash-peer {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            width: 100%;
+            margin: 0;
+            padding: 0.65rem 0.7rem;
+            border: none;
+            border-radius: 14px;
+            background: transparent;
+            cursor: pointer;
+            text-align: left;
+            color: inherit;
+            font: inherit;
+            transition: background 0.12s ease;
+        }
+        .acm-dash-peer:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .acm-dash-peer:focus-visible {
+            outline: 2px solid rgba(34, 197, 94, 0.55);
+            outline-offset: 2px;
+        }
+        .acm-dash-peer--active {
+            background: rgba(34, 197, 94, 0.1);
+            box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.25);
+        }
+        .acm-dash-peer__avatar {
+            flex-shrink: 0;
+            width: 2.35rem;
+            height: 2.35rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #fafafa;
+            background: linear-gradient(145deg, #3f3f46, #27272a);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .acm-dash-peer--lead .acm-dash-peer__avatar {
+            background: linear-gradient(145deg, rgba(34, 197, 94, 0.35), #27272a);
+            border-color: rgba(34, 197, 94, 0.35);
+        }
+        .acm-dash-peer__body {
+            flex: 1;
+            min-width: 0;
+        }
+        .acm-dash-peer__row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.35rem;
+        }
+        .acm-dash-peer__name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #fafafa;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .acm-dash-peer__time {
+            flex-shrink: 0;
+            font-size: 0.65rem;
+            color: #71717a;
+        }
+        .acm-dash-peer__snippet {
+            margin-top: 0.15rem;
+            font-size: 0.72rem;
+            color: #a1a1aa;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .acm-dash-peer__role {
+            display: none;
+        }
+        .acm-dash-main {
+            flex: 1;
+            min-width: 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: #101012;
+        }
+        .acm-dash-main--idle .acm-dash-main__online-dot {
+            background: #52525b;
+            box-shadow: none;
+        }
+        .acm-dash-main__head {
+            flex-shrink: 0;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: #141416;
+        }
+        .acm-dash-main__head-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+        .acm-dash-main__peer {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            min-width: 0;
+        }
+        .acm-dash-main__avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fafafa;
+            background: linear-gradient(145deg, #3f3f46, #27272a);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .acm-dash-main__headtext {
+            min-width: 0;
+        }
+        .acm-dash-main__to {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fafafa;
+            letter-spacing: -0.02em;
+        }
+        .acm-dash-main__subline {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.35rem 0.5rem;
+            margin-top: 0.2rem;
+        }
+        .acm-dash-main__online-dot {
+            width: 0.45rem;
+            height: 0.45rem;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+            flex-shrink: 0;
+        }
+        .acm-dash-main__active {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #4ade80;
+        }
+        .acm-dash-main--idle .acm-dash-main__active {
+            color: #71717a;
+        }
+        .acm-dash-main__hint {
+            margin: 0;
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: #71717a;
+        }
+        .acm-dash-main__actions {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-shrink: 0;
+        }
+        .acm-dash-main__icon-btn {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #27272a;
+            color: #a1a1aa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+            opacity: 0.65;
+        }
+        .acm-dash-main__thread {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 0.85rem 1rem 0.75rem;
+            background: #101012;
+        }
+        .acm-dash-empty-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 12rem;
+            padding: 2rem 1.25rem;
+            text-align: center;
+            font-size: 0.82rem;
+            line-height: 1.55;
+            color: #71717a;
+        }
+        .acm-dash-composer {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.4rem;
+            padding: 0.65rem 0.85rem 1.15rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: #141416;
+        }
+        .acm-dash-composer__hint-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        .acm-dash-composer__hint {
+            font-size: 0.72rem;
+            color: #a1a1aa;
+            padding: 0 0.1rem;
+            flex: 1;
+            min-width: 0;
+        }
+        .acm-dash-composer__hint-clear {
+            flex-shrink: 0;
+            border: none;
+            border-radius: 8px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.68rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #27272a;
+            color: #a1a1aa;
+        }
+        .acm-dash-composer__hint-clear:hover {
+            background: #3f3f46;
+            color: #fafafa;
+        }
+        .acm-dash-composer__row {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+        .acm-dash-composer__field {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            min-width: 0;
+            padding: 0.35rem 0.65rem 0.35rem 0.45rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #27272a;
+        }
+        .acm-dash-composer__attach {
+            flex-shrink: 0;
+            width: 2.1rem;
+            height: 2.1rem;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: #a1a1aa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+            opacity: 0.55;
+        }
+        .acm-dash-composer__input {
+            flex: 1;
+            min-width: 0;
+            min-height: 2.25rem;
+            max-height: 9rem;
+            border: none;
+            background: transparent;
+            color: #fafafa;
+            font: inherit;
+            font-size: 0.875rem;
+            line-height: 1.45;
+            resize: none;
+            padding: 0.35rem 0;
+        }
+        .acm-dash-composer__input:focus {
+            outline: none;
+        }
+        .acm-dash-composer__field:focus-within {
+            border-color: rgba(34, 197, 94, 0.35);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.12);
+        }
+        .acm-dash-composer__send {
+            flex-shrink: 0;
+            width: 2.85rem;
+            height: 2.85rem;
+            border-radius: 50%;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(145deg, #22c55e, #16a34a);
+            box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+        }
+        .acm-dash-composer__send svg {
+            margin-left: 2px;
+        }
+        .acm-dash-composer__send:hover {
+            filter: brightness(1.08);
+        }
+        @media (max-width: 900px) {
+            .acm-dash-shell {
+                flex-direction: column;
+                height: min(68vh, 40rem);
+                min-height: 22rem;
+            }
+            .acm-dash-sidebar {
+                flex: 0 0 auto;
+                width: 100%;
+                max-height: 11rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            }
+            .acm-dash-main {
+                min-height: 14rem;
+            }
+            .acm-dash-page__status {
+                text-align: left;
+                width: 100%;
+                max-width: none;
+            }
         }
 
         .ticket-detail-section {
@@ -6365,32 +7000,139 @@
                     </section>
                 </div>
 
-                <!-- Comments: people who commented (cards + modal only) -->
-                <div id="commentsPhase" class="comments-phase setup-phase" hidden>
-                    <header class="page-head">
-                        <div>
-                            <p class="breadcrumb">Collaboration</p>
-                            <h1 class="page-head__title">Comments</h1>
-                            <p class="page-head__sub">
-                                People who commented on this upload. <strong>Open a card</strong> to read the thread and reply.
-                            </p>
-                        </div>
-                        <div class="page-head__actions">
-                            <button type="button" id="analyzerCommentsBtnAdd" class="btn btn-primary">Add comment</button>
-                        </div>
-                    </header>
-                    <section
-                        class="data-section analyzer-comments analyzer-comments--cards-only"
-                        aria-label="People who commented"
-                    >
-                        <p id="analyzerCommentsStatus" class="analyzer-comments-dashboard-status" role="status" aria-live="polite"></p>
-                        <div class="analyzer-comments-people-wrap">
-                            <div class="analyzer-comments-participants" aria-label="People who commented">
-                                <h2 class="analyzer-comments-participants-heading">People who commented</h2>
-                                <div id="analyzerCommentsParticipants" class="acm-people-board"></div>
+                <!-- Comments: sidebar + chat (dashboard) -->
+                <div id="commentsPhase" class="comments-phase comments-phase--dashboard setup-phase" hidden>
+                    <div class="acm-dash-page">
+                        <header class="acm-dash-page__bar">
+                            <div class="acm-dash-page__lead">
+                                <h2 class="acm-dash-page__title">Comments</h2>
+                                <p class="acm-dash-page__lede">Threads with everyone who commented on this upload.</p>
+                            </div>
+                            <p
+                                id="analyzerCommentsStatus"
+                                class="analyzer-comments-dashboard-status acm-dash-page__status"
+                                role="status"
+                                aria-live="polite"
+                            ></p>
+                        </header>
+                        <section
+                            class="data-section analyzer-comments analyzer-comments--dashboard-chat"
+                            aria-label="Comments dashboard"
+                        >
+                            <div class="acm-dash-shell">
+                            <aside class="acm-dash-sidebar" aria-label="Messages">
+                                <div class="acm-dash-sidebar__head">
+                                    <span class="acm-dash-sidebar__title">Messages</span>
+                                    <span id="analyzerCommentsSidebarCount" class="acm-dash-sidebar__badge" aria-live="polite">0</span>
+                                </div>
+                                <div class="acm-dash-sidebar__search-wrap">
+                                    <label for="analyzerCommentsPeerSearch" class="visually-hidden">Search conversations</label>
+                                    <span class="acm-dash-sidebar__search-icon" aria-hidden="true">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="11" cy="11" r="7" />
+                                            <path d="M21 21l-4.3-4.3" stroke-linecap="round" />
+                                        </svg>
+                                    </span>
+                                    <input
+                                        type="search"
+                                        id="analyzerCommentsPeerSearch"
+                                        class="acm-dash-sidebar__search"
+                                        placeholder="Search…"
+                                        autocomplete="off"
+                                    />
+                                </div>
+                                <div id="analyzerCommentsParticipants" class="acm-dash-sidebar__list"></div>
+                                <div class="acm-dash-sidebar__footer">
+                                    <button type="button" id="analyzerCommentsBtnAdd" class="acm-dash-sidebar__new-chat">
+                                        Add new chat +
+                                    </button>
+                                </div>
+                            </aside>
+                            <div class="acm-dash-main acm-dash-main--idle" id="analyzerCommentsMainPane">
+                                <header class="acm-dash-main__head">
+                                    <div class="acm-dash-main__head-top">
+                                        <div class="acm-dash-main__peer">
+                                            <div class="acm-dash-main__avatar" id="analyzerCommentsMainAvatar" aria-hidden="true"></div>
+                                            <div class="acm-dash-main__headtext">
+                                                <h2 class="acm-dash-main__to" id="analyzerCommentsMainTitle">Select a chat</h2>
+                                                <div class="acm-dash-main__subline">
+                                                    <span class="acm-dash-main__online-dot" aria-hidden="true"></span>
+                                                    <span class="acm-dash-main__active" id="analyzerCommentsMainActive">—</span>
+                                                    <span class="acm-dash-main__hint" id="analyzerCommentsMainHint"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="acm-dash-main__actions">
+                                            <button
+                                                type="button"
+                                                class="acm-dash-main__icon-btn"
+                                                disabled
+                                                title="Call (not available)"
+                                                aria-hidden="true"
+                                                tabindex="-1"
+                                            >
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                                                    <path
+                                                        d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m0 6.02v2a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h2a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 10.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </header>
+                                <div
+                                    id="analyzerCommentsThreadBody"
+                                    class="acm-dash-main__thread"
+                                    role="log"
+                                    aria-live="polite"
+                                    aria-relevant="additions"
+                                ></div>
+                                <div id="analyzerCommentsComposerBar" class="acm-dash-composer" hidden>
+                                    <div id="analyzerCommentsReplyHintRow" class="acm-dash-composer__hint-row" hidden>
+                                        <div id="analyzerCommentsReplyHint" class="acm-dash-composer__hint"></div>
+                                        <button type="button" class="acm-dash-composer__hint-clear" id="analyzerCommentsReplyClear">
+                                            Clear
+                                        </button>
+                                    </div>
+                                    <div class="acm-dash-composer__row">
+                                        <label for="analyzerCommentsDashboardTa" class="visually-hidden">Type a message</label>
+                                        <div class="acm-dash-composer__field">
+                                            <button
+                                                type="button"
+                                                class="acm-dash-composer__attach"
+                                                disabled
+                                                title="Attachments coming soon"
+                                                aria-hidden="true"
+                                                tabindex="-1"
+                                            >
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                                                    <path
+                                                        d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19A4 4 0 0 1 19 12.97v.1"
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                    />
+                                                    <path d="M18.54 13.13L8.35 3.34a2.12 2.12 0 0 0-3 3l9.2 9.19" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                            <textarea
+                                                id="analyzerCommentsDashboardTa"
+                                                class="acm-dash-composer__input"
+                                                rows="1"
+                                                maxlength="8000"
+                                                placeholder="What would you like to say?"
+                                            ></textarea>
+                                        </div>
+                                        <button type="button" class="acm-dash-composer__send" id="analyzerCommentsDashboardSend" aria-label="Send message">
+                                            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M9 7v10l9-5-9-5z" fill="currentColor" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
 
                 <!-- Ticket detail: one row from Excel (opened from Assignees list) -->
@@ -9080,8 +9822,50 @@
         var analyzerCommentersPanelData = [];
         /** When author chat modal is open, used to reopen after posting a reply. */
         var analyzerAuthorModalParticipantKey = null;
+        /** Selected participant in Comments dashboard (sidebar + main pane). */
+        var analyzerCommentsSelectedParticipantKey = null;
         /** Merged assignee → issue keys from last people-insights fetch (Add comment modal). */
         var analyzerCommentsPeopleInsightsMerged = null;
+
+        var analyzerDashboardReplyParentId = null;
+
+        function acmClearDashboardReplyTarget() {
+            analyzerDashboardReplyParentId = null;
+            acmUpdateReplyHintUI();
+        }
+
+        function acmSetDashboardReplyTarget(commentId, snippetPreview) {
+            analyzerDashboardReplyParentId = commentId != null ? String(commentId).trim() : null;
+            if (analyzerDashboardReplyParentId === '') {
+                analyzerDashboardReplyParentId = null;
+            }
+            acmUpdateReplyHintUI(snippetPreview);
+        }
+
+        function acmUpdateReplyHintUI(snippetPreview) {
+            var row = document.getElementById('analyzerCommentsReplyHintRow');
+            var hint = document.getElementById('analyzerCommentsReplyHint');
+            if (!hint) {
+                return;
+            }
+            var id = analyzerDashboardReplyParentId;
+            if (!id) {
+                if (row) {
+                    row.hidden = true;
+                }
+                hint.textContent = '';
+                return;
+            }
+            var sn = snippetPreview != null ? String(snippetPreview).replace(/\s+/g, ' ').trim() : '';
+            if (sn.length > 60) {
+                sn = sn.slice(0, 58) + '\u2026';
+            }
+            hint.textContent =
+                'Replying to #' + id + (sn ? ': \u201c' + sn + '\u201d' : '') + '. Message will post in this thread.';
+            if (row) {
+                row.hidden = false;
+            }
+        }
 
         function closeAnalyzerAuthorCommentsModal() {
             var over = document.getElementById('analyzerCommentAuthorOverlay');
@@ -9362,55 +10146,354 @@
             return false;
         }
 
+        function commentParticipantKeyFromComment(c) {
+            var uid = c.authorUid != null ? String(c.authorUid).trim() : '';
+            var name =
+                c.authorName != null && String(c.authorName).trim() !== ''
+                    ? String(c.authorName).trim()
+                    : 'Analyst';
+            return uid !== '' ? 'uid:' + uid : 'name:' + name.toLowerCase();
+        }
+
+        function buildParticipantThreadComments(flat, entry) {
+            if (!entry) return [];
+            if (!flat || !flat.length) {
+                return entry.comments ? entry.comments.slice() : [];
+            }
+            var pk = entry.participantKey;
+            if (!pk) {
+                return entry.comments ? entry.comments.slice() : [];
+            }
+            var acc = new Set();
+            var i;
+            for (i = 0; i < flat.length; i++) {
+                if (commentParticipantKeyFromComment(flat[i]) === pk) {
+                    acc.add(String(flat[i].id));
+                }
+            }
+            var changed = true;
+            while (changed) {
+                changed = false;
+                var j;
+                for (j = 0; j < flat.length; j++) {
+                    var c = flat[j];
+                    var id = String(c.id);
+                    var pid = c.parentId != null ? String(c.parentId).trim() : '';
+                    if (acc.has(id) && pid && /^\d+$/.test(pid) && !acc.has(pid)) {
+                        acc.add(pid);
+                        changed = true;
+                    }
+                    if (pid && acc.has(pid) && !acc.has(id)) {
+                        acc.add(id);
+                        changed = true;
+                    }
+                }
+            }
+            var out = [];
+            for (i = 0; i < flat.length; i++) {
+                if (acc.has(String(flat[i].id))) {
+                    out.push(flat[i]);
+                }
+            }
+            out.sort(function (a, b) {
+                var ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                var tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return ta - tb;
+            });
+            return out;
+        }
+
+        function getMergedThreadEntryForDashboard(idx) {
+            var entry = analyzerCommentersPanelData[idx];
+            if (!entry) {
+                return null;
+            }
+            var flat = analyzerCommentsListCache || [];
+            return {
+                displayName: entry.displayName,
+                participantKey: entry.participantKey,
+                comments: buildParticipantThreadComments(flat, entry),
+            };
+        }
+
+        function acmNormAuthorLabel(s) {
+            return String(s != null ? s : '')
+                .trim()
+                .replace(/\s+/g, ' ')
+                .toLowerCase();
+        }
+
+        function acmCommentIsFromCurrentUser(c) {
+            var auth = getAnalyzerCommentsAuthor();
+            var ruid = c.authorUid != null ? String(c.authorUid).trim() : '';
+            var quid = auth.uid != null ? String(auth.uid).trim() : '';
+            if (ruid && quid) {
+                return ruid === quid;
+            }
+            var rawComment = c.authorName != null ? String(c.authorName).trim() : '';
+            var cn = acmNormAuthorLabel(rawComment);
+            var an = acmNormAuthorLabel(auth.name != null ? auth.name : '');
+            if (cn && an && cn === an) {
+                return true;
+            }
+            try {
+                if (typeof firebase === 'undefined' || !firebase.auth || !firebase.auth().currentUser) {
+                    return false;
+                }
+                var u = firebase.auth().currentUser;
+                var disp = u.displayName != null ? String(u.displayName).trim() : '';
+                if (disp && acmNormAuthorLabel(disp) === cn) {
+                    return true;
+                }
+                var em = u.email != null ? String(u.email).trim().toLowerCase() : '';
+                var crl = rawComment.toLowerCase();
+                if (em && crl === em) {
+                    return true;
+                }
+                if (em && cn) {
+                    var local = em.split('@')[0] || '';
+                    if (local && acmNormAuthorLabel(local) === cn) {
+                        return true;
+                    }
+                }
+            } catch (eMatch) {}
+            return false;
+        }
+
+        function getLatestCommentIdFromList(comments) {
+            if (!comments || !comments.length) {
+                return null;
+            }
+            var sorted = comments.slice().sort(function (a, b) {
+                var ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                var tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return ta - tb;
+            });
+            var last = sorted[sorted.length - 1];
+            return last && last.id != null ? String(last.id) : null;
+        }
+
+        function acmFormatChatSnippet(body) {
+            var t = String(body != null ? body : '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (t.length > 80) t = t.slice(0, 78) + '\u2026';
+            return t || '\u2014';
+        }
+
+        function clearAnalyzerCommentsDashboardMain() {
+            acmClearDashboardReplyTarget();
+            analyzerCommentsSelectedParticipantKey = null;
+            var titleEl = document.getElementById('analyzerCommentsMainTitle');
+            var hintEl = document.getElementById('analyzerCommentsMainHint');
+            var activeEl = document.getElementById('analyzerCommentsMainActive');
+            var av = document.getElementById('analyzerCommentsMainAvatar');
+            var thread = document.getElementById('analyzerCommentsThreadBody');
+            var comp = document.getElementById('analyzerCommentsComposerBar');
+            var mainPane = document.getElementById('analyzerCommentsMainPane');
+            if (titleEl) titleEl.textContent = 'Select a chat';
+            if (hintEl) hintEl.textContent = '';
+            if (activeEl) activeEl.textContent = '\u2014';
+            if (mainPane) mainPane.classList.add('acm-dash-main--idle');
+            if (av) av.textContent = '\u2026';
+            if (thread) {
+                thread.innerHTML =
+                    '<div class="acm-dash-empty-main">Select a person on the left.</div>';
+            }
+            if (comp) comp.hidden = true;
+            var host = document.getElementById('analyzerCommentsParticipants');
+            if (host) {
+                var peers = host.querySelectorAll('.acm-dash-peer');
+                var p;
+                for (p = 0; p < peers.length; p++) {
+                    peers[p].classList.remove('acm-dash-peer--active');
+                }
+            }
+        }
+
+        function renderAnalyzerCommentsDashboardThread(idx) {
+            var merged = getMergedThreadEntryForDashboard(idx);
+            var thread = document.getElementById('analyzerCommentsThreadBody');
+            var titleEl = document.getElementById('analyzerCommentsMainTitle');
+            var hintEl = document.getElementById('analyzerCommentsMainHint');
+            var activeEl = document.getElementById('analyzerCommentsMainActive');
+            var av = document.getElementById('analyzerCommentsMainAvatar');
+            var mainPane = document.getElementById('analyzerCommentsMainPane');
+            if (!merged || !thread || !titleEl) return;
+            if (mainPane) mainPane.classList.remove('acm-dash-main--idle');
+            if (av) av.textContent = acmAuthorChatInitials(merged.displayName);
+            titleEl.textContent = merged.displayName || 'Contributor';
+            var n = merged.comments ? merged.comments.length : 0;
+            if (hintEl) {
+                hintEl.textContent = '\u00b7 ' + (n === 1 ? '1 message' : n + ' messages');
+            }
+            if (activeEl) activeEl.textContent = 'Online';
+            thread.innerHTML = buildAuthorModalCommentsHtml(merged);
+        }
+
+        function selectAnalyzerCommentsParticipant(idx) {
+            if (idx == null || isNaN(idx) || idx < 0 || idx >= analyzerCommentersPanelData.length) {
+                return;
+            }
+            acmClearDashboardReplyTarget();
+            var entry = analyzerCommentersPanelData[idx];
+            analyzerCommentsSelectedParticipantKey = entry.participantKey != null ? entry.participantKey : null;
+            var host = document.getElementById('analyzerCommentsParticipants');
+            if (host) {
+                var peers = host.querySelectorAll('.acm-dash-peer');
+                var p;
+                for (p = 0; p < peers.length; p++) {
+                    var pi = parseInt(peers[p].getAttribute('data-acm-participant-idx'), 10);
+                    peers[p].classList.toggle('acm-dash-peer--active', !isNaN(pi) && pi === idx);
+                }
+            }
+            renderAnalyzerCommentsDashboardThread(idx);
+            var comp = document.getElementById('analyzerCommentsComposerBar');
+            if (comp) comp.hidden = false;
+            var ta = document.getElementById('analyzerCommentsDashboardTa');
+            if (ta) ta.value = '';
+            var threadEl = document.getElementById('analyzerCommentsThreadBody');
+            if (threadEl) {
+                requestAnimationFrame(function () {
+                    threadEl.scrollTop = threadEl.scrollHeight;
+                });
+            }
+        }
+
+        function syncAnalyzerCommentsDashboardAfterRefresh() {
+            var badge = document.getElementById('analyzerCommentsSidebarCount');
+            var n = analyzerCommentersPanelData.length;
+            if (badge) badge.textContent = String(n);
+            if (!n) {
+                clearAnalyzerCommentsDashboardMain();
+                return;
+            }
+            var key = analyzerCommentsSelectedParticipantKey;
+            var ix = -1;
+            if (key) {
+                var i;
+                for (i = 0; i < analyzerCommentersPanelData.length; i++) {
+                    if (analyzerCommentersPanelData[i].participantKey === key) {
+                        ix = i;
+                        break;
+                    }
+                }
+            }
+            if (ix < 0) {
+                ix = 0;
+            }
+            selectAnalyzerCommentsParticipant(ix);
+        }
+
+        function postAnalyzerDashboardComposer() {
+            var idx = -1;
+            if (analyzerCommentsSelectedParticipantKey) {
+                var j;
+                for (j = 0; j < analyzerCommentersPanelData.length; j++) {
+                    if (analyzerCommentersPanelData[j].participantKey === analyzerCommentsSelectedParticipantKey) {
+                        idx = j;
+                        break;
+                    }
+                }
+            }
+            if (idx < 0) {
+                showError('Select a chat from the list first.');
+                return;
+            }
+            var entry = getMergedThreadEntryForDashboard(idx);
+            var ta = document.getElementById('analyzerCommentsDashboardTa');
+            var explicit =
+                analyzerDashboardReplyParentId != null && String(analyzerDashboardReplyParentId).trim() !== ''
+                    ? String(analyzerDashboardReplyParentId).trim()
+                    : null;
+            var parentId = explicit || getLatestCommentIdFromList(entry.comments || []);
+            postAnalyzerComment(parentId, ta);
+        }
+
         function renderAnalyzerCommentersTable(flat) {
             var host = document.getElementById('analyzerCommentsParticipants');
             if (!host) return;
             if (!flat || !flat.length) {
                 analyzerCommentersPanelData = [];
                 host.innerHTML =
-                    '<div class="acm-people-board-empty">No comments yet. When someone posts a note, they appear here as a card. Click a card to read and reply.</div>';
+                    '<div class="acm-dash-sidebar-empty acm-people-board-empty">No comments yet.</div>';
+                clearAnalyzerCommentsDashboardMain();
+                var badge0 = document.getElementById('analyzerCommentsSidebarCount');
+                if (badge0) badge0.textContent = '0';
                 return;
             }
             var rows = buildCommenterAggregatesForPanel(flat);
             analyzerCommentersPanelData = rows;
-            var html = '<div class="acm-people-grid" role="list">';
+            var html = '<div class="acm-dash-peer-list" role="list">';
             var r;
             for (r = 0; r < rows.length; r++) {
                 var entry = rows[r];
                 var isLead = commenterCardRoleIsLead(entry);
-                var mod = isLead ? 'acm-person-card--lead' : 'acm-person-card--client';
-                var roleLabel = isLead ? 'LEAD' : 'CLIENT';
-                var nameParts = splitDisplayNameForPersonCard(entry.displayName);
-                var n = entry.comments.length;
-                var countLabel = n === 1 ? '1 comment' : n + ' comments';
-                var ariaName = (nameParts.first ? nameParts.first + ' ' : '') + nameParts.last;
+                var mod = isLead ? 'acm-dash-peer--lead' : '';
+                var roleLabel = isLead ? 'Lead' : 'Client';
+                var mergedForSnippet = buildParticipantThreadComments(flat, entry);
+                var sorted = mergedForSnippet.slice().sort(function (a, b) {
+                    var ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                    var tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                    return ta - tb;
+                });
+                var last = sorted[sorted.length - 1];
+                var snippet = acmFormatChatSnippet(last && last.body != null ? last.body : '');
+                var timeShort = '';
+                if (last && last.createdAt) {
+                    timeShort = new Date(last.createdAt).toLocaleTimeString(undefined, {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                    });
+                }
+                var initials = acmAuthorChatInitials(entry.displayName);
+                var ariaName = String(entry.displayName || 'Participant').trim() || 'Participant';
+                var searchBlob = String(
+                    (entry.displayName || '') + ' ' + (snippet || '') + ' ' + (roleLabel || '')
+                )
+                    .toLowerCase()
+                    .replace(/\s+/g, ' ')
+                    .trim();
                 html +=
-                    '<article class="acm-person-card ' +
+                    '<button type="button" class="acm-dash-peer ' +
                     mod +
                     '" data-acm-participant-idx="' +
                     r +
-                    '" tabindex="0" role="listitem" aria-label="Open comments by ' +
+                    '" data-acm-peer-search="' +
+                    escapeHtml(searchBlob) +
+                    '" role="listitem" aria-label="Open chat with ' +
                     escapeHtml(ariaName) +
                     '">';
-                html += '<div class="acm-person-card__top">';
-                html += '<div class="acm-person-card__roleRow">';
-                html += '<span class="acm-person-card__accent" aria-hidden="true"></span>';
-                html += '<span class="acm-person-card__role">' + roleLabel + '</span>';
+                html += '<div class="acm-dash-peer__avatar" aria-hidden="true">' + escapeHtml(initials) + '</div>';
+                html += '<div class="acm-dash-peer__body">';
+                html += '<div class="acm-dash-peer__row">';
+                html += '<span class="acm-dash-peer__name">' + escapeHtml(entry.displayName || 'Unknown') + '</span>';
+                html += '<span class="acm-dash-peer__time">' + escapeHtml(timeShort) + '</span>';
                 html += '</div>';
-                html +=
-                    '<button type="button" class="acm-person-card__more" tabindex="-1" aria-label="More">...</button>';
-                html += '</div>';
-                html += '<div class="acm-person-card__name">';
-                if (nameParts.first) {
-                    html += '<span class="acm-person-card__first">' + escapeHtml(nameParts.first) + '</span>';
-                }
-                html += '<span class="acm-person-card__last">' + escapeHtml(nameParts.last) + '</span>';
-                html += '</div>';
-                html += '<div class="acm-person-card__count">' + escapeHtml(countLabel) + '</div>';
-                html += '</article>';
+                html += '<div class="acm-dash-peer__snippet">' + escapeHtml(snippet) + '</div>';
+                html += '<span class="acm-dash-peer__role">' + escapeHtml(roleLabel) + '</span>';
+                html += '</div></button>';
             }
             html += '</div>';
             host.innerHTML = html;
+            filterAnalyzerCommentsPeers();
+            syncAnalyzerCommentsDashboardAfterRefresh();
+        }
+
+        function filterAnalyzerCommentsPeers() {
+            var inp = document.getElementById('analyzerCommentsPeerSearch');
+            var host = document.getElementById('analyzerCommentsParticipants');
+            if (!inp || !host) return;
+            var q = String(inp.value || '')
+                .trim()
+                .toLowerCase();
+            var peers = host.querySelectorAll('.acm-dash-peer');
+            var i;
+            for (i = 0; i < peers.length; i++) {
+                var row = peers[i];
+                var blob = row.getAttribute('data-acm-peer-search') || '';
+                row.hidden = q !== '' && blob.indexOf(q) === -1;
+            }
         }
 
         function buildAuthorModalCommentsHtml(entry) {
@@ -9437,35 +10520,68 @@
                         ? '<span class="analyzer-comments-issue">' + escapeHtml(issueK) + '</span>'
                         : '';
                 var body = c.body != null ? String(c.body) : '';
+                var authorDisp =
+                    c.authorName != null && String(c.authorName).trim() !== ''
+                        ? String(c.authorName).trim()
+                        : 'Analyst';
+                var isMine = acmCommentIsFromCurrentUser(c);
+                var sideClass = isMine ? ' acm-chat-msg--mine' : ' acm-chat-msg--theirs';
+                var toolbar = '';
+                if (isMine) {
+                    toolbar =
+                        '<div class="acm-chat-msg__toolbar" role="toolbar" aria-label="Your message actions">' +
+                        '<button type="button" class="acm-chat-msg__btn acm-chat-msg__btn--ghost" data-acm-msg-reply="' +
+                        escapeHtml(idStr) +
+                        '">Reply</button>' +
+                        '<button type="button" class="acm-chat-msg__btn acm-chat-msg__btn--ghost" data-acm-msg-edit="' +
+                        escapeHtml(idStr) +
+                        '">Edit</button>' +
+                        '<button type="button" class="acm-chat-msg__btn acm-chat-msg__btn--danger" data-acm-msg-delete="' +
+                        escapeHtml(idStr) +
+                        '">Delete</button>' +
+                        '</div>';
+                }
+                var initialsMsg = acmAuthorChatInitials(authorDisp);
                 parts.push(
-                    '<div class="acm-chat-msg" data-acm-chat-msg="' +
+                    '<div class="acm-chat-msg' +
+                        sideClass +
+                        '" data-acm-chat-msg="' +
                         escapeHtml(idStr) +
                         '">' +
+                        '<div class="acm-chat-msg__row">' +
+                        (!isMine
+                            ? '<div class="acm-chat-msg__avatar" aria-hidden="true">' + escapeHtml(initialsMsg) + '</div>'
+                            : '') +
                         '<div class="acm-chat-msg__bubble">' +
+                        '<div class="acm-chat-msg__who">' +
+                        escapeHtml(authorDisp) +
+                        '</div>' +
                         '<div class="acm-chat-msg__meta">' +
                         '<span class="acm-chat-msg__time">' +
                         escapeHtml(when) +
                         '</span>' +
                         issueChip +
                         '</div>' +
-                        '<div class="acm-chat-msg__text">' +
+                        '<div class="acm-chat-msg__text" data-acm-msg-view="' +
+                        escapeHtml(idStr) +
+                        '">' +
                         escapeHtml(body) +
                         '</div>' +
-                        '<div class="acm-chat-msg__actions">' +
-                        '<button type="button" class="btn btn-secondary" data-acm-reply-toggle="' +
+                        '<div class="acm-chat-msg__edit" hidden data-acm-msg-editbox="' +
                         escapeHtml(idStr) +
-                        '">Reply</button></div>' +
-                        '<div class="analyzer-comments-reply-form" hidden data-acm-reply-form="' +
+                        '"><textarea class="analyzer-comments__textarea" rows="3" maxlength="8000" data-acm-msg-edit-ta="' +
                         escapeHtml(idStr) +
-                        '"><textarea class="analyzer-comments__textarea" rows="3" maxlength="8000" placeholder="Write a reply\u2026" data-acm-reply-ta="' +
-                        escapeHtml(idStr) +
-                        '"></textarea><div class="analyzer-comments__composer-actions">' +
-                        '<button type="button" class="btn btn-secondary" data-acm-reply-cancel="' +
+                        '"></textarea>' +
+                        '<div class="acm-chat-msg__edit-actions">' +
+                        '<button type="button" class="acm-chat-msg__btn acm-chat-msg__btn--secondary" data-acm-msg-cancel-edit="' +
                         escapeHtml(idStr) +
                         '">Cancel</button>' +
-                        '<button type="button" class="btn btn-primary" data-acm-reply-send="' +
+                        '<button type="button" class="acm-chat-msg__btn acm-chat-msg__btn--primary" data-acm-msg-save="' +
                         escapeHtml(idStr) +
-                        '">Send</button></div></div></div></div>'
+                        '">Save</button>' +
+                        '</div></div>' +
+                        toolbar +
+                        '</div></div></div>'
                 );
             }
             return '<div class="acm-chat-thread">' + parts.join('') + '</div>';
@@ -9484,25 +10600,8 @@
         }
 
         function openAnalyzerAuthorCommentsModal(idx) {
-            var entry = analyzerCommentersPanelData[idx];
-            if (!entry) return;
-            var over = document.getElementById('analyzerCommentAuthorOverlay');
-            var title = document.getElementById('analyzerCommentAuthorModalTitle');
-            var sub = document.getElementById('analyzerCommentAuthorModalSubtitle');
-            var av = document.getElementById('analyzerCommentAuthorModalAvatar');
-            var body = document.getElementById('analyzerCommentAuthorModalBody');
-            if (!over || !title || !body) return;
-            analyzerAuthorModalParticipantKey = entry.participantKey != null ? entry.participantKey : null;
-            if (av) av.textContent = acmAuthorChatInitials(entry.displayName);
-            title.textContent = entry.displayName || 'Thread';
-            var n = entry.comments ? entry.comments.length : 0;
-            var countLabel = n === 1 ? '1 message' : n + ' messages';
-            if (sub) sub.textContent = countLabel + ' · Reply to add to this thread';
-            body.innerHTML = buildAuthorModalCommentsHtml(entry);
-            over.hidden = false;
-            requestAnimationFrame(function () {
-                body.scrollTop = body.scrollHeight;
-            });
+            selectAnalyzerCommentsParticipant(idx);
+            closeAnalyzerAuthorCommentsModal();
         }
 
         function getAnalyzerCommentsAuthor() {
@@ -9526,6 +10625,239 @@
             el.classList.toggle('analyzer-comments__status--err', kind === 'err');
         }
 
+        function patchUploadComment(commentId, bodyText) {
+            var uploadId = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            if (!uploadId) {
+                return Promise.resolve({
+                    ok: false,
+                    status: 0,
+                    body: { ok: false, error: 'No saved upload is selected.' },
+                });
+            }
+            var auth = getAnalyzerCommentsAuthor();
+            return ensureApiBaseProbed()
+                .then(function (apiOk) {
+                    if (!apiOk) {
+                        showError(
+                            'Backend not reachable. Open the app from the same URL as npm start or add ?api=http://localhost:3000 to the address bar.'
+                        );
+                        return null;
+                    }
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(
+                        base +
+                            '/api/uploads/' +
+                            encodeURIComponent(uploadId) +
+                            '/comments/' +
+                            encodeURIComponent(commentId),
+                        {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                body: bodyText,
+                                authorName: auth.name,
+                                authorUid: auth.uid,
+                            }),
+                        }
+                    );
+                })
+                .then(function (r) {
+                    if (!r) return null;
+                    return parseHttpJsonResponse(r);
+                });
+        }
+
+        function deleteUploadCommentHttp(commentId) {
+            var uploadId = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
+            if (!uploadId) {
+                return Promise.resolve(null);
+            }
+            var auth = getAnalyzerCommentsAuthor();
+            var qs =
+                '?authorName=' +
+                encodeURIComponent(auth.name) +
+                '&authorUid=' +
+                encodeURIComponent(auth.uid);
+            return ensureApiBaseProbed()
+                .then(function (apiOk) {
+                    if (!apiOk) {
+                        showError(
+                            'Backend not reachable. Open the app from the same URL as npm start or add ?api=http://localhost:3000 to the address bar.'
+                        );
+                        return null;
+                    }
+                    var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
+                    return fetch(
+                        base +
+                            '/api/uploads/' +
+                            encodeURIComponent(uploadId) +
+                            '/comments/' +
+                            encodeURIComponent(commentId) +
+                            qs,
+                        { method: 'DELETE' }
+                    );
+                })
+                .then(function (r) {
+                    if (!r) return null;
+                    return parseHttpJsonResponse(r);
+                });
+        }
+
+        function acmOpenMsgEdit(container, idStr) {
+            if (!container) return;
+            var msg = container.querySelector('[data-acm-chat-msg="' + idStr + '"]');
+            if (!msg) return;
+            var view = msg.querySelector('[data-acm-msg-view="' + idStr + '"]');
+            var box = msg.querySelector('[data-acm-msg-editbox="' + idStr + '"]');
+            var ta = msg.querySelector('[data-acm-msg-edit-ta="' + idStr + '"]');
+            if (!view || !box || !ta) return;
+            var original = view.textContent || '';
+            msg.dataset.acmEditOriginal = original;
+            ta.value = original;
+            view.hidden = true;
+            box.hidden = false;
+            ta.focus();
+        }
+
+        function acmCancelMsgEdit(container, idStr) {
+            if (!container) return;
+            var msg = container.querySelector('[data-acm-chat-msg="' + idStr + '"]');
+            if (!msg) return;
+            var view = msg.querySelector('[data-acm-msg-view="' + idStr + '"]');
+            var box = msg.querySelector('[data-acm-msg-editbox="' + idStr + '"]');
+            var ta = msg.querySelector('[data-acm-msg-edit-ta="' + idStr + '"]');
+            if (!view || !box || !ta) return;
+            var orig =
+                msg.dataset.acmEditOriginal != null ? msg.dataset.acmEditOriginal : view.textContent || '';
+            ta.value = orig;
+            try {
+                delete msg.dataset.acmEditOriginal;
+            } catch (eDel) {
+                msg.dataset.acmEditOriginal = '';
+            }
+            view.hidden = false;
+            box.hidden = true;
+        }
+
+        function acmSaveMsgEdit(container, idStr, saveBtnEl) {
+            if (!container) return;
+            var msg = container.querySelector('[data-acm-chat-msg="' + idStr + '"]');
+            if (!msg) return;
+            var ta = msg.querySelector('[data-acm-msg-edit-ta="' + idStr + '"]');
+            if (!ta) return;
+            var raw = String(ta.value || '').trim();
+            if (!raw) {
+                showError('Comment cannot be empty.');
+                return;
+            }
+            var btn = saveBtnEl && saveBtnEl.closest ? saveBtnEl.closest('[data-acm-msg-save]') : null;
+            if (btn) btn.disabled = true;
+            patchUploadComment(idStr, raw)
+                .then(function (result) {
+                    if (!result) {
+                        showError('Could not update comment.');
+                        return;
+                    }
+                    if (!result.ok || !result.body.ok) {
+                        var err = (result.body && result.body.error) || 'HTTP ' + result.status;
+                        showError(err);
+                        return;
+                    }
+                    try {
+                        delete msg.dataset.acmEditOriginal;
+                    } catch (eDel2) {
+                        msg.dataset.acmEditOriginal = '';
+                    }
+                    hideErrorToastBar();
+                    var refreshP = refreshCommentsDashboard();
+                    if (refreshP && typeof refreshP.then === 'function') {
+                        return refreshP.then(function () {
+                            var scrollEl = document.getElementById('analyzerCommentsThreadBody');
+                            if (scrollEl) {
+                                requestAnimationFrame(function () {
+                                    scrollEl.scrollTop = scrollEl.scrollHeight;
+                                });
+                            }
+                        });
+                    }
+                })
+                .catch(function () {
+                    showError('Could not update comment.');
+                })
+                .then(function () {
+                    if (btn) btn.disabled = false;
+                });
+        }
+
+        function attachAcmThreadClickHandler(container) {
+            if (!container) return;
+            container.addEventListener('click', function (ev) {
+                var root = ev.currentTarget;
+                var t = ev.target;
+                if (!t || !t.closest) return;
+                var replyBtn = t.closest('[data-acm-msg-reply]');
+                if (replyBtn && root.contains(replyBtn)) {
+                    var rid = replyBtn.getAttribute('data-acm-msg-reply');
+                    if (rid == null || rid === '') return;
+                    var msgRoot = replyBtn.closest('[data-acm-chat-msg]');
+                    var viewText = msgRoot ? msgRoot.querySelector('[data-acm-msg-view="' + rid + '"]') : null;
+                    var sn = viewText ? viewText.textContent : '';
+                    acmSetDashboardReplyTarget(rid, sn);
+                    var cta = document.getElementById('analyzerCommentsDashboardTa');
+                    if (cta) cta.focus();
+                    return;
+                }
+                var editBtn = t.closest('[data-acm-msg-edit]');
+                if (editBtn && root.contains(editBtn)) {
+                    var eid = editBtn.getAttribute('data-acm-msg-edit');
+                    if (eid != null && eid !== '') acmOpenMsgEdit(root, eid);
+                    return;
+                }
+                var cancelBtn = t.closest('[data-acm-msg-cancel-edit]');
+                if (cancelBtn && root.contains(cancelBtn)) {
+                    var cid = cancelBtn.getAttribute('data-acm-msg-cancel-edit');
+                    if (cid != null && cid !== '') acmCancelMsgEdit(root, cid);
+                    return;
+                }
+                var saveBtn = t.closest('[data-acm-msg-save]');
+                if (saveBtn && root.contains(saveBtn)) {
+                    var sid = saveBtn.getAttribute('data-acm-msg-save');
+                    if (sid != null && sid !== '') acmSaveMsgEdit(root, sid, saveBtn);
+                    return;
+                }
+                var delBtn = t.closest('[data-acm-msg-delete]');
+                if (delBtn && root.contains(delBtn)) {
+                    var did = delBtn.getAttribute('data-acm-msg-delete');
+                    if (did == null || did === '') return;
+                    if (!window.confirm('Delete this message? Replies under it will be removed too.')) return;
+                    deleteUploadCommentHttp(did)
+                        .then(function (result) {
+                            if (!result) return;
+                            if (!result.ok || !result.body.ok) {
+                                var err = (result.body && result.body.error) || 'HTTP ' + result.status;
+                                showError(err);
+                                return;
+                            }
+                            hideErrorToastBar();
+                            var refreshP = refreshCommentsDashboard();
+                            if (refreshP && typeof refreshP.then === 'function') {
+                                return refreshP.then(function () {
+                                    var scrollEl = document.getElementById('analyzerCommentsThreadBody');
+                                    if (scrollEl) {
+                                        requestAnimationFrame(function () {
+                                            scrollEl.scrollTop = scrollEl.scrollHeight;
+                                        });
+                                    }
+                                });
+                            }
+                        })
+                        .catch(function () {
+                            showError('Could not delete comment.');
+                        });
+                }
+            });
+        }
+
         function wireAnalyzerCommentsPanelOnce() {
             if (_analyzerCommentsPanelWired) return;
             _analyzerCommentsPanelWired = true;
@@ -9533,20 +10865,11 @@
             if (partHost && !partHost.dataset.acmPanelWired) {
                 partHost.dataset.acmPanelWired = '1';
                 partHost.addEventListener('click', function (ev) {
-                    var card = ev.target.closest('.acm-person-card[data-acm-participant-idx]');
-                    if (!card || !partHost.contains(card)) return;
-                    var idx = parseInt(card.getAttribute('data-acm-participant-idx'), 10);
+                    var row = ev.target.closest('.acm-dash-peer[data-acm-participant-idx]');
+                    if (!row || !partHost.contains(row)) return;
+                    var idx = parseInt(row.getAttribute('data-acm-participant-idx'), 10);
                     if (isNaN(idx)) return;
-                    openAnalyzerAuthorCommentsModal(idx);
-                });
-                partHost.addEventListener('keydown', function (ev) {
-                    if (ev.key !== 'Enter' && ev.key !== ' ') return;
-                    var card = ev.target.closest('.acm-person-card[data-acm-participant-idx]');
-                    if (!card || !partHost.contains(card)) return;
-                    ev.preventDefault();
-                    var idx2 = parseInt(card.getAttribute('data-acm-participant-idx'), 10);
-                    if (isNaN(idx2)) return;
-                    openAnalyzerAuthorCommentsModal(idx2);
+                    selectAnalyzerCommentsParticipant(idx);
                 });
             }
             var acOver = document.getElementById('analyzerCommentAuthorOverlay');
@@ -9561,32 +10884,38 @@
                    stopPropagation() so clicks never bubble to #analyzerCommentAuthorOverlay. */
                 if (acModalBody && !acModalBody.dataset.acmReplyBodyWired) {
                     acModalBody.dataset.acmReplyBodyWired = '1';
-                    acModalBody.addEventListener('click', function (ev) {
-                    var t = ev.target;
-                    if (!t || !t.closest) return;
-                    var btn = t.closest('[data-acm-reply-toggle],[data-acm-reply-cancel],[data-acm-reply-send]');
-                    if (!btn || !acModalBody.contains(btn)) return;
-                    var toggleId = btn.getAttribute('data-acm-reply-toggle');
-                    if (toggleId != null && toggleId !== '') {
-                        var form = acModalBody.querySelector('[data-acm-reply-form="' + toggleId + '"]');
-                        if (form) form.hidden = !form.hidden;
-                        return;
-                    }
-                    var cancelId = btn.getAttribute('data-acm-reply-cancel');
-                    if (cancelId != null && cancelId !== '') {
-                        var formC = acModalBody.querySelector('[data-acm-reply-form="' + cancelId + '"]');
-                        var taC = acModalBody.querySelector('[data-acm-reply-ta="' + cancelId + '"]');
-                        if (formC) formC.hidden = true;
-                        if (taC) taC.value = '';
-                        return;
-                    }
-                    var sendId = btn.getAttribute('data-acm-reply-send');
-                    if (sendId != null && sendId !== '') {
-                        var taS = acModalBody.querySelector('[data-acm-reply-ta="' + sendId + '"]');
-                        postAnalyzerComment(sendId, taS);
-                    }
-                    });
+                    attachAcmThreadClickHandler(acModalBody);
                 }
+            }
+            var dashThread = document.getElementById('analyzerCommentsThreadBody');
+            if (dashThread && !dashThread.dataset.acmDashThreadWired) {
+                dashThread.dataset.acmDashThreadWired = '1';
+                attachAcmThreadClickHandler(dashThread);
+            }
+            var dashSend = document.getElementById('analyzerCommentsDashboardSend');
+            if (dashSend && !dashSend.dataset.acmDashComposerWired) {
+                dashSend.dataset.acmDashComposerWired = '1';
+                dashSend.addEventListener('click', postAnalyzerDashboardComposer);
+            }
+            var replyClear = document.getElementById('analyzerCommentsReplyClear');
+            if (replyClear && !replyClear.dataset.acmReplyClearWired) {
+                replyClear.dataset.acmReplyClearWired = '1';
+                replyClear.addEventListener('click', acmClearDashboardReplyTarget);
+            }
+            var dashTa = document.getElementById('analyzerCommentsDashboardTa');
+            if (dashTa && !dashTa.dataset.acmDashComposerKeyWired) {
+                dashTa.dataset.acmDashComposerKeyWired = '1';
+                dashTa.addEventListener('keydown', function (ev) {
+                    if (ev.key === 'Enter' && !ev.shiftKey) {
+                        ev.preventDefault();
+                        postAnalyzerDashboardComposer();
+                    }
+                });
+            }
+            var peerSearch = document.getElementById('analyzerCommentsPeerSearch');
+            if (peerSearch && !peerSearch.dataset.acmPeerSearchWired) {
+                peerSearch.dataset.acmPeerSearchWired = '1';
+                peerSearch.addEventListener('input', filterAnalyzerCommentsPeers);
             }
             var addOv = document.getElementById('analyzerAddCommentOverlay');
             if (addOv && !addOv.dataset.acmAddOvWired) {
@@ -9629,7 +10958,16 @@
             }
             var fromModal =
                 fromReplyTa && fromReplyTa.closest && fromReplyTa.closest('#analyzerCommentAuthorOverlay');
-            var reopenParticipantKey = fromModal ? analyzerAuthorModalParticipantKey : null;
+            var fromDashboard =
+                fromReplyTa &&
+                fromReplyTa.closest &&
+                (fromReplyTa.closest('#analyzerCommentsThreadBody') ||
+                    fromReplyTa.closest('#analyzerCommentsComposerBar'));
+            var reopenParticipantKey = fromModal
+                ? analyzerAuthorModalParticipantKey
+                : fromDashboard
+                  ? analyzerCommentsSelectedParticipantKey
+                  : null;
             var auth = getAnalyzerCommentsAuthor();
             var payload = {
                 body: raw,
@@ -9676,6 +11014,9 @@
                         return;
                     }
                     ta.value = '';
+                    if (fromDashboard) {
+                        acmClearDashboardReplyTarget();
+                    }
                     if (parentIdStr != null && String(parentIdStr).trim() !== '') {
                         var pid = String(parentIdStr).trim();
                         var phase = document.getElementById('commentsPhase');
@@ -9688,6 +11029,13 @@
                             var taM = acOver.querySelector('[data-acm-reply-ta="' + pid + '"]');
                             if (taM) taM.value = '';
                         }
+                        var threadBody = document.getElementById('analyzerCommentsThreadBody');
+                        if (threadBody) {
+                            var fm2 = threadBody.querySelector('[data-acm-reply-form="' + pid + '"]');
+                            if (fm2) fm2.hidden = true;
+                            var taM2 = threadBody.querySelector('[data-acm-reply-ta="' + pid + '"]');
+                            if (taM2) taM2.value = '';
+                        }
                     }
                     hideErrorToastBar();
                     var refreshP = refreshCommentsDashboard();
@@ -9698,7 +11046,7 @@
                                 var prow = analyzerCommentersPanelData[ix];
                                 if (prow && prow.participantKey === reopenParticipantKey) {
                                     openAnalyzerAuthorCommentsModal(ix);
-                                    var scrollEl = document.getElementById('analyzerCommentAuthorModalBody');
+                                    var scrollEl = document.getElementById('analyzerCommentsThreadBody');
                                     if (scrollEl) {
                                         requestAnimationFrame(function () {
                                             scrollEl.scrollTop = scrollEl.scrollHeight;
@@ -9707,7 +11055,7 @@
                                     return null;
                                 }
                             }
-                            closeAnalyzerAuthorCommentsModal();
+                            syncAnalyzerCommentsDashboardAfterRefresh();
                             return null;
                         });
                     }
@@ -9730,8 +11078,11 @@
                 analyzerCommentsListCache = [];
                 setAnalyzerCommentsStatus('', '');
                 partHost.innerHTML =
-                    '<div class="acm-people-board-empty">Select or load a saved upload first. People who commented will appear as cards.</div>';
+                    '<div class="acm-dash-sidebar-empty acm-people-board-empty">Load a saved upload first.</div>';
                 analyzerCommentersPanelData = [];
+                clearAnalyzerCommentsDashboardMain();
+                var badgeZ = document.getElementById('analyzerCommentsSidebarCount');
+                if (badgeZ) badgeZ.textContent = '0';
                 return Promise.resolve();
             }
             setAnalyzerCommentsStatus('Loading comments\u2026', '');
@@ -9745,6 +11096,9 @@
                         analyzerCommentsListCache = [];
                         partHost.innerHTML = '';
                         analyzerCommentersPanelData = [];
+                        clearAnalyzerCommentsDashboardMain();
+                        var bdgErr = document.getElementById('analyzerCommentsSidebarCount');
+                        if (bdgErr) bdgErr.textContent = '0';
                         return null;
                     }
                     var base = typeof API_BASE !== 'undefined' ? API_BASE : '';
@@ -9762,6 +11116,9 @@
                         analyzerCommentsListCache = [];
                         partHost.innerHTML = '';
                         analyzerCommentersPanelData = [];
+                        clearAnalyzerCommentsDashboardMain();
+                        var bdgErr2 = document.getElementById('analyzerCommentsSidebarCount');
+                        if (bdgErr2) bdgErr2.textContent = '0';
                         return;
                     }
                     setAnalyzerCommentsStatus('', '');
@@ -9781,6 +11138,9 @@
                     analyzerCommentsListCache = [];
                     partHost.innerHTML = '';
                     analyzerCommentersPanelData = [];
+                    clearAnalyzerCommentsDashboardMain();
+                    var bdgErr3 = document.getElementById('analyzerCommentsSidebarCount');
+                    if (bdgErr3) bdgErr3.textContent = '0';
                 });
         }
 
