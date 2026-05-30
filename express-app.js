@@ -2454,6 +2454,13 @@ app.post(['/api/invite/:token/comments', '/api/invite/:token/comments/'], async 
       return res.status(410).json({ error: 'Invite expired' });
     }
     const uploadId = String(got.invite.upload_id);
+    /** Root posts from the contributor UI often omit assigneeScope; tie them to this invite's assignee thread so analyzer Messages stays one chat per person. */
+    let mergedAssigneeScope = parsed.assigneeScope != null ? String(parsed.assigneeScope).trim() : '';
+    if (!mergedAssigneeScope) {
+      const invScope = got.invite.assignee_scope != null ? String(got.invite.assignee_scope).trim() : '';
+      if (invScope.length > 400) mergedAssigneeScope = invScope.slice(0, 400);
+      else if (invScope) mergedAssigneeScope = invScope;
+    }
     let row;
     try {
       row = await insertUploadComment(client, uploadId, {
@@ -2462,7 +2469,7 @@ app.post(['/api/invite/:token/comments', '/api/invite/:token/comments/'], async 
         authorUid,
         parentId: parsed.parentId,
         issueKey: parsed.issueKey,
-        assigneeScope: parsed.assigneeScope,
+        assigneeScope: mergedAssigneeScope,
       });
     } catch (eIns) {
       const code = eIns.statusCode || 500;

@@ -358,14 +358,13 @@
             flex-direction: column;
             gap: 0.2rem;
             padding-bottom: 0.45rem;
-            margin-bottom: 0.25rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 0;
         }
         /* Same gap between the rule after nav and the Category label */
         #contribCategorySection > .contrib-nav-section__label:first-child {
             margin-top: 0.45rem;
         }
-        /* Full-width rules matching .contrib-sidebar__nav underline (same color & span) */
+        /* Separator lines between sidebar sections (same color as former nav underline) */
         .contrib-sidebar__rule {
             display: block;
             width: 100%;
@@ -5188,6 +5187,9 @@
                 displayName: ctx && ctx.displayName ? String(ctx.displayName).trim() : ''
             };
             if (parentId) payload.parentId = parentId;
+            if (ctx && ctx.assigneeScope && String(ctx.assigneeScope).trim() !== '') {
+                payload.assigneeScope = String(ctx.assigneeScope).trim();
+            }
 
             if (postBtn && postBtn.dataset.contribPosting === '1') {
                 return;
@@ -5267,10 +5269,16 @@
             var feed = document.getElementById('contribCommentsFeed');
             if (!feed) return;
             contribDashReplyToId = null;
+            data = data || {};
+            var inviteAssigneeScope =
+                data.assigneeScope != null && String(data.assigneeScope).trim() !== ''
+                    ? String(data.assigneeScope).trim()
+                    : '';
             contribDashCommentCtx = {
                 token: token,
                 issues: issues && issues.slice ? issues.slice() : [],
-                displayName: contributorDisplayName(data || {})
+                displayName: contributorDisplayName(data),
+                assigneeScope: inviteAssigneeScope
             };
             populateContribCommentSelectors(contribDashCommentCtx.issues);
             syncContribComposerEditChrome();

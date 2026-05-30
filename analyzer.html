@@ -4007,14 +4007,6 @@
             color: var(--text);
         }
 
-        #setupPhase.uc-setup .uc-lede {
-            margin: 0;
-            font-size: 0.875rem;
-            line-height: 1.55;
-            color: #94a3b8;
-            max-width: 38rem;
-        }
-
         #setupPhase.uc-setup .uc-board__grid {
             display: grid;
             gap: 1.25rem;
@@ -6474,7 +6466,6 @@
                     <header class="uc-intro">
                         <p class="uc-kicker">Setup</p>
                         <h1 class="uc-title">Upload &amp; configure</h1>
-                        <p class="uc-lede">One worksheet from Jira · optional database · base version &amp; threshold · then analyze.</p>
                     </header>
 
                     <section class="uc-board" aria-label="Upload and database">
@@ -10247,11 +10238,47 @@
                 });
         }
 
+        function acmCommentByIdMap(flat) {
+            var m = {};
+            if (!flat || !flat.length) return m;
+            var i;
+            for (i = 0; i < flat.length; i++) {
+                var c = flat[i];
+                if (c && c.id != null) m[String(c.id)] = c;
+            }
+            return m;
+        }
+
+        /** Replies often omit assigneeScope in JSON; inherit from parent chain so sidebar stays one thread per assignee. */
+        function acmResolveEffectiveAssigneeScope(c, byId) {
+            if (!c || !byId) return '';
+            var depth = 0;
+            var seen = {};
+            var cur = c;
+            while (cur && depth < 64) {
+                var cid = cur.id != null ? String(cur.id) : '';
+                if (cid) {
+                    if (seen[cid]) break;
+                    seen[cid] = true;
+                }
+                var sc = cur.assigneeScope != null ? String(cur.assigneeScope).trim() : '';
+                if (sc !== '') return sc;
+                var pid = cur.parentId != null ? String(cur.parentId).trim() : '';
+                if (!pid) break;
+                var next = byId[pid];
+                if (!next) break;
+                cur = next;
+                depth++;
+            }
+            return '';
+        }
+
         function buildCommenterAggregatesForPanel(flat) {
             var map = {};
+            var byId = acmCommentByIdMap(flat);
             for (var i = 0; i < flat.length; i++) {
                 var c = flat[i];
-                var scope = c.assigneeScope != null ? String(c.assigneeScope).trim() : '';
+                var scope = acmResolveEffectiveAssigneeScope(c, byId);
                 var key;
                 var name;
                 if (scope !== '') {
@@ -10319,8 +10346,8 @@
             return false;
         }
 
-        function commentParticipantKeyFromComment(c) {
-            var scope = c.assigneeScope != null ? String(c.assigneeScope).trim() : '';
+        function commentParticipantKeyFromComment(c, byId) {
+            var scope = byId ? acmResolveEffectiveAssigneeScope(c, byId) : c.assigneeScope != null ? String(c.assigneeScope).trim() : '';
             if (scope !== '') {
                 return 'assignee:' + acmNormAuthorLabel(scope);
             }
@@ -10341,10 +10368,11 @@
             if (!pk) {
                 return entry.comments ? entry.comments.slice() : [];
             }
+            var byId = acmCommentByIdMap(flat);
             var acc = new Set();
             var i;
             for (i = 0; i < flat.length; i++) {
-                if (commentParticipantKeyFromComment(flat[i]) === pk) {
+                if (commentParticipantKeyFromComment(flat[i], byId) === pk) {
                     acc.add(String(flat[i].id));
                 }
             }
@@ -10356,7 +10384,7 @@
                     var c = flat[j];
                     var id = String(c.id);
                     var pid = c.parentId != null ? String(c.parentId).trim() : '';
-                    if (acc.has(id) && pid && /^\d+$/.test(pid) && !acc.has(pid)) {
+                    if (acc.has(id) && pid && !acc.has(pid)) {
                         acc.add(pid);
                         changed = true;
                     }
@@ -10446,8 +10474,14 @@
                 var tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
                 return ta - tb;
             });
-            var last = sorted[sorted.length - 1];
-            return last && last.id != null ? String(last.id) : null;
+            var k;
+            for (k = sorted.length - 1; k >= 0; k--) {
+                var c = sorted[k];
+                if (c && c.id != null && String(c.id).trim() !== '') {
+                    return String(c.id);
+                }
+            }
+            return null;
         }
 
         function acmFormatChatSnippet(body) {
@@ -11212,6 +11246,21 @@
             if (!list) return;
         }
 
+        /** When posting from the Messages UI, send assignee scope so replies stay in that thread (server + sidebar). */
+        function acmAttachAssigneeScopeToCommentPayload(payload) {
+            if (!payload) return;
+            var key = analyzerCommentsSelectedParticipantKey;
+            if (!key || String(key).indexOf('assignee:') !== 0) return;
+            var i;
+            for (i = 0; i < analyzerCommentersPanelData.length; i++) {
+                var row = analyzerCommentersPanelData[i];
+                if (!row || row.participantKey !== key) continue;
+                var dn = row.displayName != null ? String(row.displayName).trim() : '';
+                if (dn) payload.assigneeScope = dn;
+                return;
+            }
+        }
+
         function postAnalyzerComment(parentIdStr, fromReplyTa) {
             var uploadId = typeof resolveExportUploadId === 'function' ? resolveExportUploadId() : '';
             if (!uploadId) {
@@ -11255,6 +11304,9 @@
                         break;
                     }
                 }
+            }
+            if (fromDashboard || fromModal) {
+                acmAttachAssigneeScopeToCommentPayload(payload);
             }
             ensureApiBaseProbed()
                 .then(function (apiOk) {
