@@ -859,8 +859,23 @@
             margin: 0 0 0.5rem 0;
             color: var(--text-muted);
         }
-        .analyzer-comments-dashboard-status.acm-dash-page__status {
-            margin-bottom: 0;
+        #commentsPhase.comments-phase--dashboard .analyzer-comments-dashboard-status.acm-dash-shell-status:empty {
+            display: none;
+        }
+        #commentsPhase.comments-phase--dashboard .analyzer-comments-dashboard-status.acm-dash-shell-status:not(:empty) {
+            margin: 0.75rem 1rem 0.65rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(59, 130, 246, 0.28);
+            background: rgba(59, 130, 246, 0.1);
+            color: #bfdbfe;
+            font-size: 0.8125rem;
+            line-height: 1.45;
+        }
+        #commentsPhase.comments-phase--dashboard .analyzer-comments-dashboard-status.acm-dash-shell-status.analyzer-comments__status--err {
+            border-color: rgba(248, 113, 113, 0.35);
+            background: rgba(239, 68, 68, 0.1);
+            color: #fecaca;
         }
         .analyzer-comments-dashboard-status.analyzer-comments__status--err {
             color: #f87171;
@@ -1231,26 +1246,20 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
         }
         .acm-dash-main__thread .acm-chat-msg--theirs .acm-chat-msg__bubble {
-            background: #2a2a30;
+            background: var(--acm-bubble-in, var(--surface-2));
+            border-color: rgba(255, 255, 255, 0.06);
             border-radius: 6px 18px 18px 18px;
         }
         .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__bubble {
-            background: #243124;
-            border-color: rgba(34, 197, 94, 0.28);
+            background: var(--acm-bubble-out, rgba(59, 130, 246, 0.14));
+            border-color: rgba(255, 255, 255, 0.08);
             border-radius: 18px 6px 18px 18px;
         }
         .acm-dash-main__thread .acm-chat-msg__meta {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.35rem 0.5rem;
-            margin-bottom: 0.3rem;
+            display: none;
         }
-        .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__meta {
-            justify-content: flex-end;
-        }
-        .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__who {
-            text-align: right;
+        .acm-dash-main__thread .acm-chat-msg__who {
+            display: none;
         }
         .acm-dash-main__thread .acm-chat-msg--mine .acm-chat-msg__edit-actions {
             justify-content: flex-end;
@@ -1258,7 +1267,7 @@
         .acm-dash-main__thread .acm-chat-msg__time {
             font-size: 0.62rem;
             font-weight: 500;
-            color: #94a3b8;
+            color: #a3a3a3;
         }
         .acm-dash-main__thread .acm-chat-msg__bubble .analyzer-comments-issue {
             font-size: 0.6rem;
@@ -1268,18 +1277,63 @@
             color: #cbd5e1;
             border: none;
         }
+        .acm-dash-main__thread .acm-chat-daysep {
+            display: flex;
+            justify-content: center;
+            margin: 0.25rem 0 0.35rem;
+            flex-shrink: 0;
+        }
+        .acm-dash-main__thread .acm-chat-daysep span {
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: #737373;
+            padding: 0.2rem 0.65rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .acm-dash-main__thread .acm-chat-msg__footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.45rem;
+            margin-top: 0.35rem;
+            padding-top: 0.35rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .acm-dash-main__thread .acm-chat-msg__footer--mine {
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+        .acm-dash-main__thread .acm-chat-msg__footer--mine .acm-chat-msg__footer-issue {
+            margin-right: auto;
+        }
+        .acm-dash-main__thread .acm-chat-msg__footer-issue {
+            flex: 1;
+            min-width: 0;
+        }
+        .acm-dash-main__thread .acm-chat-msg__footer-trail {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+        .acm-dash-main__thread .acm-chat-msg__footer--mine .acm-chat-msg__footer-trail {
+            margin-left: 0;
+        }
+        .acm-dash-main__thread .acm-chat-msg__read {
+            font-size: 0.62rem;
+            font-weight: 600;
+            color: #a3a3a3;
+            letter-spacing: -0.06em;
+            line-height: 1;
+        }
         .acm-dash-main__thread .acm-chat-msg__text {
             font-size: 0.84rem;
             line-height: 1.5;
             color: #f4f4f5;
             white-space: pre-wrap;
             word-break: break-word;
-        }
-        .acm-dash-main__thread .acm-chat-msg__who {
-            font-size: 0.68rem;
-            font-weight: 600;
-            color: #a1a1aa;
-            margin-bottom: 0.2rem;
         }
         .acm-dash-main__thread .acm-chat-msg__toolbar {
             margin-top: 0.4rem;
@@ -1309,7 +1363,7 @@
             cursor: not-allowed;
         }
         .acm-dash-main__thread .acm-chat-msg__btn:focus-visible {
-            outline: 2px solid rgba(34, 197, 94, 0.55);
+            outline: 2px solid rgba(59, 130, 246, 0.55);
             outline-offset: 1px;
         }
         .acm-dash-main__thread .acm-chat-msg__btn--ghost {
@@ -1322,12 +1376,12 @@
             color: #f8fafc;
         }
         .acm-dash-main__thread .acm-chat-msg__btn--primary {
-            background: rgba(34, 197, 94, 0.22);
-            border-color: rgba(34, 197, 94, 0.45);
-            color: #ecfdf5;
+            background: rgba(59, 130, 246, 0.22);
+            border-color: rgba(59, 130, 246, 0.45);
+            color: #dbeafe;
         }
         .acm-dash-main__thread .acm-chat-msg__btn--primary:hover:not(:disabled) {
-            background: rgba(34, 197, 94, 0.32);
+            background: rgba(59, 130, 246, 0.32);
         }
         .acm-dash-main__thread .acm-chat-msg__btn--secondary {
             background: rgba(255, 255, 255, 0.05);
@@ -1361,17 +1415,17 @@
         .acm-dash-main__thread .acm-chat-msg .analyzer-comments-reply-form {
             margin-top: 0.45rem;
             padding: 0.45rem;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.35);
+            border-radius: var(--radius-sm);
+            background: rgba(0, 0, 0, 0.22);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .acm-dash-main__thread .acm-chat-msg .analyzer-comments__textarea {
             width: 100%;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.4);
-            color: #f8fafc;
+            background: rgba(0, 0, 0, 0.22);
+            color: var(--text);
             font-size: 0.8rem;
             padding: 0.4rem 0.5rem;
             resize: vertical;
@@ -1384,54 +1438,33 @@
             gap: 0.4rem;
         }
 
-        /* Comments dashboard: messenger-style dark (no app nav) */
+        /* Comments dashboard — reference messaging UI (true black, gray bubbles, green online) */
         #commentsPhase.comments-phase--dashboard {
+            --acm-shell-bg: #000000;
+            --acm-sidebar-bg: #000000;
+            --acm-main-bg: #000000;
+            --acm-rail: #0a0a0a;
+            --acm-pill-bg: #1a1a1a;
+            --acm-bubble-in: #1a1a1a;
+            --acm-bubble-out: #2a2a2e;
+            --acm-blue: #3b82f6;
+            --acm-blue-deep: #2563eb;
+            --acm-online: #22c55e;
+            --acm-edge: rgba(255, 255, 255, 0.06);
             display: flex;
             flex-direction: column;
             margin-top: 0;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0;
             max-width: 100%;
+        }
+        #commentsPhase.comments-phase--dashboard:not([hidden]) {
+            flex: 1;
+            min-height: 0;
         }
         .acm-dash-page {
             display: flex;
             flex-direction: column;
-            gap: 0.45rem;
-        }
-        .acm-dash-page__bar {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 0.5rem 1rem;
-            flex-shrink: 0;
-        }
-        .acm-dash-page__lead {
-            min-width: 0;
-        }
-        .acm-dash-page__title {
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            color: #fafafa;
-        }
-        .acm-dash-page__lede {
-            margin: 0.2rem 0 0;
-            font-size: 0.78rem;
-            line-height: 1.45;
-            color: #a1a1aa;
-            max-width: 40rem;
-        }
-        .acm-dash-page__status {
-            margin: 0;
-            text-align: right;
-            align-self: center;
-            max-width: min(100%, 22rem);
-            font-size: 0.72rem;
-            color: #a1a1aa;
-        }
-        .acm-dash-page__status:empty {
-            min-height: 0;
+            gap: 0;
         }
         .analyzer-comments--dashboard-chat {
             display: flex;
@@ -1445,62 +1478,63 @@
             display: flex;
             flex-direction: row;
             align-items: stretch;
-            height: min(72vh, 44rem);
-            min-height: 24rem;
-            border-radius: 16px;
+            flex: 1;
+            min-height: 0;
+            height: auto;
+            border-radius: 0;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            background: #141416;
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+            border: none;
+            background: var(--acm-shell-bg);
+            box-shadow: none;
         }
         .acm-dash-sidebar {
-            flex: 0 0 min(100%, 17.5rem);
-            width: min(100%, 17.5rem);
+            flex: 0 0 min(100%, 19rem);
+            width: min(100%, 19rem);
             max-width: 100%;
             min-height: 0;
             display: flex;
             flex-direction: column;
-            background: #18181b;
-            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            background: var(--acm-sidebar-bg);
+            border-right: 1px solid var(--acm-edge);
         }
         .acm-dash-sidebar__head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.85rem 0.9rem 0.65rem;
+            padding: 1rem 1rem 0.75rem;
             flex-shrink: 0;
         }
         .acm-dash-sidebar__title {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             color: #fafafa;
             letter-spacing: -0.02em;
         }
         .acm-dash-sidebar__badge {
-            min-width: 1.4rem;
-            height: 1.4rem;
+            min-width: 1.35rem;
+            height: 1.35rem;
             padding: 0 0.4rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #ecfdf5;
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid rgba(34, 197, 94, 0.45);
-            border-radius: 8px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #d4d4d4;
+            background: #262626;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
         }
         .acm-dash-sidebar__search-wrap {
             position: relative;
-            margin: 0 0.65rem 0.65rem;
+            margin: 0 0.75rem 0.75rem;
             flex-shrink: 0;
         }
         .acm-dash-sidebar__search-icon {
             position: absolute;
-            left: 0.75rem;
+            left: 0.8rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #71717a;
+            color: #737373;
             display: flex;
             pointer-events: none;
         }
@@ -1508,72 +1542,83 @@
             width: 100%;
             box-sizing: border-box;
             border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: #27272a;
+            border: 1px solid var(--acm-edge);
+            background: var(--acm-pill-bg);
             color: #fafafa;
             font: inherit;
-            font-size: 0.8rem;
-            padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+            font-size: 0.8125rem;
+            padding: 0.55rem 0.85rem 0.55rem 2.35rem;
             outline: none;
         }
         .acm-dash-sidebar__search::placeholder {
-            color: #71717a;
+            color: #737373;
         }
         .acm-dash-sidebar__search:focus {
-            border-color: rgba(34, 197, 94, 0.45);
-            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15);
+            border-color: rgba(255, 255, 255, 0.14);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
         }
         .acm-dash-sidebar__list {
             flex: 1;
             min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 0 0.5rem 0.5rem;
+            padding: 0 0.55rem 0.5rem;
         }
         .acm-dash-sidebar__list .acm-dash-sidebar-empty {
             margin: 0.75rem;
             padding: 1rem;
             border-radius: 12px;
             text-align: center;
-            font-size: 0.78rem;
-            color: #71717a;
-            background: rgba(255, 255, 255, 0.03);
+            font-size: 0.8125rem;
+            line-height: 1.45;
+            color: #737373;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--acm-edge);
         }
         .acm-dash-sidebar__footer {
             flex-shrink: 0;
-            padding: 0.65rem 0.75rem 0.85rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            background: #18181b;
+            padding: 0.75rem 0.75rem 1rem;
+            border-top: 1px solid var(--acm-edge);
+            background: var(--acm-sidebar-bg);
         }
         .acm-dash-sidebar__new-chat {
             width: 100%;
-            border-radius: 999px;
-            border: 2px solid rgba(34, 197, 94, 0.55);
-            background: transparent;
-            color: #4ade80;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #141414;
+            color: #fafafa;
             font: inherit;
-            font-size: 0.78rem;
+            font-size: 0.8125rem;
             font-weight: 600;
-            padding: 0.55rem 0.75rem;
+            padding: 0.65rem 0.9rem;
             cursor: pointer;
-            transition: background 0.12s ease, color 0.12s ease;
+            transition: background 0.12s ease, border-color 0.12s ease;
         }
         .acm-dash-sidebar__new-chat:hover {
-            background: rgba(34, 197, 94, 0.1);
-            color: #86efac;
+            background: #1f1f1f;
+            border-color: rgba(255, 255, 255, 0.16);
+        }
+        .acm-dash-sidebar__new-chat-icon {
+            display: flex;
+            color: #fafafa;
+            opacity: 0.95;
         }
         .acm-dash-peer-list {
             display: flex;
             flex-direction: column;
-            gap: 0.35rem;
+            gap: 0.25rem;
         }
         .acm-dash-peer {
             display: flex;
-            align-items: flex-start;
-            gap: 0.6rem;
+            align-items: center;
+            gap: 0.65rem;
             width: 100%;
             margin: 0;
-            padding: 0.65rem 0.7rem;
+            padding: 0.65rem 0.65rem;
             border: none;
             border-radius: 14px;
             background: transparent;
@@ -1587,12 +1632,12 @@
             background: rgba(255, 255, 255, 0.05);
         }
         .acm-dash-peer:focus-visible {
-            outline: 2px solid rgba(34, 197, 94, 0.55);
+            outline: 2px solid rgba(255, 255, 255, 0.35);
             outline-offset: 2px;
         }
         .acm-dash-peer--active {
-            background: rgba(34, 197, 94, 0.1);
-            box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.25);
+            background: #1a1a1a;
+            box-shadow: none;
         }
         .acm-dash-peer__avatar {
             flex-shrink: 0;
@@ -1605,14 +1650,14 @@
             font-size: 0.68rem;
             font-weight: 700;
             color: #fafafa;
-            background: linear-gradient(145deg, #3f3f46, #27272a);
+            background: linear-gradient(145deg, #3f3f46, #262626);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .acm-dash-peer--lead .acm-dash-peer__avatar {
-            background: linear-gradient(145deg, rgba(34, 197, 94, 0.35), #27272a);
-            border-color: rgba(34, 197, 94, 0.35);
+            background: linear-gradient(145deg, #52525b, #262626);
+            border-color: rgba(255, 255, 255, 0.1);
         }
-        .acm-dash-peer__body {
+        .acm-dash-peer__mid {
             flex: 1;
             min-width: 0;
         }
@@ -1633,12 +1678,27 @@
         .acm-dash-peer__time {
             flex-shrink: 0;
             font-size: 0.65rem;
-            color: #71717a;
+            color: #737373;
+        }
+        .acm-dash-peer__count {
+            flex-shrink: 0;
+            min-width: 1.25rem;
+            height: 1.25rem;
+            padding: 0 0.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.62rem;
+            font-weight: 600;
+            color: #e5e5e5;
+            background: #262626;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         .acm-dash-peer__snippet {
             margin-top: 0.15rem;
             font-size: 0.72rem;
-            color: #a1a1aa;
+            color: #a3a3a3;
             line-height: 1.35;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -1654,17 +1714,20 @@
             min-height: 0;
             display: flex;
             flex-direction: column;
-            background: #101012;
+            background: var(--acm-main-bg);
+        }
+        .acm-dash-main--idle .acm-dash-main__head {
+            display: none;
         }
         .acm-dash-main--idle .acm-dash-main__online-dot {
-            background: #52525b;
+            background: #525252;
             box-shadow: none;
         }
         .acm-dash-main__head {
             flex-shrink: 0;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            background: #141416;
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--acm-edge);
+            background: var(--acm-rail);
         }
         .acm-dash-main__head-top {
             display: flex;
@@ -1688,7 +1751,7 @@
             font-size: 0.75rem;
             font-weight: 700;
             color: #fafafa;
-            background: linear-gradient(145deg, #3f3f46, #27272a);
+            background: linear-gradient(145deg, #3f3f46, #262626);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .acm-dash-main__headtext {
@@ -1712,37 +1775,40 @@
             width: 0.45rem;
             height: 0.45rem;
             border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+            background: var(--acm-online, #22c55e);
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.28);
             flex-shrink: 0;
         }
         .acm-dash-main__active {
             font-size: 0.72rem;
             font-weight: 600;
-            color: #4ade80;
+            color: #86efac;
         }
         .acm-dash-main--idle .acm-dash-main__active {
-            color: #71717a;
+            color: #737373;
         }
         .acm-dash-main__hint {
             margin: 0;
             font-size: 0.72rem;
             font-weight: 400;
-            color: #71717a;
+            color: #737373;
         }
-        .acm-dash-main__actions {
+        .acm-dash-main:not(.acm-dash-main--idle) .acm-dash-main__actions {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: 0.35rem;
             flex-shrink: 0;
+        }
+        .acm-dash-main--idle .acm-dash-main__actions {
+            display: none;
         }
         .acm-dash-main__icon-btn {
             width: 2.25rem;
             height: 2.25rem;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: #27272a;
-            color: #a1a1aa;
+            border: 1px solid var(--acm-edge);
+            background: var(--acm-pill-bg);
+            color: #a3a3a3;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1753,19 +1819,42 @@
             flex: 1;
             min-height: 0;
             overflow-y: auto;
-            padding: 0.85rem 1rem 0.75rem;
-            background: #101012;
+            padding: 0.75rem 1rem;
+            background: var(--acm-main-bg);
+        }
+        .acm-dash-main__thread.acm-dash-main__thread--empty {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .acm-dash-empty-main {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 12rem;
-            padding: 2rem 1.25rem;
+            gap: 0.65rem;
+            max-width: 22rem;
+            padding: 1rem 1.25rem 1.5rem;
             text-align: center;
-            font-size: 0.82rem;
+            min-height: 0;
+        }
+        .acm-dash-empty-main__icon {
+            color: rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+        .acm-dash-empty-main__title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #fafafa;
+        }
+        .acm-dash-empty-main__sub {
+            margin: 0;
+            font-size: 0.8125rem;
             line-height: 1.55;
-            color: #71717a;
+            color: #737373;
         }
         .acm-dash-composer {
             flex-shrink: 0;
@@ -1773,9 +1862,9 @@
             flex-direction: column;
             align-items: stretch;
             gap: 0.4rem;
-            padding: 0.65rem 0.85rem 1.15rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            background: #141416;
+            padding: 0.75rem 1rem 1rem;
+            border-top: 1px solid var(--acm-edge);
+            background: var(--acm-rail);
         }
         .acm-dash-composer__hint-row {
             display: flex;
@@ -1785,7 +1874,7 @@
         }
         .acm-dash-composer__hint {
             font-size: 0.72rem;
-            color: #a1a1aa;
+            color: #a3a3a3;
             padding: 0 0.1rem;
             flex: 1;
             min-width: 0;
@@ -1798,11 +1887,11 @@
             font-size: 0.68rem;
             font-weight: 600;
             cursor: pointer;
-            background: #27272a;
-            color: #a1a1aa;
+            background: var(--acm-pill-bg);
+            color: #a3a3a3;
         }
         .acm-dash-composer__hint-clear:hover {
-            background: #3f3f46;
+            background: #2a2a2a;
             color: #fafafa;
         }
         .acm-dash-composer__row {
@@ -1816,10 +1905,10 @@
             align-items: center;
             gap: 0.45rem;
             min-width: 0;
-            padding: 0.35rem 0.65rem 0.35rem 0.45rem;
+            padding: 0.4rem 0.7rem 0.4rem 0.5rem;
             border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: #27272a;
+            border: 1px solid var(--acm-edge);
+            background: var(--acm-pill-bg);
         }
         .acm-dash-composer__attach {
             flex-shrink: 0;
@@ -1828,17 +1917,21 @@
             border: none;
             border-radius: 50%;
             background: transparent;
-            color: #a1a1aa;
+            color: #a3a3a3;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: default;
             opacity: 0.55;
         }
+        .acm-dash-composer__attach:disabled {
+            opacity: 1;
+            color: #737373;
+        }
         .acm-dash-composer__input {
             flex: 1;
             min-width: 0;
-            min-height: 2.25rem;
+            min-height: 2.35rem;
             max-height: 9rem;
             border: none;
             background: transparent;
@@ -1849,17 +1942,20 @@
             resize: none;
             padding: 0.35rem 0;
         }
+        #commentsPhase.comments-phase--dashboard .acm-dash-composer__input::placeholder {
+            color: #737373;
+        }
         .acm-dash-composer__input:focus {
             outline: none;
         }
         .acm-dash-composer__field:focus-within {
-            border-color: rgba(34, 197, 94, 0.35);
-            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.12);
+            border-color: rgba(59, 130, 246, 0.45);
+            box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.18);
         }
         .acm-dash-composer__send {
             flex-shrink: 0;
-            width: 2.85rem;
-            height: 2.85rem;
+            width: 2.9rem;
+            height: 2.9rem;
             border-radius: 50%;
             border: none;
             padding: 0;
@@ -1868,19 +1964,32 @@
             justify-content: center;
             cursor: pointer;
             color: #fff;
-            background: linear-gradient(145deg, #22c55e, #16a34a);
-            box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+            background: var(--acm-blue);
+            box-shadow: 0 2px 14px rgba(59, 130, 246, 0.45);
+            transition: background 0.12s ease, filter 0.12s ease, opacity 0.12s ease;
         }
         .acm-dash-composer__send svg {
-            margin-left: 2px;
+            margin: 0 0 0 2px;
+            transform: translateY(-0.5px);
         }
-        .acm-dash-composer__send:hover {
-            filter: brightness(1.08);
+        .acm-dash-composer__send:hover:not(:disabled) {
+            background: var(--acm-blue-deep);
+            filter: brightness(1.05);
+        }
+        .acm-dash-composer__send:disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+            box-shadow: none;
+            filter: saturate(0.7);
+        }
+        .acm-dash-composer__send:disabled:hover {
+            filter: saturate(0.7);
+            background: var(--acm-blue);
         }
         @media (max-width: 900px) {
             .acm-dash-shell {
                 flex-direction: column;
-                height: min(68vh, 40rem);
+                height: min(70vh, 42rem);
                 min-height: 22rem;
             }
             .acm-dash-sidebar {
@@ -1888,15 +1997,13 @@
                 width: 100%;
                 max-height: 11rem;
                 border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                border-bottom: 1px solid var(--acm-edge);
             }
             .acm-dash-main {
                 min-height: 14rem;
             }
-            .acm-dash-page__status {
+            #commentsPhase.comments-phase--dashboard .analyzer-comments-dashboard-status.acm-dash-shell-status:not(:empty) {
                 text-align: left;
-                width: 100%;
-                max-width: none;
             }
         }
 
@@ -2850,6 +2957,36 @@
             margin: 0 auto;
             padding: 1.65rem clamp(1rem, 4vw, 1.85rem) 3rem;
             box-sizing: border-box;
+        }
+
+        /* Comments (Messages): .main flex column so height propagates to thread (fixes zero-height thread) */
+        .main:has(#commentsPhase.comments-phase--dashboard:not([hidden])) {
+            display: flex;
+            flex-direction: column;
+            overflow-y: hidden;
+            background: #0a0a0a;
+        }
+        .main:has(#commentsPhase.comments-phase--dashboard:not([hidden])) .main__inner {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            max-width: none;
+            width: 100%;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .main:has(#commentsPhase.comments-phase--dashboard:not([hidden])) .main__inner .acm-dash-page {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .main:has(#commentsPhase.comments-phase--dashboard:not([hidden])) .main__inner .analyzer-comments--dashboard-chat {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Vertical stack for report / analytics generated sections (not a 2-col grid) */
@@ -7000,24 +7137,18 @@
                     </section>
                 </div>
 
-                <!-- Comments: sidebar + chat (dashboard) -->
+                <!-- Comments: sidebar + chat (dashboard) — layout matches messages UI reference -->
                 <div id="commentsPhase" class="comments-phase comments-phase--dashboard setup-phase" hidden>
                     <div class="acm-dash-page">
-                        <header class="acm-dash-page__bar">
-                            <div class="acm-dash-page__lead">
-                                <h2 class="acm-dash-page__title">Comments</h2>
-                                <p class="acm-dash-page__lede">Threads with everyone who commented on this upload.</p>
-                            </div>
-                            <p
-                                id="analyzerCommentsStatus"
-                                class="analyzer-comments-dashboard-status acm-dash-page__status"
-                                role="status"
-                                aria-live="polite"
-                            ></p>
-                        </header>
+                        <p
+                            id="analyzerCommentsStatus"
+                            class="analyzer-comments-dashboard-status acm-dash-shell-status"
+                            role="status"
+                            aria-live="polite"
+                        ></p>
                         <section
                             class="data-section analyzer-comments analyzer-comments--dashboard-chat"
-                            aria-label="Comments dashboard"
+                            aria-label="Messages"
                         >
                             <div class="acm-dash-shell">
                             <aside class="acm-dash-sidebar" aria-label="Messages">
@@ -7037,14 +7168,19 @@
                                         type="search"
                                         id="analyzerCommentsPeerSearch"
                                         class="acm-dash-sidebar__search"
-                                        placeholder="Search…"
+                                        placeholder="Search..."
                                         autocomplete="off"
                                     />
                                 </div>
                                 <div id="analyzerCommentsParticipants" class="acm-dash-sidebar__list"></div>
                                 <div class="acm-dash-sidebar__footer">
                                     <button type="button" id="analyzerCommentsBtnAdd" class="acm-dash-sidebar__new-chat">
-                                        Add new chat +
+                                        <span class="acm-dash-sidebar__new-chat-icon" aria-hidden="true">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round">
+                                                <path d="M12 5v14M5 12h14" />
+                                            </svg>
+                                        </span>
+                                        Add new chat
                                     </button>
                                 </div>
                             </aside>
@@ -7054,7 +7190,7 @@
                                         <div class="acm-dash-main__peer">
                                             <div class="acm-dash-main__avatar" id="analyzerCommentsMainAvatar" aria-hidden="true"></div>
                                             <div class="acm-dash-main__headtext">
-                                                <h2 class="acm-dash-main__to" id="analyzerCommentsMainTitle">Select a chat</h2>
+                                                <h2 class="acm-dash-main__to" id="analyzerCommentsMainTitle">No chat selected</h2>
                                                 <div class="acm-dash-main__subline">
                                                     <span class="acm-dash-main__online-dot" aria-hidden="true"></span>
                                                     <span class="acm-dash-main__active" id="analyzerCommentsMainActive">—</span>
@@ -7067,14 +7203,38 @@
                                                 type="button"
                                                 class="acm-dash-main__icon-btn"
                                                 disabled
-                                                title="Call (not available)"
-                                                aria-hidden="true"
-                                                tabindex="-1"
+                                                title="Voice call (not available)"
+                                                aria-label="Voice call (not available)"
                                             >
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
                                                     <path
                                                         d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m0 6.02v2a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h2a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 10.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
                                                     />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="acm-dash-main__icon-btn"
+                                                disabled
+                                                title="Video call (not available)"
+                                                aria-label="Video call (not available)"
+                                            >
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                                                    <rect x="2" y="7" width="14" height="10" rx="2" fill="none" />
+                                                    <path d="M16 10l5-3v10l-5-3z" fill="none" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="acm-dash-main__icon-btn"
+                                                disabled
+                                                title="More (not available)"
+                                                aria-label="More options (not available)"
+                                            >
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                                    <circle cx="5" cy="12" r="1.75" />
+                                                    <circle cx="12" cy="12" r="1.75" />
+                                                    <circle cx="19" cy="12" r="1.75" />
                                                 </svg>
                                             </button>
                                         </div>
@@ -7087,7 +7247,7 @@
                                     aria-live="polite"
                                     aria-relevant="additions"
                                 ></div>
-                                <div id="analyzerCommentsComposerBar" class="acm-dash-composer" hidden>
+                                <div id="analyzerCommentsComposerBar" class="acm-dash-composer">
                                     <div id="analyzerCommentsReplyHintRow" class="acm-dash-composer__hint-row" hidden>
                                         <div id="analyzerCommentsReplyHint" class="acm-dash-composer__hint"></div>
                                         <button type="button" class="acm-dash-composer__hint-clear" id="analyzerCommentsReplyClear">
@@ -7119,12 +7279,12 @@
                                                 class="acm-dash-composer__input"
                                                 rows="1"
                                                 maxlength="8000"
-                                                placeholder="What would you like to say?"
+                                                placeholder="Type a message..."
                                             ></textarea>
                                         </div>
-                                        <button type="button" class="acm-dash-composer__send" id="analyzerCommentsDashboardSend" aria-label="Send message">
-                                            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-                                                <path d="M9 7v10l9-5-9-5z" fill="currentColor" />
+                                        <button type="button" class="acm-dash-composer__send" id="analyzerCommentsDashboardSend" aria-label="Send message" disabled>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
                                             </svg>
                                         </button>
                                     </div>
@@ -10004,7 +10164,7 @@
                     analyzerCommentsPeopleInsightsMerged = mergeAssigneesIssueRowsFromPeopleInsights(res.data);
                     if (hint) {
                         hint.textContent =
-                            'Choose an assignee and optional issue, then post. Uses the same sprint threshold as Upload & configure.';
+                            'Choose an assignee and optional issue, then post. The chat appears in Messages under that assignee\u2019s name. Uses the same sprint threshold as Upload & configure.';
                     }
                     populateAnalyzerAddCommentAssigneeSelect(analyzerCommentsPeopleInsightsMerged);
                     updateAnalyzerAddCommentIssueSelect();
@@ -10091,16 +10251,29 @@
             var map = {};
             for (var i = 0; i < flat.length; i++) {
                 var c = flat[i];
-                var uid = c.authorUid != null ? String(c.authorUid).trim() : '';
-                var name =
-                    c.authorName != null && String(c.authorName).trim() !== ''
-                        ? String(c.authorName).trim()
-                        : 'Analyst';
-                var key = uid !== '' ? 'uid:' + uid : 'name:' + name.toLowerCase();
+                var scope = c.assigneeScope != null ? String(c.assigneeScope).trim() : '';
+                var key;
+                var name;
+                if (scope !== '') {
+                    key = 'assignee:' + acmNormAuthorLabel(scope);
+                    name = scope;
+                } else {
+                    var uid = c.authorUid != null ? String(c.authorUid).trim() : '';
+                    name =
+                        c.authorName != null && String(c.authorName).trim() !== ''
+                            ? String(c.authorName).trim()
+                            : 'Analyst';
+                    key = uid !== '' ? 'uid:' + uid : 'name:' + name.toLowerCase();
+                    if (!map[key]) {
+                        map[key] = { displayName: name, comments: [], participantKey: key };
+                    } else if (uid !== '' && map[key].displayName === 'Analyst' && name !== 'Analyst') {
+                        map[key].displayName = name;
+                    }
+                    map[key].comments.push(c);
+                    continue;
+                }
                 if (!map[key]) {
                     map[key] = { displayName: name, comments: [], participantKey: key };
-                } else if (uid !== '' && map[key].displayName === 'Analyst' && name !== 'Analyst') {
-                    map[key].displayName = name;
                 }
                 map[key].comments.push(c);
             }
@@ -10147,6 +10320,10 @@
         }
 
         function commentParticipantKeyFromComment(c) {
+            var scope = c.assigneeScope != null ? String(c.assigneeScope).trim() : '';
+            if (scope !== '') {
+                return 'assignee:' + acmNormAuthorLabel(scope);
+            }
             var uid = c.authorUid != null ? String(c.authorUid).trim() : '';
             var name =
                 c.authorName != null && String(c.authorName).trim() !== ''
@@ -10281,6 +10458,19 @@
             return t || '\u2014';
         }
 
+        function acmDashboardEmptyMainHtml() {
+            return (
+                '<div class="acm-dash-empty-main" role="status">' +
+                '<svg class="acm-dash-empty-main__icon" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+                '<path d="M18 22h32a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H34l-10 8v-8H18a6 6 0 0 1-6-6V28a6 6 0 0 1 6-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity="0.35"/>' +
+                '<path d="M28 32h24.5a5 5 0 0 1 5 5v11a5 5 0 0 1-5 5H39.5l-8 6.5V53H29a5 5 0 0 1-5-5V37a5 5 0 0 1 5-5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity="0.85"/>' +
+                '</svg>' +
+                '<p class="acm-dash-empty-main__title">No chat selected</p>' +
+                '<p class="acm-dash-empty-main__sub">Start a new conversation or select one from the list.</p>' +
+                '</div>'
+            );
+        }
+
         function clearAnalyzerCommentsDashboardMain() {
             acmClearDashboardReplyTarget();
             analyzerCommentsSelectedParticipantKey = null;
@@ -10289,18 +10479,18 @@
             var activeEl = document.getElementById('analyzerCommentsMainActive');
             var av = document.getElementById('analyzerCommentsMainAvatar');
             var thread = document.getElementById('analyzerCommentsThreadBody');
-            var comp = document.getElementById('analyzerCommentsComposerBar');
+            var sendBtn = document.getElementById('analyzerCommentsDashboardSend');
             var mainPane = document.getElementById('analyzerCommentsMainPane');
-            if (titleEl) titleEl.textContent = 'Select a chat';
+            if (titleEl) titleEl.textContent = 'No chat selected';
             if (hintEl) hintEl.textContent = '';
             if (activeEl) activeEl.textContent = '\u2014';
             if (mainPane) mainPane.classList.add('acm-dash-main--idle');
             if (av) av.textContent = '\u2026';
             if (thread) {
-                thread.innerHTML =
-                    '<div class="acm-dash-empty-main">Select a person on the left.</div>';
+                thread.classList.add('acm-dash-main__thread--empty');
+                thread.innerHTML = acmDashboardEmptyMainHtml();
             }
-            if (comp) comp.hidden = true;
+            if (sendBtn) sendBtn.disabled = true;
             var host = document.getElementById('analyzerCommentsParticipants');
             if (host) {
                 var peers = host.querySelectorAll('.acm-dash-peer');
@@ -10321,6 +10511,7 @@
             var mainPane = document.getElementById('analyzerCommentsMainPane');
             if (!merged || !thread || !titleEl) return;
             if (mainPane) mainPane.classList.remove('acm-dash-main--idle');
+            thread.classList.remove('acm-dash-main__thread--empty');
             if (av) av.textContent = acmAuthorChatInitials(merged.displayName);
             titleEl.textContent = merged.displayName || 'Contributor';
             var n = merged.comments ? merged.comments.length : 0;
@@ -10329,6 +10520,8 @@
             }
             if (activeEl) activeEl.textContent = 'Online';
             thread.innerHTML = buildAuthorModalCommentsHtml(merged);
+            var sendBtn = document.getElementById('analyzerCommentsDashboardSend');
+            if (sendBtn) sendBtn.disabled = false;
         }
 
         function selectAnalyzerCommentsParticipant(idx) {
@@ -10348,8 +10541,6 @@
                 }
             }
             renderAnalyzerCommentsDashboardThread(idx);
-            var comp = document.getElementById('analyzerCommentsComposerBar');
-            if (comp) comp.hidden = false;
             var ta = document.getElementById('analyzerCommentsDashboardTa');
             if (ta) ta.value = '';
             var threadEl = document.getElementById('analyzerCommentsThreadBody');
@@ -10439,13 +10630,8 @@
                 });
                 var last = sorted[sorted.length - 1];
                 var snippet = acmFormatChatSnippet(last && last.body != null ? last.body : '');
-                var timeShort = '';
-                if (last && last.createdAt) {
-                    timeShort = new Date(last.createdAt).toLocaleTimeString(undefined, {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                    });
-                }
+                var timeShort = acmPeerListTimeLabel(last && last.createdAt);
+                var cnt = sorted.length;
                 var initials = acmAuthorChatInitials(entry.displayName);
                 var ariaName = String(entry.displayName || 'Participant').trim() || 'Participant';
                 var searchBlob = String(
@@ -10465,14 +10651,23 @@
                     escapeHtml(ariaName) +
                     '">';
                 html += '<div class="acm-dash-peer__avatar" aria-hidden="true">' + escapeHtml(initials) + '</div>';
-                html += '<div class="acm-dash-peer__body">';
+                html += '<div class="acm-dash-peer__mid">';
                 html += '<div class="acm-dash-peer__row">';
                 html += '<span class="acm-dash-peer__name">' + escapeHtml(entry.displayName || 'Unknown') + '</span>';
                 html += '<span class="acm-dash-peer__time">' + escapeHtml(timeShort) + '</span>';
                 html += '</div>';
                 html += '<div class="acm-dash-peer__snippet">' + escapeHtml(snippet) + '</div>';
-                html += '<span class="acm-dash-peer__role">' + escapeHtml(roleLabel) + '</span>';
-                html += '</div></button>';
+                html += '</div>';
+                if (cnt > 0) {
+                    var countAria = cnt === 1 ? '1 message in thread' : cnt + ' messages in thread';
+                    html +=
+                        '<span class="acm-dash-peer__count" aria-label="' +
+                        escapeHtml(countAria) +
+                        '">' +
+                        escapeHtml(String(Math.min(cnt, 99))) +
+                        '</span>';
+                }
+                html += '</button>';
             }
             html += '</div>';
             host.innerHTML = html;
@@ -10496,28 +10691,92 @@
             }
         }
 
+        function acmChatDayKey(iso) {
+            if (!iso) return '';
+            var d = new Date(iso);
+            if (isNaN(d.getTime())) return '';
+            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+        }
+
+        function acmChatDaySepLabel(iso) {
+            if (!iso) return 'Earlier';
+            var d = new Date(iso);
+            if (isNaN(d.getTime())) return 'Earlier';
+            var now = new Date();
+            var startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            var startThat = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+            var dayMs = 86400000;
+            if (startThat === startToday) return 'Today';
+            if (startThat === startToday - dayMs) return 'Yesterday';
+            return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+
+        function acmPeerListTimeLabel(iso) {
+            if (!iso) return '';
+            var d = new Date(iso);
+            if (isNaN(d.getTime())) return '';
+            var now = new Date();
+            var startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            var startThat = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+            var dayMs = 86400000;
+            if (startThat === startToday) {
+                return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+            }
+            if (startThat === startToday - dayMs) return 'Yesterday';
+            if (startThat >= startToday - 6 * dayMs) {
+                return d.toLocaleDateString(undefined, { weekday: 'short' });
+            }
+            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        }
+
         function buildAuthorModalCommentsHtml(entry) {
-            var comments = entry.comments.slice().sort(function (a, b) {
+            if (!entry) {
+                return '<div class="acm-chat-thread"></div>';
+            }
+            var rawList = entry.comments != null && Array.isArray(entry.comments) ? entry.comments : [];
+            var comments = rawList.slice().sort(function (a, b) {
                 var ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
                 var tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
                 return ta - tb;
             });
             var parts = [];
+            var prevDay = null;
             for (var i = 0; i < comments.length; i++) {
                 var c = comments[i];
+                var dk = acmChatDayKey(c.createdAt);
+                if (dk && dk !== prevDay) {
+                    parts.push(
+                        '<div class="acm-chat-daysep" role="presentation"><span>' +
+                            escapeHtml(acmChatDaySepLabel(c.createdAt)) +
+                            '</span></div>'
+                    );
+                    prevDay = dk;
+                }
                 var idStr = String(c.id);
-                var when = c.createdAt
+                var whenFull = c.createdAt
                     ? new Date(c.createdAt).toLocaleString(undefined, {
                           month: 'short',
                           day: 'numeric',
+                          year: 'numeric',
                           hour: 'numeric',
                           minute: '2-digit',
                       })
                     : '';
+                var timeShortBubble = c.createdAt
+                    ? new Date(c.createdAt).toLocaleTimeString(undefined, {
+                          hour: 'numeric',
+                          minute: '2-digit',
+                      })
+                    : '';
+                var bubbleTitle = whenFull ? ' title="' + escapeHtml(whenFull) + '"' : '';
                 var issueK = c.issueKey != null ? String(c.issueKey).trim() : '';
                 var issueChip =
                     issueK !== ''
                         ? '<span class="analyzer-comments-issue">' + escapeHtml(issueK) + '</span>'
+                        : '';
+                var footerIssue =
+                    issueChip !== ''
+                        ? '<span class="acm-chat-msg__footer-issue">' + issueChip + '</span>'
                         : '';
                 var body = c.body != null ? String(c.body) : '';
                 var authorDisp =
@@ -10542,6 +10801,18 @@
                         '</div>';
                 }
                 var initialsMsg = acmAuthorChatInitials(authorDisp);
+                var readSpan = isMine
+                    ? '<span class="acm-chat-msg__read" aria-hidden="true">\u2713\u2713</span>'
+                    : '';
+                var footerInner =
+                    (footerIssue !== '' ? footerIssue : '') +
+                    '<span class="acm-chat-msg__footer-trail">' +
+                    '<span class="acm-chat-msg__time">' +
+                    escapeHtml(timeShortBubble) +
+                    '</span>' +
+                    readSpan +
+                    '</span>';
+                var footerClass = 'acm-chat-msg__footer' + (isMine ? ' acm-chat-msg__footer--mine' : '');
                 parts.push(
                     '<div class="acm-chat-msg' +
                         sideClass +
@@ -10552,20 +10823,18 @@
                         (!isMine
                             ? '<div class="acm-chat-msg__avatar" aria-hidden="true">' + escapeHtml(initialsMsg) + '</div>'
                             : '') +
-                        '<div class="acm-chat-msg__bubble">' +
-                        '<div class="acm-chat-msg__who">' +
-                        escapeHtml(authorDisp) +
-                        '</div>' +
-                        '<div class="acm-chat-msg__meta">' +
-                        '<span class="acm-chat-msg__time">' +
-                        escapeHtml(when) +
-                        '</span>' +
-                        issueChip +
-                        '</div>' +
+                        '<div class="acm-chat-msg__bubble"' +
+                        bubbleTitle +
+                        '>' +
                         '<div class="acm-chat-msg__text" data-acm-msg-view="' +
                         escapeHtml(idStr) +
                         '">' +
                         escapeHtml(body) +
+                        '</div>' +
+                        '<div class="' +
+                        footerClass +
+                        '">' +
+                        footerInner +
                         '</div>' +
                         '<div class="acm-chat-msg__edit" hidden data-acm-msg-editbox="' +
                         escapeHtml(idStr) +

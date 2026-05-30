@@ -759,20 +759,41 @@ async function insertUploadComment(
     }
   }
   if (parentId) {
-    const pr = await client.query(
-      `SELECT id FROM upload_comments WHERE id = $1::bigint AND upload_id = $2::bigint`,
+    const pr0 = await client.query(
+      `SELECT id, parent_id, assignee_scope FROM upload_comments WHERE id = $1::bigint AND upload_id = $2::bigint`,
       [parentId, uploadId]
     );
-    if (!pr.rows.length) {
+    if (!pr0.rows.length) {
       const err = new Error('Parent comment not found for this upload');
       err.statusCode = 400;
       throw err;
+    }
+    /** Replies keep the same assignee-scoped thread as the root (client often omits assigneeScope). */
+    let scopeForInsert = scopeRaw;
+    if (!scopeForInsert) {
+      let row = pr0.rows[0];
+      let depth = 0;
+      while (row && depth < 64) {
+        const ps = row.assignee_scope != null ? String(row.assignee_scope).trim() : '';
+        if (ps) {
+          scopeForInsert = ps.length > 400 ? ps.slice(0, 400) : ps;
+          break;
+        }
+        const pid = row.parent_id != null ? String(row.parent_id).trim() : '';
+        if (!pid || !/^\d+$/.test(pid)) break;
+        const prn = await client.query(
+          `SELECT id, parent_id, assignee_scope FROM upload_comments WHERE id = $1::bigint AND upload_id = $2::bigint`,
+          [pid, uploadId]
+        );
+        row = prn.rows.length ? prn.rows[0] : null;
+        depth += 1;
+      }
     }
     const ins = await client.query(
       `INSERT INTO upload_comments (upload_id, parent_id, body, author_name, author_uid, issue_key, assignee_scope)
        VALUES ($1::bigint, $2::bigint, $3, $4, $5, $6, $7)
        RETURNING id, parent_id, body, author_name, author_uid, issue_key, assignee_scope, created_at`,
-      [uploadId, parentId, text, authorName, authorUid, ik, scopeRaw]
+      [uploadId, parentId, text, authorName, authorUid, ik, scopeForInsert || '']
     );
     return ins.rows[0];
   }

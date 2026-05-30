@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jira Spillover Analyzer — Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      line-height: 1.45;
+      color: #1a1a1a;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
+    .meta { color: #555; font-size: 0.9rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.25rem; margin: 2rem 0 0.75rem; border-bottom: 1px solid #ccc; padding-bottom: 0.25rem; }
+    p { margin: 0.5rem 0 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 1rem 0; }
+    th, td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #f4f4f4; }
+    .diagram { margin: 1.25rem 0; page-break-inside: avoid; }
+    .mermaid { text-align: center; }
+    @media print {
+      body { padding: 12px; max-width: none; }
+      h2 { page-break-after: avoid; }
+      .diagram { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Jira Spillover Analyzer — Architecture</h1>
+  <p class="meta">Generated for PDF export. Diagrams render via Mermaid (requires network when opening this file).</p>
+
+  <h2>1. High-level system</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+    subgraph Browser["Browser (client)"]
+        A["analyzer.html\n(main analyst SPA)"]
+        I["index.html / auth.html /\nuser-dashboard.html"]
+        FB["Firebase Auth\n(identity in browser)"]
+        A --> FB
+    end
+
+    subgraph Server["Node server (express-app.js)"]
+        EX["Express + CORS"]
+        ST["Static files\n(HTML, images, …)"]
+        API["REST API\n/api/*"]
+        UP["Multer\nfile upload"]
+        XLS["xlsx\nparse workbook"]
+        EX --> ST
+        EX --> API
+        API --> UP
+        UP --> XLS
+    end
+
+    subgraph Data["PostgreSQL (pg)"]
+        DB[("Schema: uploads,\nrows, comments,\ninvites, issue edits, …")]
+    end
+
+    subgraph External["Optional / external"]
+        MAIL["Nodemailer\n(invite email)"]
+    end
+
+    A -->|"fetch JSON\n(same origin or ?api=)"| API
+    I --> ST
+    API --> DB
+    API --> MAIL
+    </pre>
+  </div>
+
+  <h2>2. Main responsibilities</h2>
+  <table>
+    <thead>
+      <tr><th>Layer</th><th>Role</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>analyzer.html</strong></td>
+        <td>Single-page UI: upload/setup, dashboards, assignees, comments (threads, PATCH/DELETE), invites, ticket drill-down. Uses <code>fetch</code> to <code>/api/...</code> and optional <code>?api=</code> when the page is not served from the API host.</td>
+      </tr>
+      <tr>
+        <td><strong>express-app.js</strong></td>
+        <td>HTTP server: static assets, health, spreadsheet upload, upload listing and data, comments CRUD, issue edits, people insights, invite flows, optional email.</td>
+      </tr>
+      <tr>
+        <td><strong>PostgreSQL</strong></td>
+        <td>Persistence for uploads, parsed rows, comments, invites, contributor/issue edits.</td>
+      </tr>
+      <tr>
+        <td><strong>Firebase</strong></td>
+        <td>Client-side sign-in; comment author fields come from the signed-in user in the UI.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. API surface (conceptual)</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+    subgraph AnalystAPI["Analyst / workspace API"]
+        H["GET /api/health"]
+        U["POST /api/upload"]
+        L["GET /api/uploads"]
+        D["GET /api/uploads/:id/data"]
+        C["GET/POST/PATCH/DELETE\n…/comments"]
+        E["GET …/issue-edits\nPUT …/issue"]
+        P["GET …/people-insights"]
+        INV["POST /api/invites\nbulk, email, …"]
+    end
+
+    subgraph PublicInvite["Public invite API"]
+        T["GET /api/invite/:token/session"]
+        TC["GET/POST …/comments"]
+        TI["PUT /api/invite/:token/issue"]
+    end
+    </pre>
+  </div>
+
+  <h2>4. Typical analyst flow (comments + data)</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+sequenceDiagram
+    participant User as Analyst browser
+    participant App as analyzer.html
+    participant API as express-app.js
+    participant PG as PostgreSQL
+
+    User->>App: Open app (same host or ?api=)
+    App->>API: GET /api/health (probe)
+    App->>API: GET /api/uploads
+    API->>PG: list uploads
+    PG-->>API: rows
+    API-->>App: JSON
+
+    User->>App: Select upload / load workspace
+    App->>API: GET /api/uploads/:id/data
+    API->>PG: load sheet + edits
+    PG-->>App: JSON
+
+    User->>App: Comments tab / refresh
+    App->>API: GET /api/uploads/:id/comments
+    API->>PG: comments
+    PG-->>App: JSON
+
+    User->>App: Send / edit / delete comment
+    App->>API: POST or PATCH or DELETE …/comments…
+    API->>PG: write
+    PG-->>App: ok + body
+    </pre>
+  </div>
+
+  <h2>5. Run / deploy</h2>
+  <p><code>npm start</code> runs <code>node express-app.js</code>: one process serves static HTML and <code>/api</code> routes. <code>vercel.json</code> may adapt the same app for serverless; configure <code>DATABASE_URL</code> for PostgreSQL.</p>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "neutral",
+      securityLevel: "loose",
+      flowchart: { htmlLabels: true, useMaxWidth: true },
+    });
+    mermaid.run({ querySelector: ".mermaid" }).catch(function (e) {
+      console.error(e);
+    });
+  </script>
+</body>
+</html>
