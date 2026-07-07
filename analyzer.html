@@ -15157,6 +15157,19 @@
                         : ''
                 });
             }
+            rows.sort(function (a, b) {
+                var c = String(a['Assignee name'] || '').localeCompare(
+                    String(b['Assignee name'] || ''),
+                    undefined,
+                    { sensitivity: 'base' }
+                );
+                if (c !== 0) return c;
+                return String(a['Issue key'] || '').localeCompare(
+                    String(b['Issue key'] || ''),
+                    undefined,
+                    { numeric: true }
+                );
+            });
             return rows;
         }
 
