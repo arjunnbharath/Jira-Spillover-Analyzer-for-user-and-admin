@@ -5966,16 +5966,39 @@
             white-space: normal;
         }
 
-        .export-filename-panel {
+        .export-panels-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 0.75rem;
             margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .export-panels-row[hidden] {
+            display: none !important;
+        }
+
+        .export-filename-panel {
+            margin-bottom: 0;
             padding: 0.65rem 0.85rem 0.7rem;
             border-radius: var(--radius-sm);
             background: rgba(255, 255, 255, 0.025);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            width: 100%;
-            max-width: min(52rem, 100%);
+            flex: 1 1 18rem;
+            min-width: 0;
+            max-width: 100%;
             box-sizing: border-box;
             box-shadow: none;
+        }
+
+        .export-quick-spillover-panel__btn {
+            background: linear-gradient(180deg, #10b981, #059669);
+            box-shadow: 0 2px 12px rgba(5, 150, 105, 0.35);
+        }
+
+        .export-quick-spillover-panel__btn:hover {
+            box-shadow: 0 4px 18px rgba(5, 150, 105, 0.45);
         }
 
         .export-filename-panel__toolbar-label {
@@ -6872,18 +6895,18 @@
                             <h1 class="page-head__title">Export preview</h1>
                         </div>
                     </header>
-                    <div
-                        id="exportFilenamePanel"
-                        class="export-filename-panel"
-                        hidden
-                        role="region"
-                        aria-labelledby="exportFilenameHeading"
-                    >
-                        <div class="export-filename-panel__toolbar-label">
+                    <div id="exportPanelsRow" class="export-panels-row" hidden>
+                        <div
+                            id="exportFilenamePanel"
+                            class="export-filename-panel"
+                            role="region"
+                            aria-labelledby="exportFilenameHeading"
+                        >
+                            <div class="export-filename-panel__toolbar-label">
                                 <label class="export-filename-panel__label" for="exportFileNameInput" id="exportFilenameHeading"
-                                >Export file name</label
+                                    >Export file name</label
                                 >
-                            <span class="export-filename-panel__format-tag" title="Excel workbook">.xlsx</span>
+                                <span class="export-filename-panel__format-tag" title="Excel workbook">.xlsx</span>
                             </div>
                             <div class="export-filename-panel__row">
                                 <input
@@ -6892,8 +6915,8 @@
                                     class="export-filename-panel__input"
                                     autocomplete="off"
                                     spellcheck="false"
-                                placeholder="SFMC_JiraSpilloverAnalyzer_14.0&amp;14.1.xlsx"
-                                title=".xlsx is added if missing. Invalid Windows file name characters become underscores."
+                                    placeholder="SFMC_JiraSpilloverAnalyzer_14.0&amp;14.1.xlsx"
+                                    title=".xlsx is added if missing. Invalid Windows file name characters become underscores."
                                 />
                                 <button
                                     type="button"
@@ -6905,26 +6928,66 @@
                                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                     </svg>
-                                Download
+                                    Download
                                 </button>
                             </div>
-                        <div class="export-filename-panel__suggest-inline">
-                            <span class="export-filename-panel__suggest-k">Suggested</span>
-                            <code id="exportFileNameSuggestion" class="export-filename-panel__code" aria-live="polite"></code>
+                            <div class="export-filename-panel__suggest-inline">
+                                <span class="export-filename-panel__suggest-k">Suggested</span>
+                                <code id="exportFileNameSuggestion" class="export-filename-panel__code" aria-live="polite"></code>
                                 <button
                                     type="button"
                                     id="exportUseSuggestedBtn"
                                     class="export-filename-panel__use-suggested"
                                     onclick="applySuggestedExportFileName()"
-                                title="Fill the field with the suggested name"
+                                    title="Fill the field with the suggested name"
                                     disabled
                                 >
-                                Use
+                                    Use
                                 </button>
                             </div>
-                        <p class="export-filename-panel__micro">
-                            <span title="The .xlsx extension is added or corrected if needed. Characters not allowed in Windows file names are replaced with underscores.">.xlsx enforced; invalid characters become _</span>
-                        </p>
+                            <p class="export-filename-panel__micro">
+                                <span title="The .xlsx extension is added or corrected if needed. Characters not allowed in Windows file names are replaced with underscores.">.xlsx enforced; invalid characters become _</span>
+                            </p>
+                        </div>
+                        <div
+                            id="quickSpilloverExportPanel"
+                            class="export-filename-panel export-quick-spillover-panel"
+                            role="region"
+                            aria-labelledby="quickSpilloverExportHeading"
+                        >
+                            <div class="export-filename-panel__toolbar-label">
+                                <label class="export-filename-panel__label" for="quickSpilloverExportFileNameInput" id="quickSpilloverExportHeading"
+                                    >Quick spillover export</label
+                                >
+                                <span class="export-filename-panel__format-tag" title="Spillover rows only">.xlsx</span>
+                            </div>
+                            <div class="export-filename-panel__row">
+                                <input
+                                    type="text"
+                                    id="quickSpilloverExportFileNameInput"
+                                    class="export-filename-panel__input"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                    placeholder="SFMC_SpilloverQuick_14.0.xlsx"
+                                    title="Spillover-only workbook. .xlsx is added if missing."
+                                />
+                                <button
+                                    type="button"
+                                    id="quickSpilloverExportBtn"
+                                    class="export-filename-panel__btn export-quick-spillover-panel__btn"
+                                    onclick="processQuickSpilloverExport()"
+                                    title="Download spillover-only Excel"
+                                >
+                                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    Download
+                                </button>
+                            </div>
+                            <p class="export-filename-panel__micro">
+                                <span title="Exports only SpillOver = Yes rows with six columns.">Issue key, assignee, summary, sprint, reason, category</span>
+                            </p>
+                        </div>
                     </div>
                     <div id="exportPreviewBody"></div>
                 </div>
@@ -13168,21 +13231,27 @@
         }
 
         function syncExportFilenamePanel(plan) {
+            var row = document.getElementById('exportPanelsRow');
             var panel = document.getElementById('exportFilenamePanel');
             var input = document.getElementById('exportFileNameInput');
             var sug = document.getElementById('exportFileNameSuggestion');
             var useBtn = document.getElementById('exportUseSuggestedBtn');
-            if (!panel || !input || !sug) return;
+            var quickInput = document.getElementById('quickSpilloverExportFileNameInput');
+            if (!row || !panel || !input || !sug) return;
             if (!plan) {
-                panel.hidden = true;
+                row.hidden = true;
                 if (useBtn) useBtn.disabled = true;
                 return;
             }
-            panel.hidden = false;
+            row.hidden = false;
             sug.textContent = plan.fileName;
             if (useBtn) useBtn.disabled = !String(plan.fileName || '').trim();
             if (!String(input.value || '').trim()) {
                 input.value = plan.fileName;
+            }
+            var quickName = 'SFMC_SpilloverQuick_' + plan.baseVersion + '.xlsx';
+            if (quickInput && !String(quickInput.value || '').trim()) {
+                quickInput.value = quickName;
             }
         }
 
@@ -14326,14 +14395,16 @@
                 renderSpilloverDashboardPlaceholder('Run <strong>Proceed</strong> to list spillover issue keys here (sprint equals threshold).');
                 renderBugDashboardPlaceholder('Run <strong>Proceed</strong> to list bugs for PROD, Bug category, and RCA.');
 
-                var fnPanel = document.getElementById('exportFilenamePanel');
+                var fnRow = document.getElementById('exportPanelsRow');
                 var fnInput = document.getElementById('exportFileNameInput');
                 var fnSug = document.getElementById('exportFileNameSuggestion');
                 var fnUse = document.getElementById('exportUseSuggestedBtn');
-                if (fnPanel) fnPanel.hidden = true;
+                var quickInput = document.getElementById('quickSpilloverExportFileNameInput');
+                if (fnRow) fnRow.hidden = true;
                 if (fnInput) fnInput.value = '';
                 if (fnSug) fnSug.textContent = '';
                 if (fnUse) fnUse.disabled = true;
+                if (quickInput) quickInput.value = '';
 
                 document.getElementById('fileDetails').classList.add('show');
 
@@ -14999,6 +15070,147 @@
             }
         }
 
+        function resolveQuickSpilloverExportFileName() {
+            var input = document.getElementById('quickSpilloverExportFileNameInput');
+            var bv = document.getElementById('baseVersion').value.trim();
+            var fallback =
+                bv && !isNaN(parseFloat(bv))
+                    ? 'SFMC_SpilloverQuick_' + bv + '.xlsx'
+                    : 'SFMC_SpilloverQuick_export.xlsx';
+            var raw = (input && String(input.value).trim()) || fallback;
+            raw = raw.replace(/[/\\:*?"<>|]+/g, '_').replace(/^\.+/, '').trim() || fallback;
+            var l = raw.toLowerCase();
+            if (l.endsWith('.xlsx')) {
+                return raw;
+            }
+            if (l.endsWith('.xls')) {
+                return raw.slice(0, -4) + '.xlsx';
+            }
+            if (l.indexOf('.') >= 0) {
+                return raw.replace(/\.[^.\\/]+$/, '') + '.xlsx';
+            }
+            return raw + '.xlsx';
+        }
+
+        var QUICK_SPILLOVER_EXPORT_HEADERS = [
+            'Issue key',
+            'Assignee name',
+            'Summary',
+            'Sprint',
+            'Spillover reason',
+            'Spillover category'
+        ];
+
+        function getMatchingSprintValuesForRow(rowData, threshold) {
+            if (!sprintIndices || !sprintIndices.length) return '';
+            var vals = [];
+            var seen = {};
+            var si;
+            for (si = 0; si < sprintIndices.length; si++) {
+                var idx = sprintIndices[si];
+                var cell = rowData[idx];
+                if (!sprintCellMatchesThreshold(cell, threshold)) continue;
+                var s = cell == null ? '' : String(cell).trim();
+                if (!s || seen[s]) continue;
+                seen[s] = true;
+                vals.push(s);
+            }
+            return vals.join(', ');
+        }
+
+        function buildQuickSpilloverExportRows(allData, headerRow, threshold) {
+            var kIdx = findIssueKeyColumnIndex(headerRow);
+            var aIdx = findAssigneeColumnIndex(headerRow);
+            var sIdx = findColumnByNames(headerRow, ['summary', 'issue summary', 'title']);
+            var rows = [];
+            var i;
+            for (i = 1; i < allData.length; i++) {
+                var raw = allData[i];
+                var spillRaw = hasSpilloverRaw(raw, threshold);
+                var ik = '';
+                if (kIdx >= 0 && raw[kIdx] != null) {
+                    ik = String(raw[kIdx]).trim();
+                }
+                if (getResolvedSpilloverYesNo(ik, spillRaw) !== 'Yes') continue;
+                var assignee = '\u2014';
+                if (aIdx >= 0) {
+                    var rawName = raw[aIdx];
+                    assignee =
+                        rawName == null || String(rawName).trim() === ''
+                            ? 'Unassigned'
+                            : String(rawName).trim();
+                }
+                var summary =
+                    sIdx >= 0 && raw[sIdx] != null ? String(raw[sIdx]).trim() : '';
+                var sprint = getMatchingSprintValuesForRow(raw, threshold);
+                if (!sprint && threshold) sprint = String(threshold).trim();
+                rows.push({
+                    'Issue key': ik,
+                    'Assignee name': assignee,
+                    Summary: summary,
+                    Sprint: sprint,
+                    'Spillover reason': ik
+                        ? String(getIssueEditMapValue(spilloverReasonByKey, ik) || '')
+                        : '',
+                    'Spillover category': ik
+                        ? String(getIssueEditMapValue(spilloverCategoryByKey, ik) || '')
+                        : ''
+                });
+            }
+            return rows;
+        }
+
+        function processQuickSpilloverExport() {
+            var threshold = document.getElementById('compareThreshold').value.trim();
+            var baseVersion = document.getElementById('baseVersion').value.trim();
+
+            if (!workbookData || !sprintIndices) {
+                showError('Please upload a file (.xlsx, .xls, .csv) or load a saved upload from the database.');
+                return;
+            }
+            if (!baseVersion) {
+                showError('Please enter a base version');
+                return;
+            }
+            if (!threshold) {
+                showError('Please enter the value to compare (threshold)');
+                return;
+            }
+            if (isNaN(parseFloat(threshold))) {
+                showError('Compare threshold must be a valid number');
+                return;
+            }
+
+            var exportUid = resolveExportUploadId();
+            function quickExportBuild() {
+                try {
+                    var sheet = workbookData.Sheets[workbookData.SheetNames[0]];
+                    var allData = XLSX.utils.sheet_to_row_object_array(sheet, { header: 1 });
+                    var headerRow = allData[0];
+                    var rows = buildQuickSpilloverExportRows(allData, headerRow, threshold);
+                    var fileName = resolveQuickSpilloverExportFileName();
+                    var wb = XLSX.utils.book_new();
+                    var ws = XLSX.utils.json_to_sheet(rows, { header: QUICK_SPILLOVER_EXPORT_HEADERS });
+                    XLSX.utils.book_append_sheet(wb, ws, safeSheetName('Spillover_' + baseVersion));
+                    XLSX.writeFile(wb, fileName);
+                    showSuccess(
+                        'Downloaded: ' +
+                            fileName +
+                            ' | Spillover rows: ' +
+                            rows.length +
+                            ' | Columns: issue key, assignee, summary, sprint, reason, category'
+                    );
+                } catch (err) {
+                    showError('Error exporting spillover file: ' + err.message);
+                }
+            }
+            if (exportUid && typeof fetchAndMergeIssueEdits === 'function') {
+                fetchAndMergeIssueEdits(String(exportUid)).then(quickExportBuild).catch(quickExportBuild);
+            } else {
+                quickExportBuild();
+            }
+        }
+
         function resolveExportDownloadFileName() {
             var input = document.getElementById('exportFileNameInput');
             var bv = document.getElementById('baseVersion').value.trim();
@@ -15399,14 +15611,16 @@
             document.getElementById('fileInput').value = '';
             document.getElementById('baseVersion').value = '';
             document.getElementById('compareThreshold').value = '';
-            var fnPanel = document.getElementById('exportFilenamePanel');
+            var fnRow = document.getElementById('exportPanelsRow');
             var fnInput = document.getElementById('exportFileNameInput');
             var fnSug = document.getElementById('exportFileNameSuggestion');
             var fnUse = document.getElementById('exportUseSuggestedBtn');
-            if (fnPanel) fnPanel.hidden = true;
+            var quickInput = document.getElementById('quickSpilloverExportFileNameInput');
+            if (fnRow) fnRow.hidden = true;
             if (fnInput) fnInput.value = '';
             if (fnSug) fnSug.textContent = '';
             if (fnUse) fnUse.disabled = true;
+            if (quickInput) quickInput.value = '';
             setPreviewPlaceholder('welcome');
             clearDashboardMetrics();
             renderChartPlaceholder();
