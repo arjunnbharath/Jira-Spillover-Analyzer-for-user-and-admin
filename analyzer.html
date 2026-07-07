@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Jira Spillover Analyzer</title>
     <link rel="icon" href="images/favicon-zoom.svg" type="image/svg+xml" sizes="any" />
     <link rel="icon" href="images/favicon.png" type="image/png" sizes="32x32" />
@@ -5191,13 +5191,24 @@
                 width: 0;
                 height: 0;
             }
+            .app,
+            .app.app--sidebar-pinned,
+            .app.app--sidebar-hover {
+                flex-direction: column;
+                --sidebar-main-offset: 0;
+                --sidebar-aside-w: min(288px, 88vw);
+            }
+
             .mobile-topbar {
-                display: flex;
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
                 align-items: center;
-                gap: 0.65rem;
+                column-gap: 0.75rem;
+                row-gap: 0;
                 flex-shrink: 0;
                 width: 100%;
-                padding: 0.55rem 0.85rem;
+                box-sizing: border-box;
+                padding: 0.6rem 0.85rem;
                 background: var(--surface);
                 border-bottom: 1px solid var(--border);
                 position: sticky;
@@ -5251,14 +5262,15 @@
                 align-items: center;
                 gap: 0.55rem;
                 min-width: 0;
-                flex: 1;
+                overflow: hidden;
             }
 
             .mobile-topbar__title {
-                font-size: 0.8rem;
+                font-size: 0.84rem;
                 font-weight: 600;
-                letter-spacing: 0.02em;
-                color: var(--text-muted);
+                letter-spacing: 0.01em;
+                line-height: 1.2;
+                color: var(--text);
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -5281,14 +5293,10 @@
                 display: block;
             }
 
-            .app {
-                flex-direction: column;
-                --sidebar-main-offset: 0;
-            }
-
             .sidebar.sidebar--rail {
                 width: min(288px, 88vw);
                 max-width: none;
+                box-shadow: none;
                 transition:
                     transform 0.32s var(--sidebar-ease),
                     box-shadow 0.32s ease,
@@ -5299,11 +5307,37 @@
                 z-index: 400;
             }
 
+            .app.app--sidebar-hover .sidebar.sidebar--rail,
+            .app.app--sidebar-pinned .sidebar.sidebar--rail {
+                box-shadow: none;
+            }
+
             .app.app--mobile-nav-open .sidebar.sidebar--rail {
                 transform: translateX(0);
                 visibility: visible;
                 pointer-events: auto;
                 box-shadow: 10px 0 36px rgba(0, 0, 0, 0.55);
+            }
+
+            .sidebar.sidebar--rail .sidebar__scroll {
+                padding: 0 0.75rem !important;
+            }
+
+            .sidebar.sidebar--rail .sidebar__brand {
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                gap: 0.65rem !important;
+                padding: 0.75rem 0.85rem !important;
+                margin: 0 0 0.5rem !important;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .sidebar.sidebar--rail .sidebar__logo {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                flex-shrink: 0;
             }
 
             .sidebar.sidebar--rail .sidebar__brand-text,
@@ -5312,45 +5346,87 @@
             .sidebar.sidebar--rail .sidebar__kbd,
             .sidebar.sidebar--rail .sidebar__chevron {
                 opacity: 1 !important;
-                max-width: 24rem !important;
+                max-width: none !important;
                 pointer-events: auto !important;
             }
+
             .sidebar.sidebar--rail .sidebar__brand-text {
                 flex: 1 1 auto !important;
-                max-width: none !important;
+                min-width: 0;
             }
+
             .sidebar.sidebar--rail .sidebar__kbd {
-                display: inline-block !important;
+                display: inline-flex !important;
             }
+
             .sidebar.sidebar--rail .sidebar__chevron {
                 display: block !important;
             }
+
             .sidebar.sidebar--rail .sidebar__subpanel {
                 display: block !important;
+                padding-left: 0.35rem;
             }
+
             .sidebar.sidebar--rail .sidebar__subpanel[hidden] {
                 display: none !important;
             }
+
+            .sidebar.sidebar--rail .sidebar__nav {
+                width: 100%;
+            }
+
             .sidebar.sidebar--rail .sidebar__link {
-                justify-content: flex-start;
-                padding: 0.48rem 0.65rem;
+                justify-content: flex-start !important;
+                align-items: center !important;
+                gap: 0.6rem !important;
+                padding: 0.55rem 0.7rem !important;
+                width: 100%;
+                box-sizing: border-box;
             }
+
             .sidebar.sidebar--rail .sidebar__link--spread {
-                justify-content: space-between;
+                justify-content: space-between !important;
             }
+
+            .sidebar.sidebar--rail .sidebar__link--spread .sidebar__link-main {
+                justify-content: flex-start !important;
+                flex: 1;
+                min-width: 0;
+            }
+
             .sidebar.sidebar--rail .sidebar__folder {
-                justify-content: space-between;
-                padding: 0.48rem 0.65rem;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 0.55rem 0.7rem !important;
+                width: 100%;
+                box-sizing: border-box;
             }
+
+            .sidebar.sidebar--rail .sidebar__folder-inner {
+                justify-content: flex-start !important;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .sidebar.sidebar--rail .sidebar__divider {
+                margin-left: 0.4rem !important;
+                margin-right: 0.4rem !important;
+                opacity: 1 !important;
+            }
+
             .sidebar.sidebar--rail .sidebar__footer .sidebar__profile-section:not([hidden]) {
                 display: block !important;
             }
+
             .sidebar.sidebar--rail .sidebar__rail-toggle-wrap {
                 display: none !important;
             }
+
             .sidebar.sidebar--rail .sidebar__user-initial {
                 display: none !important;
             }
+
             .sidebar.sidebar--rail .sidebar__sign-out {
                 width: 100%;
                 max-width: 100%;
@@ -5361,18 +5437,32 @@
                 font-size: 0.6875rem;
                 color: var(--text-dim);
             }
+
             .sidebar.sidebar--rail .sidebar__sign-out::after {
                 display: none;
             }
+
+            .sidebar.sidebar--rail .sidebar__bottom,
+            .sidebar.sidebar--rail .sidebar__footer {
+                width: 100%;
+                box-sizing: border-box;
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+
             .sidebar__scroll {
                 overflow-y: auto;
                 overflow-x: hidden;
             }
+
             .assignees-list {
                 max-height: min(50vh, 320px);
             }
+
             .main {
-                margin-left: 0;
+                margin-left: 0 !important;
+                width: 100%;
+                max-width: 100%;
                 height: auto;
                 min-height: 60vh;
                 overflow: visible;
@@ -6192,6 +6282,418 @@
             }
         }
 
+        /* —— Mobile-friendly layout (phones & tablets ≤900px) —— */
+        @media (max-width: 900px) {
+            html {
+                -webkit-text-size-adjust: 100%;
+                text-size-adjust: 100%;
+            }
+
+            .main__inner {
+                padding: 1rem 0.85rem 2.25rem;
+                padding-left: max(0.85rem, env(safe-area-inset-left));
+                padding-right: max(0.85rem, env(safe-area-inset-right));
+                padding-bottom: max(2.25rem, env(safe-area-inset-bottom));
+            }
+
+            .mobile-topbar {
+                padding-left: max(0.85rem, env(safe-area-inset-left));
+                padding-right: max(0.85rem, env(safe-area-inset-right));
+            }
+
+            input,
+            select,
+            textarea,
+            .db-upload-select,
+            .export-filename-panel__input,
+            .dash-list-search,
+            .global-search-input {
+                font-size: 16px;
+            }
+
+            .toast-stack {
+                top: 3.35rem;
+                padding-left: max(0.65rem, env(safe-area-inset-left));
+                padding-right: max(0.65rem, env(safe-area-inset-right));
+            }
+
+            .page-head {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+                margin-bottom: 1.15rem;
+            }
+
+            .page-head__actions {
+                width: 100%;
+            }
+
+            .page-head__actions .btn {
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .dashboard-phase .page-head,
+            .reports-phase .page-head,
+            .analytics-phase .page-head,
+            .exports-phase .page-head {
+                margin-bottom: 1.25rem;
+                padding-bottom: 1rem;
+            }
+
+            #dashboardPhase > header.dash-view__hero {
+                margin-bottom: 1.25rem;
+                padding-bottom: 1rem;
+            }
+
+            .panel-dark__head {
+                flex-wrap: wrap;
+                align-items: flex-start;
+                padding: 0.85rem 0.9rem;
+                gap: 0.55rem;
+            }
+
+            .panel-dark__head .btn {
+                flex-shrink: 0;
+            }
+
+            .panel-dark__body,
+            .chart-panel .panel-dark__body,
+            #dashboardPhase .dash-view .dash-view__chart-body,
+            #dashboardPhase .dash-view .dash-view__side-body {
+                padding: 0.85rem 0.9rem 0.95rem;
+            }
+
+            .panel.db-load-panel {
+                padding: 0.85rem 0.9rem;
+            }
+
+            #setupPhase.uc-setup .uc-intro {
+                margin-bottom: 1.25rem;
+                padding-bottom: 1rem;
+            }
+
+            #setupPhase.uc-setup .uc-tile__top,
+            #setupPhase.uc-setup .uc-tile__main {
+                padding-left: 0.85rem;
+                padding-right: 0.85rem;
+            }
+
+            #setupPhase.uc-setup .uc-tile__top--split {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #setupPhase.uc-setup .uc-danger {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            #setupPhase.uc-setup .uc-danger__btn {
+                width: 100%;
+            }
+
+            .db-load-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .db-load-row .db-upload-select {
+                width: 100%;
+                flex: 1 1 auto;
+            }
+
+            .db-load-row .btn {
+                width: 100%;
+                flex: 1 1 auto;
+                min-height: 2.75rem;
+            }
+
+            .button-group,
+            .uc-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .button-group .btn,
+            .uc-actions .btn {
+                width: 100%;
+                flex: 1 1 auto;
+                min-height: 2.75rem;
+            }
+
+            .dash-list-search-wrap {
+                max-width: none;
+            }
+
+            .spillover-table-wrap,
+            .assignee-dash-page-table-wrap,
+            .invite-bulk-table-wrap,
+            .export-preview-scroll,
+            #dashboardPhase .dash-activity__list-wrap,
+            #dashboardPhase .dash-submission__table-wrap,
+            #dashboardPhase .dash-view .issue-type-table-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .spillover-table,
+            .spillover-table--minimal {
+                min-width: 34rem;
+            }
+
+            .assignee-dash-page-table-wrap .assignee-dash-table {
+                min-width: 48rem;
+            }
+
+            .invite-bulk-table {
+                min-width: 38rem;
+            }
+
+            #dashboardPhase .dash-activity__thead,
+            #dashboardPhase .dash-activity__item {
+                min-width: 26rem;
+            }
+
+            .assignee-dash-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .report-stat-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.65rem;
+            }
+
+            .report-stat-card {
+                padding: 0.85rem 0.9rem;
+            }
+
+            .ana-chart-card__body {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .ana-pie-wrap {
+                width: min(200px, 72vw);
+                margin: 0 auto;
+            }
+
+            .export-panels-row {
+                flex-direction: column;
+            }
+
+            .export-filename-panel {
+                width: 100%;
+                flex: 1 1 auto;
+            }
+
+            .export-graph-preview-grid {
+                grid-template-columns: 1fr;
+                padding: 0 0.65rem 0.85rem;
+            }
+
+            .export-sheet-card__head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .invite-settings-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .invite-settings-toolbar__field,
+            .invite-settings-toolbar__actions {
+                width: 100%;
+                flex: 1 1 auto;
+            }
+
+            .invite-settings-toolbar__actions .btn {
+                width: 100%;
+                min-height: 2.75rem;
+            }
+
+            .invite-single-form__controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .invite-single-form__email-input,
+            .invite-single-form__field--expires,
+            .invite-single-form__actions {
+                width: 100%;
+                flex: 1 1 auto;
+            }
+
+            .invite-single-form__field--expires {
+                max-width: none;
+            }
+
+            .invite-single-form__create-btn {
+                width: 100%;
+                min-height: 2.75rem;
+            }
+
+            .invite-bulk-card__controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .invite-bulk-card__expires-input {
+                max-width: none;
+                width: 100%;
+            }
+
+            .invite-bulk-card__actions,
+            .invite-bulk-card__actions .invite-bulk-card__btn {
+                width: 100%;
+            }
+
+            .invite-bulk-card__actions .invite-bulk-card__btn {
+                min-height: 2.75rem;
+            }
+
+            .global-search-overlay {
+                padding: 4.5rem 0.75rem 1rem;
+                align-items: flex-start;
+            }
+
+            .workspace-db-clear-overlay {
+                padding: 1rem 0.75rem;
+                align-items: flex-end;
+            }
+
+            .workspace-db-clear-modal,
+            .global-search-panel,
+            .workspace-db-clear-modal.spillover-edit-modal--minimal {
+                width: 100%;
+                max-width: none;
+                max-height: min(92vh, calc(100dvh - 2rem));
+                overflow-y: auto;
+            }
+
+            .workspace-db-clear-modal__actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .workspace-db-clear-modal__actions .btn {
+                width: 100%;
+                min-height: 2.75rem;
+            }
+
+            .spillover-edit-modal__actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .spillover-edit-modal__btn {
+                width: 100%;
+                min-height: 2.75rem;
+            }
+
+            .ticket-detail-phase .page-head {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .ticket-detail-phase .ticket-detail__back {
+                width: 100%;
+                text-align: center;
+            }
+
+            .main:has(#commentsPhase.comments-phase--dashboard:not([hidden])) {
+                min-height: calc(100dvh - 3.35rem);
+            }
+
+            #dashboardPhase .dash-view .dash-view__chart-frame .chart-svg {
+                min-height: 160px;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .dash-metrics,
+            .report-stat-grid,
+            .assignee-dash-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .dash-metric {
+                padding: 1rem;
+            }
+
+            .dash-metric__value {
+                font-size: 1.4rem;
+            }
+
+            .page-head__title,
+            #setupPhase.uc-setup .uc-title,
+            #dashboardPhase .dash-view__title {
+                font-size: 1.35rem;
+            }
+
+            .invite-people-row {
+                grid-template-columns: 1fr;
+                gap: 0.2rem;
+            }
+
+            .invite-people-row__count {
+                justify-self: start;
+            }
+
+            .spillover-table th,
+            .spillover-table td,
+            .spillover-table--minimal th,
+            .spillover-table--minimal td {
+                padding: 0.5rem 0.65rem;
+                font-size: 0.8125rem;
+            }
+
+            #dashboardPhase .dash-activity__thead {
+                display: none;
+            }
+
+            #dashboardPhase .dash-activity__item {
+                min-width: 0;
+                grid-template-columns: 1fr auto;
+                grid-template-areas:
+                    'assignee time'
+                    'issue issue'
+                    'kind kind';
+                gap: 0.2rem 0.65rem;
+                padding: 0.6rem 0;
+            }
+
+            #dashboardPhase .dash-activity__assignee {
+                grid-area: assignee;
+            }
+
+            #dashboardPhase .dash-activity__time {
+                grid-area: time;
+                justify-self: end;
+                text-align: right;
+            }
+
+            #dashboardPhase .dash-activity__issue {
+                grid-area: issue;
+            }
+
+            #dashboardPhase .dash-activity__kind {
+                grid-area: kind;
+            }
+
+            #dashboardPhase .dash-activity__list-wrap {
+                overflow-x: visible;
+            }
+
+            .global-search__hit {
+                grid-template-columns: 1fr;
+                gap: 0.15rem;
+            }
+        }
+
         .export-hero-filename {
             font-size: 0.875rem;
             margin-top: 0.75rem;
@@ -6335,7 +6837,7 @@
                         decoding="async"
                     />
                 </div>
-            <span class="mobile-topbar__title">Jira Spillover Analyzer</span>
+                <span class="mobile-topbar__title">Jira Spillover Analyzer</span>
             </div>
         </header>
         <aside class="sidebar sidebar--rail" id="sidebarNavHost" aria-label="Primary navigation">
