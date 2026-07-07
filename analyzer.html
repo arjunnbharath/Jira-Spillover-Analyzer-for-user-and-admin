@@ -15118,11 +15118,19 @@
             return vals.join(', ');
         }
 
+        function normalizeAssigneeSortKey(name) {
+            return String(name || '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, ' ');
+        }
+
         function buildQuickSpilloverExportRows(allData, headerRow, threshold) {
             var kIdx = findIssueKeyColumnIndex(headerRow);
             var aIdx = findAssigneeColumnIndex(headerRow);
             var sIdx = findColumnByNames(headerRow, ['summary', 'issue summary', 'title']);
             var rows = [];
+            var seenKeys = {};
             var i;
             for (i = 1; i < allData.length; i++) {
                 var raw = allData[i];
@@ -15131,7 +15139,9 @@
                 if (kIdx >= 0 && raw[kIdx] != null) {
                     ik = String(raw[kIdx]).trim();
                 }
+                if (!ik || seenKeys[ik]) continue;
                 if (getResolvedSpilloverYesNo(ik, spillRaw) !== 'Yes') continue;
+                seenKeys[ik] = true;
                 var assignee = '\u2014';
                 if (aIdx >= 0) {
                     var rawName = raw[aIdx];
@@ -15154,15 +15164,15 @@
                         : '',
                     'Spillover category': ik
                         ? String(getIssueEditMapValue(spilloverCategoryByKey, ik) || '')
-                        : ''
+                        : '',
+                    _sortName: normalizeAssigneeSortKey(assignee)
                 });
             }
             rows.sort(function (a, b) {
-                var c = String(a['Assignee name'] || '').localeCompare(
-                    String(b['Assignee name'] || ''),
-                    undefined,
-                    { sensitivity: 'base' }
-                );
+                var c = String(a._sortName || '').localeCompare(String(b._sortName || ''), undefined, {
+                    sensitivity: 'base',
+                    numeric: true
+                });
                 if (c !== 0) return c;
                 return String(a['Issue key'] || '').localeCompare(
                     String(b['Issue key'] || ''),
@@ -15170,6 +15180,10 @@
                     { numeric: true }
                 );
             });
+            var ri;
+            for (ri = 0; ri < rows.length; ri++) {
+                delete rows[ri]._sortName;
+            }
             return rows;
         }
 
